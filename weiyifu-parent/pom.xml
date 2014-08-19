@@ -13,6 +13,7 @@
         <spring.version>4.0.6.RELEASE</spring.version>
         <slf4j.version>1.7.7</slf4j.version>
         <logback-classic.version>1.1.2</logback-classic.version>
+        <jackson-core.version>2.4.2</jackson-core.version>
     </properties>
 
     <modules>
@@ -35,7 +36,35 @@
                 <artifactId>spring-webmvc</artifactId>
                 <version>${spring.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-jdbc</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-tx</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
             <!-- spring end -->
+
+            <!-- json 支持 start -->
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
+                <version>${jackson-core.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson-core.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-annotations</artifactId>
+                <version>${jackson-core.version}</version>
+            </dependency>
+            <!-- json 支持 end -->
 
             <!-- 日志管理 start -->
             <dependency>

@@ -14,11 +14,9 @@
 
     <!-- 加载数据库属性配置文件 -->
     <context:property-placeholder location="classpath:db.properties" />
-    <!-- 添加注解驱动 -->
-    <mvc:annotation-driven />
-    <context:annotation-config />
+
     <!-- 数据库连接池c3p0配置 -->
- <!--   <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
           destroy-method="close">
         <property name="jdbcUrl" value="${db.url}"></property>
         <property name="driverClass" value="${db.driverClassName}"></property>
@@ -28,18 +26,22 @@
         <property name="minPoolSize" value="1"></property>
         <property name="initialPoolSize" value="1"></property>
         <property name="maxIdleTime" value="20"></property>
+    </bean>
+
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean" primary="true">
+        <property name="dataSource" ref="dataSource" />
+        <property name="mapperLocations" value="classpath:mapper/*Mapper.xml" />
+        <property name="typeAliasesPackage" value="com.billing.web.model" />
+    </bean>
+
+    <!--创建数据映射器，数据映射器必须为接口-->
+<!--    <bean id="userMapper" class="org.mybatis.spring.mapper.MapperFactoryBean" primary="true">
+        <property name="mapperInterface" value="com.billing.web.dao" />
+        <property name="sqlSessionFactory" ref="sqlSessionFactory" />
     </bean>-->
-
-    <!-- 自动加载构建bean -->
-    <context:component-scan base-package="com.billing" />
-
-
-
-    <!-- 定义跳转的文件的前后缀 -->
-   <!-- <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-        <property name="prefix" value="/WEB-INF/jsp/" />
-        <property name="suffix" value=".jsp" />
-    </bean>-->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.billing.web.dao" />
+    </bean>
 
 
 </beans>
