@@ -15,6 +15,10 @@
         <logback-classic.version>1.1.2</logback-classic.version>
     </properties>
 
+    <modules>
+        <module>../weiyifu-web</module>
+    </modules>
+
     <!--
         依赖库
         -->

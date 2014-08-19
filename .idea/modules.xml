@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/weiyifu.iml" filepath="$PROJECT_DIR$/weiyifu.iml" />
       <module fileurl="file://$PROJECT_DIR$/weiyifu-parent/weiyifu-parent.iml" filepath="$PROJECT_DIR$/weiyifu-parent/weiyifu-parent.iml" />
+      <module fileurl="file://$PROJECT_DIR$/weiyifu-web/weiyifu-web.iml" filepath="$PROJECT_DIR$/weiyifu-web/weiyifu-web.iml" />
     </modules>
   </component>
 </project>
