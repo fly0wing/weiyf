@@ -1,4 +1,4 @@
-<configuration>
+<configuration debug="true" scan="true" scanPeriod="30 minutes">
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <!-- encoders are assigned the type
              ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
@@ -7,15 +7,26 @@
         </encoder>
     </appender>
 
-    <appender name="file" class="ch.qos.logback.core.FileAppender">
-        <file>myApp.log</file>
+    <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 当前文件名 -->
+        <file>${project.basedir}/log/weiyifu-web.log</file>
         <encoder>
             <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
         </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- 归档文件名 -->
+            <fileNamePattern>
+                ${project.basedir}/log/backup/weiyifu-web_%d{yyyy-MM-dd}.log
+            </fileNamePattern>
+            <!-- 最多存放30个文件 -->
+            <maxHistory>
+                30
+            </maxHistory>
+        </rollingPolicy>
     </appender>
 
     <root level="debug">
-        <appender-ref ref="STDOUT" />
-        <appender-ref ref="file" />
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="file"/>
     </root>
 </configuration>
