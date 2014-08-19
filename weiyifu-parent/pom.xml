@@ -123,7 +123,7 @@
                         <contextPath>/</contextPath>
                         <connectors>
                             <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
-                                <port>18080</port>
+                                <port>8080</port>
                             </connector>
                         </connectors>
                         <reload>automatic</reload>
