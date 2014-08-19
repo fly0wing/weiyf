@@ -10,12 +10,11 @@
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
-/*.iml
-/myApp.log
-/target
-/.idea
-/out
 
-/.idea
+/myApp.log
+
+*.idea
+*.iml
+
 /out
 /target
