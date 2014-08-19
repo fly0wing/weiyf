@@ -18,3 +18,5 @@ hs_err_pid*
 
 /out
 /target
+/weiyifu-web/*.iml
+/weiyifu-web/target
