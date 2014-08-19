@@ -21,7 +21,6 @@
 
     <!-- Configures Spring MVC -->
     <mvc:annotation-driven />
-    <mvc:view-controller path="/" view-name="index"/>
 
     <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
         <property name="messageConverters">
