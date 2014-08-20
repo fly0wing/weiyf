@@ -48,6 +48,14 @@
     依赖库
     -->
     <dependencies>
+        <dependency>
+            <groupId>com.91billing</groupId>
+            <artifactId>weiyifu-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.91billing</groupId>
+            <artifactId>weiyifu-utils</artifactId>
+        </dependency>
         <!-- spring start -->
         <dependency>
             <groupId>org.springframework</groupId>
