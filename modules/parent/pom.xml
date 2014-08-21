@@ -23,15 +23,6 @@
     </prerequisites>
     <dependencies>
         <dependency>
-            <groupId>com.91billing</groupId>
-            <artifactId>weiyifu-core</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.91billing</groupId>
-            <artifactId>weiyifu-utils</artifactId>
-        </dependency>
-        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
         </dependency>
