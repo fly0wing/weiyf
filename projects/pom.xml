@@ -14,7 +14,12 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>web</module>
         <module>jms</module>
+        <module>webservice</module>
+        <module>statistical</module>
+        <module>sdk-android</module>
+        <module>sdk-ios</module>
+        <module>merchant-web</module>
+        <module>user-web</module>
     </modules>
 </project>
