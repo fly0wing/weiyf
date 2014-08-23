@@ -17,5 +17,6 @@
         <module>parent</module>
         <module>core</module>
         <module>commons</module>
+        <module>dependencies</module>
     </modules>
 </project>
