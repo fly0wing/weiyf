@@ -12,5 +12,5 @@ import com.billing.internalcontract.BaseReq;
 public class TerminalUnbindReq extends BaseReq {
     private long terminalId;
     private String fingerprint;
-    private TerminalBindType terminalBindType;
+    private TerminalBindEnum terminalBindType;
 }

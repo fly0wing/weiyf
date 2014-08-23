@@ -13,7 +13,7 @@ public class LoginReq extends BaseReq {
      * 是否自动登录
      */
     private boolean isAuto;
-    private LoginAccountType loginAccountType;
+    private LoginAccountEnum loginAccountType;
     private String loginAccount;
     private String password;
 

@@ -15,5 +15,5 @@ public class RegisterReq extends BaseReq {
     private String password;
     private long fromPartyId;
     private String loginAccount;
-    private LoginAccountType loginAccountType;
+    private LoginAccountEnum loginAccountType;
 }
