@@ -1,4 +1,4 @@
-package com.billing.commons.convention;
+package com.billing.convention;
 
 /**
  * Created by zhangkai on 2014/8/21.

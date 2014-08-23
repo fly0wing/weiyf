@@ -1,5 +1,7 @@
 package com.billing.internalcontract;
 
+import com.billing.internalcontract.user.UserSession;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -9,7 +11,11 @@ import java.util.Date;
  *
  */
 public class BaseResp implements Serializable {
-
+    /**
+     * 请求的唯一标识
+     */
+    private String requestGuid;
+    private UserSession session;
 	private boolean isNormal;
 	private long code;
 	private String desc;

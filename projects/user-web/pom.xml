@@ -12,5 +12,13 @@
     <artifactId>weiyifu-user-web</artifactId>
     <packaging>war</packaging>
 
-
+<build>
+    <plugins>
+        <plugin>
+            <groupId>com.googlecode.rapid-framework</groupId>
+            <artifactId>rapid-plugins</artifactId>
+            <version>4.0.6</version>
+        </plugin>
+    </plugins>
+</build>
 </project>

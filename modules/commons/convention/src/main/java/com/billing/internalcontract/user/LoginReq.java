@@ -9,10 +9,13 @@ import com.billing.internalcontract.BaseReq;
  *
  */
 public class LoginReq extends BaseReq {
-    private boolean isAnonymous;
-    private long fromPartyId;
+    /**
+     * 是否自动登录
+     */
+    private boolean isAuto;
+    private LoginAccountType loginAccountType;
     private String loginAccount;
     private String password;
-    private LoginAccountType loginAccountType;
+
 
 }
