@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.billing.product.orm.dao.CustomerDao">
+
+    <!-- 字段名转换 -->
+    <resultMap id="customerDetailMap" type="com.billing.product.orm.model.Customer">
+        <id property="id" column="id"/>
+        <result property="customerName" column="customer_name"/>
+        <result property="email" column="email"/>
+        <result property="phone" column="phone"/>
+        <result property="passwordHint" column="password_hint"/>
+        <result property="statusId" column="status_id"/>
+        <result property="lastCurrencyUom" column="last_currency_uom"/>
+        <result property="lastLocale" column="last_locale"/>
+        <result property="lastTimeZone" column="last_time_zone"/>
+        <result property="disabledDateTime" column="disabled_date_time"/>
+        <result property="firstPartyId" column="first_party_id"/>
+        <result property="lastUpdatedStamp" column="last_updated_stamp"/>
+        <result property="createdStamp" column="created_stamp"/>
+    </resultMap>
+
+    <!-- 查询字段 -->
+    <sql id="customerDetailColumn">
+        id,
+        customer_name,
+        email,
+        phone,
+        password_hint,
+        status_id,
+        last_currency_uom,
+        last_locale,
+        last_time_zone,
+        disabled_date_time,
+        first_party_id,
+        last_updated_stamp,
+        created_stamp
+    </sql>
+
+    <select id="findById" resultMap="customerDetailMap">
+        select
+        <include refid="customerDetailColumn"/>
+        from customer
+        <where>
+            <if test="id == null">
+                1 = 0
+            </if>
+            <if test="id != null">
+                id = #{id}
+            </if>
+        </where>
+    </select>
+</mapper>
