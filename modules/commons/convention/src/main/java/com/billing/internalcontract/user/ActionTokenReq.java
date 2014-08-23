@@ -1,6 +1,6 @@
 package com.billing.internalcontract.user;
 
-import com.billing.internalcontract.ActionTokenType;
+import com.billing.internalcontract.ActionTokenEnum;
 import com.billing.internalcontract.BaseReq;
 
 
@@ -11,6 +11,6 @@ import com.billing.internalcontract.BaseReq;
  *
  */
 public class ActionTokenReq extends BaseReq {
-    private ActionTokenType actionTokenType;
+    private ActionTokenEnum actionTokenType;
     private String phone;
 }

@@ -10,6 +10,6 @@ import com.billing.internalcontract.BaseReq;
  *
  */
 public class TerminalBindReq extends BaseReq {
-    private TerminalBindType terminalBindType;
+    private TerminalBindEnum terminalBindType;
     private String terminalName;
 }
