@@ -8,7 +8,7 @@
     <!-- 自动加载构建bean -->
     <context:annotation-config />
 
-    <context:component-scan base-package="com.billing.product.orm">
+    <context:component-scan base-package="com.billing.${moduleName}.orm">
         <context:include-filter type="annotation" expression="com.billing.utils.mybatis.MyBatisRepository"/>
         <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller" />
     </context:component-scan>

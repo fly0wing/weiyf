@@ -15,10 +15,10 @@
 <#macro escapeMapper value>${r"#{"}${value}}</#macro>
 
     <!-- 加载数据库属性配置文件 -->
-    <context:property-placeholder location="classpath:db-product.properties" />
+    <context:property-placeholder location="classpath:db-${moduleName}.properties" />
 
     <!-- 数据库连接池c3p0配置 -->
-    <bean id="productDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+    <bean id="${moduleName}DataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
           destroy-method="close">
         <property name="jdbcUrl" value="<@escapeDollar  "db.product.url"/>"/>
         <property name="driverClass" value="<@escapeDollar "db.product.driverClassName"/>"/>
@@ -30,18 +30,18 @@
         <property name="maxIdleTime" value="<@escapeDollar "db.product.maxIdleTime"/>"/>
     </bean>
 
-    <bean id="productSqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean" primary="true">
-        <property name="dataSource" ref="productDataSource" />
-        <property name="mapperLocations" value="classpath:product_mapper/*Mapper.xml" />
-        <property name="typeAliasesPackage" value="com.billing.product.orm" />
+    <bean id="${moduleName}SqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean" primary="true">
+        <property name="dataSource" ref="${moduleName}DataSource" />
+        <property name="mapperLocations" value="classpath:${moduleName}_mapper/*Mapper.xml" />
+        <property name="typeAliasesPackage" value="com.billing.${moduleName}.orm" />
     </bean>
 
 
-    <bean id="transactionManager" class="org.springframework.transaction.jta.JtaTransactionManager">
-        <property name="" ref="productSqlSessionFactory"/>
-    </bean>
+<!--    <bean id="transactionManager" class="org.springframework.transaction.jta.JtaTransactionManager">
+        <property name="" ref="${moduleName}SqlSessionFactory"/>
+    </bean>-->
 
-    <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true" />
+    <!--<tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true" />-->
 
     <!--创建数据映射器，数据映射器必须为接口-->
 <!--    <bean id="userMapper" class="org.mybatis.spring.mapper.MapperFactoryBean" primary="true">

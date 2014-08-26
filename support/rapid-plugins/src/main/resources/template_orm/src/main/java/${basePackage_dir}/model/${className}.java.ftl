@@ -6,6 +6,7 @@ package ${basePackage}.model;
 import java.io.Serializable;
 import java.util.Date;
 import java.sql.Timestamp;
+import java.math.BigDecimal;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -33,7 +34,6 @@ public class ${className} implements Serializable {
     <@generateJavaColumns/>
     <@generateJavaOneToMany/>
     <@generateJavaManyToOne/>
-
 
     public String toString() {
         return ToStringBuilder.reflectionToString(this);

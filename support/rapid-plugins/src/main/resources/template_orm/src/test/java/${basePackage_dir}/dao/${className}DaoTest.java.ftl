@@ -18,7 +18,7 @@ import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @DirtiesContext
-@ContextConfiguration(locations = {"classpath:applicationContext-private.xml","classpath:applicationContext-db-product.xml"})
+@ContextConfiguration(locations = {"classpath:applicationContext-private.xml","classpath:applicationContext-db-${moduleName}.xml"})
 // @TransactionConfiguration(
 //        transactionManager = "", defaultRollback=true)
 public class ${className}DaoTest {
@@ -53,11 +53,11 @@ public class ${className}DaoTest {
     }
 <#list table.columns as column>
     <#if column.unique && !column.pk>
+
     @Test
     public void testGetBy${column.columnName}() {
         assertNotNull(null);
     }
     </#if>
-
 </#list>
 }

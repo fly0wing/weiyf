@@ -24,12 +24,8 @@ public interface ${className}Dao {
     void update(${className} obj);
 
     void delete(Long id);
-<#list table.columns as column>
-    <#if column.unique && !column.pk>
-    ${className} getBy${column.columnName}(${column.simpleJavaType} v) {
-        return (${className})getSqlSession().selectOne("${className}.getBy${column.columnName}",v);
-    }
-    </#if>
+<#list table.columns as column><#if column.unique && !column.pk>
 
-</#list>
+    ${className} getBy${column.columnName}(${column.simpleJavaType} v);
+</#if></#list>
 }

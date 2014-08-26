@@ -6,13 +6,13 @@
 <#assign className = table.className>
 <#assign classNameFirstLower = table.classNameFirstLower>
 <#macro mapperEl value>${r"#{"}${value}}</#macro>
-<#macro namespace>${className}.</#macro>
+<#macro namespace>${className}_</#macro>
 
 <mapper namespace="${basePackage}.dao.${className}Dao">
 
 
     <!-- 字段名转换 -->
-    <resultMap id="RM.${className}" type="${basePackage}.model.${className}">
+    <resultMap id="RM_${className}" type="${basePackage}.model.${className}">
     <#list table.columns as column>
         <result property="${column.columnNameLower}" column="${column.sqlName}"/>
     </#list>
@@ -26,7 +26,7 @@
     </sql>
 
 
-    <select id="get" parameterType="long" resultType="RM.${className}">
+    <select id="get" parameterType="long" resultMap="RM_${className}">
         <![CDATA[
         select
         <include refid="<@namespace/>columns" />
@@ -42,7 +42,7 @@
     </select>
 
     <!-- 查询用户,演示: 1.输入用map传入多个参数 2.<where>语句, 智能添加where和and关键字 3.输出直接映射对象 -->
-    <select id="search" parameterType="map" resultType="RM.${className}">
+    <select id="search" parameterType="map" resultMap="RM_${className}">
         <![CDATA[
         select
         <include refid="<@namespace/>columns" />
@@ -97,7 +97,7 @@
 
     <#list table.columns as column>
         <#if column.unique && !column.pk>
-    <select id="<@namespace/>getBy${column.columnName}" resultMap="RM.${className}" parameterType="${column.javaType}">
+    <select id="getBy${column.columnName}" resultMap="RM_${className}" parameterType="${column.javaType}">
         SELECT <include refid="<@namespace/>columns"/>
         FROM ${table.sqlName} where ${column.sqlName} = <@mapperEl column.columnNameLower/>
     </select>
