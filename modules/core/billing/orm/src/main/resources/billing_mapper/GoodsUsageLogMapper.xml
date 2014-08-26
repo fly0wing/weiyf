@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.billing.billing.orm.dao.GoodsUsageLogDao">
+
+
+    <!-- 字段名转换 -->
+    <resultMap id="RM_GoodsUsageLog" type="com.billing.billing.orm.model.GoodsUsageLog">
+        <result property="id" column="id"/>
+        <result property="customerGoodsId" column="customer_goods_id"/>
+        <result property="customerId" column="customer_id"/>
+        <result property="sessionId" column="session_id"/>
+        <result property="partyId" column="party_id"/>
+        <result property="quantityUomId" column="quantity_uom_id"/>
+        <result property="quantityUsed" column="quantity_used"/>
+        <result property="timeUomId" column="time_uom_id"/>
+        <result property="timeUsed" column="time_used"/>
+        <result property="quantityLeft" column="quantity_left"/>
+        <result property="timeLeft" column="time_left"/>
+        <result property="expireTime" column="expire_time"/>
+        <result property="createdDate" column="created_date"/>
+        <result property="createdByUserLogin" column="created_by_user_login"/>
+    </resultMap>
+
+    <!-- 查询字段 -->
+    <sql id="GoodsUsageLog_columns">
+        <![CDATA[
+    id,customer_goods_id,customer_id,session_id,party_id,quantity_uom_id,quantity_used,time_uom_id,time_used,quantity_left,time_left,expire_time,created_date,created_by_user_login
+        ]]>
+    </sql>
+
+
+    <select id="get" parameterType="long" resultMap="RM_GoodsUsageLog">
+        <![CDATA[
+        select
+        <include refid="GoodsUsageLog_columns" />
+        from goods_usage_log
+        WHERE
+            <if test="@Ognl@isNotEmpty(id)">
+                1 = 0 AND
+            </if>
+            id = #{id} 
+        ]]>
+    </select>
+
+    <!-- 查询用户,演示: 1.输入用map传入多个参数 2.<where>语句, 智能添加where和and关键字 3.输出直接映射对象 -->
+    <select id="search" parameterType="map" resultMap="RM_GoodsUsageLog">
+        <![CDATA[
+        select
+        <include refid="GoodsUsageLog_columns" />
+        from goods_usage_log
+        <where>
+                    <if test="@Ognl@isNotEmpty(id)">
+            AND id = #{id}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(customerGoodsId)">
+            AND customer_goods_id = #{customerGoodsId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(customerId)">
+            AND customer_id = #{customerId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(sessionId)">
+            AND session_id = #{sessionId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(partyId)">
+            AND party_id = #{partyId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(quantityUomId)">
+            AND quantity_uom_id = #{quantityUomId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(quantityUsed)">
+            AND quantity_used = #{quantityUsed}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(timeUomId)">
+            AND time_uom_id = #{timeUomId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(timeUsed)">
+            AND time_used = #{timeUsed}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(quantityLeft)">
+            AND quantity_left = #{quantityLeft}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(timeLeft)">
+            AND time_left = #{timeLeft}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(expireTimeBegin)">
+            AND expire_time >= #{expireTimeBegin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(expireTimeEnd)">
+            AND expire_time &lt;= #{expireTimeEnd}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(createdDateBegin)">
+            AND created_date >= #{createdDateBegin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(createdDateEnd)">
+            AND created_date &lt;= #{createdDateEnd}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(createdByUserLogin)">
+            AND created_by_user_login = #{createdByUserLogin}
+                    </if>
+        </where>
+        ]]>
+    </select>
+
+    <!-- 插入 -->
+    <insert id="save" parameterType="com.billing.billing.orm.model.GoodsUsageLog" useGeneratedKeys="true" keyProperty="id">
+        <![CDATA[
+        INSERT INTO goods_usage_log (
+             id, customer_goods_id, customer_id, session_id, party_id, quantity_uom_id, quantity_used, time_uom_id, time_used, quantity_left, time_left, expire_time, created_date, created_by_user_login
+        ) VALUES (
+             #{id}, #{customerGoodsId}, #{customerId}, #{sessionId}, #{partyId}, #{quantityUomId}, #{quantityUsed}, #{timeUomId}, #{timeUsed}, #{quantityLeft}, #{timeLeft}, #{expireTime}, #{createdDate}, #{createdByUserLogin}
+        )
+        ]]>
+    </insert>
+
+    <delete id="delete">
+        <![CDATA[
+        DELETE FROM goods_usage_log WHERE
+        id = #{id} 
+        ]]>
+    </delete>
+
+    <update id="update" >
+        <![CDATA[
+        UPDATE goods_usage_log SET
+    customer_goods_id = #{customerGoodsId} , customer_id = #{customerId} , session_id = #{sessionId} , party_id = #{partyId} , quantity_uom_id = #{quantityUomId} , quantity_used = #{quantityUsed} , time_uom_id = #{timeUomId} , time_used = #{timeUsed} , quantity_left = #{quantityLeft} , time_left = #{timeLeft} , expire_time = #{expireTime} , created_date = #{createdDate} , created_by_user_login = #{createdByUserLogin}  
+        WHERE
+    id = #{id}  
+        ]]>
+    </update>
+
+</mapper>
