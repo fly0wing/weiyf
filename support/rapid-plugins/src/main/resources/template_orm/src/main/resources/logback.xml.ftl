@@ -6,7 +6,7 @@
             <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
         </encoder>
     </appender>
-
+${gg.setOverride(false)}
     <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <!-- 当前文件名 -->
         <file>d:/my_project/weiyifu/log/weiyifu-web.log</file>

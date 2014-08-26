@@ -32,21 +32,18 @@
 
 
     <select id="get" parameterType="long" resultMap="RM_CustomerLogin">
-        <![CDATA[
         select
         <include refid="CustomerLogin_columns" />
         from customer_login
         WHERE
-            <if test="@Ognl@isNotEmpty(id)">
+            <if test="@Ognl@isEmpty(id)">
                 1 = 0 AND
             </if>
             id = #{id} 
-        ]]>
     </select>
 
     <!-- 查询用户,演示: 1.输入用map传入多个参数 2.<where>语句, 智能添加where和and关键字 3.输出直接映射对象 -->
     <select id="search" parameterType="map" resultMap="RM_CustomerLogin">
-        <![CDATA[
         select
         <include refid="CustomerLogin_columns" />
         from customer_login
@@ -97,25 +94,20 @@
             AND last_login_time &lt;= #{lastLoginTimeEnd}
                     </if>
         </where>
-        ]]>
     </select>
 
     <!-- 插入 -->
     <insert id="save" parameterType="com.billing.user.orm.model.CustomerLogin" useGeneratedKeys="true" keyProperty="id">
-        <![CDATA[
         INSERT INTO customer_login (
-             id, login_name, login_email, login_phone, nickname, is_anonymous, current_password, enabled, first_session_id, require_password_change, security_level, register_time, last_login_time
+              login_name, login_email, login_phone, nickname, is_anonymous, current_password, enabled, first_session_id, require_password_change, security_level, register_time, last_login_time
         ) VALUES (
-             #{id}, #{loginName}, #{loginEmail}, #{loginPhone}, #{nickname}, #{isAnonymous}, #{currentPassword}, #{enabled}, #{firstSessionId}, #{requirePasswordChange}, #{securityLevel}, #{registerTime}, #{lastLoginTime}
+              #{loginName}, #{loginEmail}, #{loginPhone}, #{nickname}, #{isAnonymous}, #{currentPassword}, #{enabled}, #{firstSessionId}, #{requirePasswordChange}, #{securityLevel}, #{registerTime}, #{lastLoginTime}
         )
-        ]]>
     </insert>
 
     <delete id="delete">
-        <![CDATA[
         DELETE FROM customer_login WHERE
         id = #{id} 
-        ]]>
     </delete>
 
     <update id="update" >

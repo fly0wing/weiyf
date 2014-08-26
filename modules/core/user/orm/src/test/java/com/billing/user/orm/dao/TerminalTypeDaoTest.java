@@ -37,6 +37,7 @@ public class TerminalTypeDaoTest {
 
     @Test
     public void testSave() throws Exception {
+
         assertNotNull(null);
     }
 

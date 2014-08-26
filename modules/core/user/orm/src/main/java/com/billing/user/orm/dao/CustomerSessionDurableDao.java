@@ -8,12 +8,12 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by gencode on 2014-8-26 15:19:36.
+ * Created by gencode on 2014-8-26 16:12:41.
  */
 @MyBatisRepository
 public interface CustomerSessionDurableDao {
 
-    CustomerSessionDurable get(Long id);
+    CustomerSessionDurable get(@Param("id") Long id);
 
     List<CustomerSessionDurable> search(Map<String, Object> params);
 
@@ -21,5 +21,5 @@ public interface CustomerSessionDurableDao {
 
     void update(CustomerSessionDurable obj);
 
-    void delete(Long id);
+    void delete(@Param("id") Long id);
 }

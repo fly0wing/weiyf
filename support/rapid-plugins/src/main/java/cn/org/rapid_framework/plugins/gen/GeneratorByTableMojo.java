@@ -46,11 +46,7 @@ public class GeneratorByTableMojo extends AbstarctGeneratorMojo {
 					+ getProject().getFile().getParent());
 			g = new GeneratorFacade();
 			g.getGenerator().setTemplateRootDirs(parseStringArray(templateRootDirs));//("classpath:template");
-			try {
-				g.deleteOutRootDir();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+
 			genByTable(parseStringArray(tableParameter));
 		} finally {
 			currentThread.setContextClassLoader(oldClassLoader);

@@ -13,7 +13,7 @@
         http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd">
 <#macro escapeDollar value>${r"${"}${value}}</#macro>
 <#macro escapeMapper value>${r"#{"}${value}}</#macro>
-
+${gg.setOverride(false)}
     <!-- 加载数据库属性配置文件 -->
     <context:property-placeholder location="classpath:db-${moduleName}.properties" />
 

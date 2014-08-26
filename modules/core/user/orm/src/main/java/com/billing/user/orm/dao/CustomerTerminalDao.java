@@ -8,12 +8,12 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by gencode on 2014-8-26 15:19:37.
+ * Created by gencode on 2014-8-26 16:12:41.
  */
 @MyBatisRepository
 public interface CustomerTerminalDao {
 
-    CustomerTerminal get(Long id);
+    CustomerTerminal get(@Param("id") Long id);
 
     List<CustomerTerminal> search(Map<String, Object> params);
 
@@ -21,5 +21,5 @@ public interface CustomerTerminalDao {
 
     void update(CustomerTerminal obj);
 
-    void delete(Long id);
+    void delete(@Param("id") Long id);
 }
