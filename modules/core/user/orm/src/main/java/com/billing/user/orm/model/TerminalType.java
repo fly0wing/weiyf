@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.Date;
 import java.sql.Timestamp;
 import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -12,7 +14,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import com.billing.utils.date.DateConvertUtils;
 
 /**
- * Created by gencode on 2014-8-26 15:19:37.
+ * Created by gencode on 2014-8-26 16:12:42.
  */
 public class TerminalType implements Serializable {
     private static final long serialVersionUID = 5454155825314635342L;
@@ -160,6 +162,25 @@ public class TerminalType implements Serializable {
 		return this.createdByUserLogin;
 	}
 
+
+	private Set terminalTypes = new HashSet(0);
+	public void setTerminalTypes(Set<TerminalType> terminalType){
+		this.terminalTypes = terminalType;
+	}
+
+	public Set<TerminalType> getTerminalTypes() {
+		return terminalTypes;
+	}
+
+	private TerminalType terminalType;
+
+	public void setTerminalType(TerminalType terminalType){
+		this.terminalType = terminalType;
+	}
+
+	public TerminalType getTerminalType() {
+		return terminalType;
+	}
 
     public String toString() {
         return ToStringBuilder.reflectionToString(this);

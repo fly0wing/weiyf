@@ -8,18 +8,18 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by gencode on 2014-8-26 15:19:36.
+ * Created by gencode on 2014-8-26 16:12:40.
  */
 @MyBatisRepository
 public interface CustomerSessionDao {
 
-    CustomerSession get(Long id);
+    CustomerSession get(@Param("id") Long id);
 
     List<CustomerSession> search(Map<String, Object> params);
 
-    void save(CustomerSession obj);
+    boolean save(CustomerSession obj);
 
-    void update(CustomerSession obj);
+    boolean update(CustomerSession obj);
 
-    void delete(Long id);
+    boolean delete(@Param("id") Long id);
 }

@@ -8,12 +8,12 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by gencode on 2014-8-26 15:19:37.
+ * Created by gencode on 2014-8-26 16:12:41.
  */
 @MyBatisRepository
 public interface TerminalDao {
 
-    Terminal get(Long id);
+    Terminal get(@Param("id") Long id);
 
     List<Terminal> search(Map<String, Object> params);
 
@@ -21,7 +21,7 @@ public interface TerminalDao {
 
     void update(Terminal obj);
 
-    void delete(Long id);
+    void delete(@Param("id") Long id);
 
-    Terminal getByFingerprint(String v);
+    Terminal getByFingerprint(@Param("fingerprint")String fingerprint);
 }

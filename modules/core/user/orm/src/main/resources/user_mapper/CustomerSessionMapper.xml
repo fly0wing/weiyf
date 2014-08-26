@@ -30,21 +30,18 @@
 
 
     <select id="get" parameterType="long" resultMap="RM_CustomerSession">
-        <![CDATA[
         select
         <include refid="CustomerSession_columns" />
         from customer_session
         WHERE
-            <if test="@Ognl@isNotEmpty(id)">
+            <if test="@Ognl@isEmpty(id)">
                 1 = 0 AND
             </if>
             id = #{id} 
-        ]]>
     </select>
 
     <!-- 查询用户,演示: 1.输入用map传入多个参数 2.<where>语句, 智能添加where和and关键字 3.输出直接映射对象 -->
     <select id="search" parameterType="map" resultMap="RM_CustomerSession">
-        <![CDATA[
         select
         <include refid="CustomerSession_columns" />
         from customer_session
@@ -86,25 +83,20 @@
             AND create_time &lt;= #{createTimeEnd}
                     </if>
         </where>
-        ]]>
     </select>
 
     <!-- 插入 -->
     <insert id="save" parameterType="com.billing.user.orm.model.CustomerSession" useGeneratedKeys="true" keyProperty="id">
-        <![CDATA[
         INSERT INTO customer_session (
              id, customer_id, party_id, product_id, domain_id, app_id, entry_id, geo_id, app_area, is_anonymous, create_time
         ) VALUES (
              #{id}, #{customerId}, #{partyId}, #{productId}, #{domainId}, #{appId}, #{entryId}, #{geoId}, #{appArea}, #{isAnonymous}, #{createTime}
         )
-        ]]>
     </insert>
 
     <delete id="delete">
-        <![CDATA[
         DELETE FROM customer_session WHERE
         id = #{id} 
-        ]]>
     </delete>
 
     <update id="update" >

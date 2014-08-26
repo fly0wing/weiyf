@@ -29,21 +29,18 @@
 
 
     <select id="get" parameterType="long" resultMap="RM_CustomerTerminal">
-        <![CDATA[
         select
         <include refid="CustomerTerminal_columns" />
         from customer_terminal
         WHERE
-            <if test="@Ognl@isNotEmpty(id)">
+            <if test="@Ognl@isEmpty(id)">
                 1 = 0 AND
             </if>
             id = #{id} 
-        ]]>
     </select>
 
     <!-- 查询用户,演示: 1.输入用map传入多个参数 2.<where>语句, 智能添加where和and关键字 3.输出直接映射对象 -->
     <select id="search" parameterType="map" resultMap="RM_CustomerTerminal">
-        <![CDATA[
         select
         <include refid="CustomerTerminal_columns" />
         from customer_terminal
@@ -88,25 +85,20 @@
             AND last_login_token = #{lastLoginToken}
                     </if>
         </where>
-        ]]>
     </select>
 
     <!-- 插入 -->
     <insert id="save" parameterType="com.billing.user.orm.model.CustomerTerminal" useGeneratedKeys="true" keyProperty="id">
-        <![CDATA[
         INSERT INTO customer_terminal (
              id, customer_id, terminal_id, terminal_name, bind_status_id, current_op_time, last_op_time, first_bind_time, is_auto_login, last_login_token
         ) VALUES (
              #{id}, #{customerId}, #{terminalId}, #{terminalName}, #{bindStatusId}, #{currentOpTime}, #{lastOpTime}, #{firstBindTime}, #{isAutoLogin}, #{lastLoginToken}
         )
-        ]]>
     </insert>
 
     <delete id="delete">
-        <![CDATA[
         DELETE FROM customer_terminal WHERE
         id = #{id} 
-        ]]>
     </delete>
 
     <update id="update" >

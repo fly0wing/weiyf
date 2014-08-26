@@ -8,24 +8,24 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by gencode on 2014-8-26 15:19:36.
+ * Created by gencode on 2014-8-26 16:12:40.
  */
 @MyBatisRepository
 public interface CustomerLoginDao {
 
-    CustomerLogin get(Long id);
+    CustomerLogin get(@Param("id") Long id);
 
     List<CustomerLogin> search(Map<String, Object> params);
 
-    void save(CustomerLogin obj);
+    boolean save(CustomerLogin obj);
 
-    void update(CustomerLogin obj);
+    boolean update(CustomerLogin obj);
 
-    void delete(Long id);
+    boolean delete(@Param("id") Long id);
 
-    CustomerLogin getByLoginName(String v);
+    CustomerLogin getByLoginName(@Param("loginName")String loginName);
 
-    CustomerLogin getByLoginEmail(String v);
+    CustomerLogin getByLoginEmail(@Param("loginEmail")String loginEmail);
 
-    CustomerLogin getByLoginPhone(String v);
+    CustomerLogin getByLoginPhone(@Param("loginPhone")String loginPhone);
 }
