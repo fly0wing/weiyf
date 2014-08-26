@@ -11,6 +11,11 @@ import com.billing.internalcontract.user.TerminalUnbindReq;
  */
 public class UserTerminalFacade implements IUserTerminalFacade {
     @Override
+    public BaseResp activeTerminal(TerminalBindReq req) {
+        return null;
+    }
+
+    @Override
     public BaseResp bindTerminal(TerminalBindReq terminalBindReq) {
         return null;
     }
