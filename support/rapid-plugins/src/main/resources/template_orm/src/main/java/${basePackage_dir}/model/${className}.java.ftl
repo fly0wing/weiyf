@@ -7,6 +7,8 @@ import java.io.Serializable;
 import java.util.Date;
 import java.sql.Timestamp;
 import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
