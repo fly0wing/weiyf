@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.billing.user.orm.dao.CustomerTerminalDao">
+
+
+    <!-- 字段名转换 -->
+    <resultMap id="RM_CustomerTerminal" type="com.billing.user.orm.model.CustomerTerminal">
+        <result property="id" column="id"/>
+        <result property="customerId" column="customer_id"/>
+        <result property="terminalId" column="terminal_id"/>
+        <result property="terminalName" column="terminal_name"/>
+        <result property="bindStatusId" column="bind_status_id"/>
+        <result property="currentOpTime" column="current_op_time"/>
+        <result property="lastOpTime" column="last_op_time"/>
+        <result property="firstBindTime" column="first_bind_time"/>
+        <result property="isAutoLogin" column="is_auto_login"/>
+        <result property="lastLoginToken" column="last_login_token"/>
+    </resultMap>
+
+    <!-- 查询字段 -->
+    <sql id="CustomerTerminal_columns">
+        <![CDATA[
+    id,customer_id,terminal_id,terminal_name,bind_status_id,current_op_time,last_op_time,first_bind_time,is_auto_login,last_login_token
+        ]]>
+    </sql>
+
+
+    <select id="get" parameterType="long" resultMap="RM_CustomerTerminal">
+        <![CDATA[
+        select
+        <include refid="CustomerTerminal_columns" />
+        from customer_terminal
+        WHERE
+            <if test="@Ognl@isNotEmpty(id)">
+                1 = 0 AND
+            </if>
+            id = #{id} 
+        ]]>
+    </select>
+
+    <!-- 查询用户,演示: 1.输入用map传入多个参数 2.<where>语句, 智能添加where和and关键字 3.输出直接映射对象 -->
+    <select id="search" parameterType="map" resultMap="RM_CustomerTerminal">
+        <![CDATA[
+        select
+        <include refid="CustomerTerminal_columns" />
+        from customer_terminal
+        <where>
+                    <if test="@Ognl@isNotEmpty(id)">
+            AND id = #{id}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(customerId)">
+            AND customer_id = #{customerId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(terminalId)">
+            AND terminal_id = #{terminalId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(terminalName)">
+            AND terminal_name = #{terminalName}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(bindStatusId)">
+            AND bind_status_id = #{bindStatusId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(currentOpTimeBegin)">
+            AND current_op_time >= #{currentOpTimeBegin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(currentOpTimeEnd)">
+            AND current_op_time &lt;= #{currentOpTimeEnd}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(lastOpTimeBegin)">
+            AND last_op_time >= #{lastOpTimeBegin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(lastOpTimeEnd)">
+            AND last_op_time &lt;= #{lastOpTimeEnd}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(firstBindTimeBegin)">
+            AND first_bind_time >= #{firstBindTimeBegin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(firstBindTimeEnd)">
+            AND first_bind_time &lt;= #{firstBindTimeEnd}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(isAutoLogin)">
+            AND is_auto_login = #{isAutoLogin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(lastLoginToken)">
+            AND last_login_token = #{lastLoginToken}
+                    </if>
+        </where>
+        ]]>
+    </select>
+
+    <!-- 插入 -->
+    <insert id="save" parameterType="com.billing.user.orm.model.CustomerTerminal" useGeneratedKeys="true" keyProperty="id">
+        <![CDATA[
+        INSERT INTO customer_terminal (
+             id, customer_id, terminal_id, terminal_name, bind_status_id, current_op_time, last_op_time, first_bind_time, is_auto_login, last_login_token
+        ) VALUES (
+             #{id}, #{customerId}, #{terminalId}, #{terminalName}, #{bindStatusId}, #{currentOpTime}, #{lastOpTime}, #{firstBindTime}, #{isAutoLogin}, #{lastLoginToken}
+        )
+        ]]>
+    </insert>
+
+    <delete id="delete">
+        <![CDATA[
+        DELETE FROM customer_terminal WHERE
+        id = #{id} 
+        ]]>
+    </delete>
+
+    <update id="update" >
+        <![CDATA[
+        UPDATE customer_terminal SET
+    customer_id = #{customerId} , terminal_id = #{terminalId} , terminal_name = #{terminalName} , bind_status_id = #{bindStatusId} , current_op_time = #{currentOpTime} , last_op_time = #{lastOpTime} , first_bind_time = #{firstBindTime} , is_auto_login = #{isAutoLogin} , last_login_token = #{lastLoginToken}  
+        WHERE
+    id = #{id}  
+        ]]>
+    </update>
+
+</mapper>

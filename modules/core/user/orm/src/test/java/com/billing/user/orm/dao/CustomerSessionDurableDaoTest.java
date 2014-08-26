@@ -1,8 +1,6 @@
-package ${basePackage}.dao;
+package com.billing.user.orm.dao;
 
-<#assign className = table.className>
-<#assign classNameLower = className?uncap_first>
-import ${basePackage}.model.${className};
+import com.billing.user.orm.model.CustomerSessionDurable;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -18,14 +16,14 @@ import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @DirtiesContext
-@ContextConfiguration(locations = {"classpath:applicationContext-private.xml","classpath:applicationContext-db-product.xml"})
+@ContextConfiguration(locations = {"classpath:applicationContext-private.xml","classpath:applicationContext-db-user.xml"})
 // @TransactionConfiguration(
 //        transactionManager = "", defaultRollback=true)
-public class ${className}DaoTest {
+public class CustomerSessionDurableDaoTest {
 
-    private static final Logger logger = LoggerFactory.getLogger(${className}DaoTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(CustomerSessionDurableDaoTest.class);
     @Autowired
-    ${className}Dao ${classNameLower}Dao;
+    CustomerSessionDurableDao customerSessionDurableDao;
 
     @Test
     public void testGet() throws Exception {
@@ -51,13 +49,4 @@ public class ${className}DaoTest {
     public void testDelete() throws Exception {
         assertNotNull(null);
     }
-<#list table.columns as column>
-    <#if column.unique && !column.pk>
-    @Test
-    public void testGetBy${column.columnName}() {
-        assertNotNull(null);
-    }
-    </#if>
-
-</#list>
 }

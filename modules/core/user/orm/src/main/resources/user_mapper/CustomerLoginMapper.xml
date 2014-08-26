@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.billing.user.orm.dao.CustomerLoginDao">
+
+
+    <!-- 字段名转换 -->
+    <resultMap id="RM_CustomerLogin" type="com.billing.user.orm.model.CustomerLogin">
+        <result property="id" column="id"/>
+        <result property="loginName" column="login_name"/>
+        <result property="loginEmail" column="login_email"/>
+        <result property="loginPhone" column="login_phone"/>
+        <result property="nickname" column="nickname"/>
+        <result property="isAnonymous" column="is_anonymous"/>
+        <result property="currentPassword" column="current_password"/>
+        <result property="enabled" column="enabled"/>
+        <result property="firstSessionId" column="first_session_id"/>
+        <result property="requirePasswordChange" column="require_password_change"/>
+        <result property="securityLevel" column="security_level"/>
+        <result property="registerTime" column="register_time"/>
+        <result property="lastLoginTime" column="last_login_time"/>
+    </resultMap>
+
+    <!-- 查询字段 -->
+    <sql id="CustomerLogin_columns">
+        <![CDATA[
+    id,login_name,login_email,login_phone,nickname,is_anonymous,current_password,enabled,first_session_id,require_password_change,security_level,register_time,last_login_time
+        ]]>
+    </sql>
+
+
+    <select id="get" parameterType="long" resultMap="RM_CustomerLogin">
+        <![CDATA[
+        select
+        <include refid="CustomerLogin_columns" />
+        from customer_login
+        WHERE
+            <if test="@Ognl@isNotEmpty(id)">
+                1 = 0 AND
+            </if>
+            id = #{id} 
+        ]]>
+    </select>
+
+    <!-- 查询用户,演示: 1.输入用map传入多个参数 2.<where>语句, 智能添加where和and关键字 3.输出直接映射对象 -->
+    <select id="search" parameterType="map" resultMap="RM_CustomerLogin">
+        <![CDATA[
+        select
+        <include refid="CustomerLogin_columns" />
+        from customer_login
+        <where>
+                    <if test="@Ognl@isNotEmpty(id)">
+            AND id = #{id}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(loginName)">
+            AND login_name = #{loginName}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(loginEmail)">
+            AND login_email = #{loginEmail}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(loginPhone)">
+            AND login_phone = #{loginPhone}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(nickname)">
+            AND nickname = #{nickname}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(isAnonymous)">
+            AND is_anonymous = #{isAnonymous}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(currentPassword)">
+            AND current_password = #{currentPassword}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(enabled)">
+            AND enabled = #{enabled}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(firstSessionId)">
+            AND first_session_id = #{firstSessionId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(requirePasswordChange)">
+            AND require_password_change = #{requirePasswordChange}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(securityLevel)">
+            AND security_level = #{securityLevel}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(registerTimeBegin)">
+            AND register_time >= #{registerTimeBegin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(registerTimeEnd)">
+            AND register_time &lt;= #{registerTimeEnd}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(lastLoginTimeBegin)">
+            AND last_login_time >= #{lastLoginTimeBegin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(lastLoginTimeEnd)">
+            AND last_login_time &lt;= #{lastLoginTimeEnd}
+                    </if>
+        </where>
+        ]]>
+    </select>
+
+    <!-- 插入 -->
+    <insert id="save" parameterType="com.billing.user.orm.model.CustomerLogin" useGeneratedKeys="true" keyProperty="id">
+        <![CDATA[
+        INSERT INTO customer_login (
+             id, login_name, login_email, login_phone, nickname, is_anonymous, current_password, enabled, first_session_id, require_password_change, security_level, register_time, last_login_time
+        ) VALUES (
+             #{id}, #{loginName}, #{loginEmail}, #{loginPhone}, #{nickname}, #{isAnonymous}, #{currentPassword}, #{enabled}, #{firstSessionId}, #{requirePasswordChange}, #{securityLevel}, #{registerTime}, #{lastLoginTime}
+        )
+        ]]>
+    </insert>
+
+    <delete id="delete">
+        <![CDATA[
+        DELETE FROM customer_login WHERE
+        id = #{id} 
+        ]]>
+    </delete>
+
+    <update id="update" >
+        <![CDATA[
+        UPDATE customer_login SET
+    login_name = #{loginName} , login_email = #{loginEmail} , login_phone = #{loginPhone} , nickname = #{nickname} , is_anonymous = #{isAnonymous} , current_password = #{currentPassword} , enabled = #{enabled} , first_session_id = #{firstSessionId} , require_password_change = #{requirePasswordChange} , security_level = #{securityLevel} , register_time = #{registerTime} , last_login_time = #{lastLoginTime}  
+        WHERE
+    id = #{id}  
+        ]]>
+    </update>
+
+    <select id="getByLoginName" resultMap="RM_CustomerLogin" parameterType="java.lang.String">
+        SELECT <include refid="CustomerLogin_columns"/>
+        FROM customer_login where login_name = #{loginName}
+    </select>
+
+    <select id="getByLoginEmail" resultMap="RM_CustomerLogin" parameterType="java.lang.String">
+        SELECT <include refid="CustomerLogin_columns"/>
+        FROM customer_login where login_email = #{loginEmail}
+    </select>
+
+    <select id="getByLoginPhone" resultMap="RM_CustomerLogin" parameterType="java.lang.String">
+        SELECT <include refid="CustomerLogin_columns"/>
+        FROM customer_login where login_phone = #{loginPhone}
+    </select>
+
+</mapper>

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.billing.user.orm.dao.TerminalActivateDao">
+
+
+    <!-- 字段名转换 -->
+    <resultMap id="RM_TerminalActivate" type="com.billing.user.orm.model.TerminalActivate">
+        <result property="id" column="id"/>
+        <result property="terminalId" column="terminal_id"/>
+        <result property="sessionId" column="session_id"/>
+        <result property="activateTime" column="activate_time"/>
+    </resultMap>
+
+    <!-- 查询字段 -->
+    <sql id="TerminalActivate_columns">
+        <![CDATA[
+    id,terminal_id,session_id,activate_time
+        ]]>
+    </sql>
+
+
+    <select id="get" parameterType="long" resultMap="RM_TerminalActivate">
+        <![CDATA[
+        select
+        <include refid="TerminalActivate_columns" />
+        from terminal_activate
+        WHERE
+            <if test="@Ognl@isNotEmpty(id)">
+                1 = 0 AND
+            </if>
+            id = #{id} 
+        ]]>
+    </select>
+
+    <!-- 查询用户,演示: 1.输入用map传入多个参数 2.<where>语句, 智能添加where和and关键字 3.输出直接映射对象 -->
+    <select id="search" parameterType="map" resultMap="RM_TerminalActivate">
+        <![CDATA[
+        select
+        <include refid="TerminalActivate_columns" />
+        from terminal_activate
+        <where>
+                    <if test="@Ognl@isNotEmpty(id)">
+            AND id = #{id}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(terminalId)">
+            AND terminal_id = #{terminalId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(sessionId)">
+            AND session_id = #{sessionId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(activateTimeBegin)">
+            AND activate_time >= #{activateTimeBegin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(activateTimeEnd)">
+            AND activate_time &lt;= #{activateTimeEnd}
+                    </if>
+        </where>
+        ]]>
+    </select>
+
+    <!-- 插入 -->
+    <insert id="save" parameterType="com.billing.user.orm.model.TerminalActivate" useGeneratedKeys="true" keyProperty="id">
+        <![CDATA[
+        INSERT INTO terminal_activate (
+             id, terminal_id, session_id, activate_time
+        ) VALUES (
+             #{id}, #{terminalId}, #{sessionId}, #{activateTime}
+        )
+        ]]>
+    </insert>
+
+    <delete id="delete">
+        <![CDATA[
+        DELETE FROM terminal_activate WHERE
+        id = #{id} 
+        ]]>
+    </delete>
+
+    <update id="update" >
+        <![CDATA[
+        UPDATE terminal_activate SET
+    terminal_id = #{terminalId} , session_id = #{sessionId} , activate_time = #{activateTime}  
+        WHERE
+    id = #{id}  
+        ]]>
+    </update>
+
+</mapper>

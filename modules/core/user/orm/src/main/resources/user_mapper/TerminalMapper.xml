@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.billing.user.orm.dao.TerminalDao">
+
+
+    <!-- 字段名转换 -->
+    <resultMap id="RM_Terminal" type="com.billing.user.orm.model.Terminal">
+        <result property="id" column="id"/>
+        <result property="fingerprint" column="fingerprint"/>
+        <result property="defaultName" column="default_name"/>
+        <result property="terminalTypeId" column="terminal_type_id"/>
+        <result property="firstSessionId" column="first_session_id"/>
+        <result property="firstActivateTime" column="first_activate_time"/>
+    </resultMap>
+
+    <!-- 查询字段 -->
+    <sql id="Terminal_columns">
+        <![CDATA[
+    id,fingerprint,default_name,terminal_type_id,first_session_id,first_activate_time
+        ]]>
+    </sql>
+
+
+    <select id="get" parameterType="long" resultMap="RM_Terminal">
+        <![CDATA[
+        select
+        <include refid="Terminal_columns" />
+        from terminal
+        WHERE
+            <if test="@Ognl@isNotEmpty(id)">
+                1 = 0 AND
+            </if>
+            id = #{id} 
+        ]]>
+    </select>
+
+    <!-- 查询用户,演示: 1.输入用map传入多个参数 2.<where>语句, 智能添加where和and关键字 3.输出直接映射对象 -->
+    <select id="search" parameterType="map" resultMap="RM_Terminal">
+        <![CDATA[
+        select
+        <include refid="Terminal_columns" />
+        from terminal
+        <where>
+                    <if test="@Ognl@isNotEmpty(id)">
+            AND id = #{id}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(fingerprint)">
+            AND fingerprint = #{fingerprint}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(defaultName)">
+            AND default_name = #{defaultName}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(terminalTypeId)">
+            AND terminal_type_id = #{terminalTypeId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(firstSessionId)">
+            AND first_session_id = #{firstSessionId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(firstActivateTimeBegin)">
+            AND first_activate_time >= #{firstActivateTimeBegin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(firstActivateTimeEnd)">
+            AND first_activate_time &lt;= #{firstActivateTimeEnd}
+                    </if>
+        </where>
+        ]]>
+    </select>
+
+    <!-- 插入 -->
+    <insert id="save" parameterType="com.billing.user.orm.model.Terminal" useGeneratedKeys="true" keyProperty="id">
+        <![CDATA[
+        INSERT INTO terminal (
+             id, fingerprint, default_name, terminal_type_id, first_session_id, first_activate_time
+        ) VALUES (
+             #{id}, #{fingerprint}, #{defaultName}, #{terminalTypeId}, #{firstSessionId}, #{firstActivateTime}
+        )
+        ]]>
+    </insert>
+
+    <delete id="delete">
+        <![CDATA[
+        DELETE FROM terminal WHERE
+        id = #{id} 
+        ]]>
+    </delete>
+
+    <update id="update" >
+        <![CDATA[
+        UPDATE terminal SET
+    fingerprint = #{fingerprint} , default_name = #{defaultName} , terminal_type_id = #{terminalTypeId} , first_session_id = #{firstSessionId} , first_activate_time = #{firstActivateTime}  
+        WHERE
+    id = #{id}  
+        ]]>
+    </update>
+
+    <select id="getByFingerprint" resultMap="RM_Terminal" parameterType="java.lang.String">
+        SELECT <include refid="Terminal_columns"/>
+        FROM terminal where fingerprint = #{fingerprint}
+    </select>
+
+</mapper>

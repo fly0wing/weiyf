@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.billing.user.orm.dao.TerminalTypeDao">
+
+
+    <!-- 字段名转换 -->
+    <resultMap id="RM_TerminalType" type="com.billing.user.orm.model.TerminalType">
+        <result property="terminalTypeId" column="terminal_type_id"/>
+        <result property="parentTypeId" column="parent_type_id"/>
+        <result property="osType" column="os_type"/>
+        <result property="screenSizeEnumId" column="screen_size_enum_id"/>
+        <result property="description" column="description"/>
+        <result property="lastModifiedDate" column="last_modified_date"/>
+        <result property="lastModifiedByUserLogin" column="last_modified_by_user_login"/>
+        <result property="createdDate" column="created_date"/>
+        <result property="createdByUserLogin" column="created_by_user_login"/>
+    </resultMap>
+
+    <!-- 查询字段 -->
+    <sql id="TerminalType_columns">
+        <![CDATA[
+    terminal_type_id,parent_type_id,os_type,screen_size_enum_id,description,last_modified_date,last_modified_by_user_login,created_date,created_by_user_login
+        ]]>
+    </sql>
+
+
+    <select id="get" parameterType="long" resultMap="RM_TerminalType">
+        <![CDATA[
+        select
+        <include refid="TerminalType_columns" />
+        from terminal_type
+        WHERE
+            <if test="@Ognl@isNotEmpty(terminalTypeId)">
+                1 = 0 AND
+            </if>
+            terminal_type_id = #{terminalTypeId} 
+        ]]>
+    </select>
+
+    <!-- 查询用户,演示: 1.输入用map传入多个参数 2.<where>语句, 智能添加where和and关键字 3.输出直接映射对象 -->
+    <select id="search" parameterType="map" resultMap="RM_TerminalType">
+        <![CDATA[
+        select
+        <include refid="TerminalType_columns" />
+        from terminal_type
+        <where>
+                    <if test="@Ognl@isNotEmpty(terminalTypeId)">
+            AND terminal_type_id = #{terminalTypeId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(parentTypeId)">
+            AND parent_type_id = #{parentTypeId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(osType)">
+            AND os_type = #{osType}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(screenSizeEnumId)">
+            AND screen_size_enum_id = #{screenSizeEnumId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(description)">
+            AND description = #{description}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(lastModifiedDateBegin)">
+            AND last_modified_date >= #{lastModifiedDateBegin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(lastModifiedDateEnd)">
+            AND last_modified_date &lt;= #{lastModifiedDateEnd}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(lastModifiedByUserLogin)">
+            AND last_modified_by_user_login = #{lastModifiedByUserLogin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(createdDateBegin)">
+            AND created_date >= #{createdDateBegin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(createdDateEnd)">
+            AND created_date &lt;= #{createdDateEnd}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(createdByUserLogin)">
+            AND created_by_user_login = #{createdByUserLogin}
+                    </if>
+        </where>
+        ]]>
+    </select>
+
+    <!-- 插入 -->
+    <insert id="save" parameterType="com.billing.user.orm.model.TerminalType" useGeneratedKeys="true" keyProperty="terminalTypeId">
+        <![CDATA[
+        INSERT INTO terminal_type (
+             terminal_type_id, parent_type_id, os_type, screen_size_enum_id, description, last_modified_date, last_modified_by_user_login, created_date, created_by_user_login
+        ) VALUES (
+             #{terminalTypeId}, #{parentTypeId}, #{osType}, #{screenSizeEnumId}, #{description}, #{lastModifiedDate}, #{lastModifiedByUserLogin}, #{createdDate}, #{createdByUserLogin}
+        )
+        ]]>
+    </insert>
+
+    <delete id="delete">
+        <![CDATA[
+        DELETE FROM terminal_type WHERE
+        terminal_type_id = #{terminalTypeId} 
+        ]]>
+    </delete>
+
+    <update id="update" >
+        <![CDATA[
+        UPDATE terminal_type SET
+    parent_type_id = #{parentTypeId} , os_type = #{osType} , screen_size_enum_id = #{screenSizeEnumId} , description = #{description} , last_modified_date = #{lastModifiedDate} , last_modified_by_user_login = #{lastModifiedByUserLogin} , created_date = #{createdDate} , created_by_user_login = #{createdByUserLogin}  
+        WHERE
+    terminal_type_id = #{terminalTypeId}  
+        ]]>
+    </update>
+
+</mapper>

@@ -2,6 +2,7 @@ package com.billing.gencode;
 
 import cn.org.rapid_framework.generator.GeneratorControl;
 import cn.org.rapid_framework.generator.GeneratorFacade;
+import cn.org.rapid_framework.generator.ext.CommandLine;
 import cn.org.rapid_framework.generator.util.GLogger;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
