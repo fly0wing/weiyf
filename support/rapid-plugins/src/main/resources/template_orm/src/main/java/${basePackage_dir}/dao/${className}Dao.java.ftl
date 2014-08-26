@@ -15,7 +15,7 @@ import java.util.Map;
 @MyBatisRepository
 public interface ${className}Dao {
 
-    ${className} get(Long id);
+    ${className} get(@Param("id") Long id);
 
     List<${className}> search(Map<String, Object> params);
 
@@ -23,9 +23,9 @@ public interface ${className}Dao {
 
     void update(${className} obj);
 
-    void delete(Long id);
+    void delete(@Param("id") Long id);
 <#list table.columns as column><#if column.unique && !column.pk>
 
-    ${className} getBy${column.columnName}(${column.simpleJavaType} v);
+    ${className} getBy${column.columnName}(@Param("${column.columnNameLower}")${column.simpleJavaType} ${column.columnNameLower});
 </#if></#list>
 }

@@ -27,23 +27,20 @@
 
 
     <select id="get" parameterType="long" resultMap="RM_${className}">
-        <![CDATA[
         select
         <include refid="<@namespace/>columns" />
         from ${table.sqlName}
         WHERE
         <#list table.compositeIdColumns as column>
-            <if test="@Ognl@isNotEmpty(${column.columnNameLower})">
+            <if test="@Ognl@isEmpty(${column.columnNameLower})">
                 1 = 0 AND
             </if>
             ${column.sqlName} = <@mapperEl column.columnNameLower/> <#if column_has_next> AND </#if>
         </#list>
-        ]]>
     </select>
 
     <!-- 查询用户,演示: 1.输入用map传入多个参数 2.<where>语句, 智能添加where和and关键字 3.输出直接映射对象 -->
     <select id="search" parameterType="map" resultMap="RM_${className}">
-        <![CDATA[
         select
         <include refid="<@namespace/>columns" />
         from ${table.sqlName}
@@ -63,27 +60,22 @@
                 </#if>
             </#list>
         </where>
-        ]]>
     </select>
 
     <!-- 插入 -->
     <insert id="save" parameterType="${basePackage}.model.${className}" useGeneratedKeys="true" keyProperty="${table.idColumn.columnNameFirstLower}">
-        <![CDATA[
         INSERT INTO ${table.sqlName} (
             <#list table.columns as column> ${column.sqlName}<#if column_has_next>,</#if></#list>
         ) VALUES (
             <#list table.columns as column> <@mapperEl column.columnNameFirstLower/><#if column_has_next>,</#if></#list>
         )
-        ]]>
     </insert>
 
     <delete id="delete">
-        <![CDATA[
         DELETE FROM ${table.sqlName} WHERE
     <#list table.compositeIdColumns as column>
         ${column.sqlName} = <@mapperEl column.columnNameFirstLower/> <#if column_has_next> AND </#if>
     </#list>
-        ]]>
     </delete>
 
     <update id="update" >
