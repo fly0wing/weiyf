@@ -65,9 +65,9 @@
     <!-- 插入 -->
     <insert id="save" parameterType="${basePackage}.model.${className}" useGeneratedKeys="true" keyProperty="${table.idColumn.columnNameFirstLower}">
         INSERT INTO ${table.sqlName} (
-            <#list table.columns as column> ${column.sqlName}<#if column_has_next>,</#if></#list>
+            <#list table.notPkColumns as column> ${column.sqlName}<#if column_has_next>,</#if></#list>
         ) VALUES (
-            <#list table.columns as column> <@mapperEl column.columnNameFirstLower/><#if column_has_next>,</#if></#list>
+            <#list table.notPkColumns as column> <@mapperEl column.columnNameFirstLower/><#if column_has_next>,</#if></#list>
         )
     </insert>
 
