@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:jee="http://www.springframework.org/schema/jee"
+       xmlns:tx="http://www.springframework.org/schema/tx" xmlns:mvc="http://www.springframework.org/schema/task"
+       xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+        http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-4.0.xsd
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd">
+<#macro escapeDollar value>${r"${"}${value}}</#macro>
+<#macro escapeMapper value>${r"#{"}${value}}</#macro>
+
+    <!-- 加载数据库属性配置文件 -->
+    <context:property-placeholder location="classpath:db-product.properties" />
+
+    <!-- 数据库连接池c3p0配置 -->
+    <bean id="productDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+          destroy-method="close">
+        <property name="jdbcUrl" value="<@escapeDollar  "db.product.url"/>"/>
+        <property name="driverClass" value="<@escapeDollar "db.product.driverClassName"/>"/>
+        <property name="user" value="<@escapeDollar "db.product.username"/>"/>
+        <property name="password" value="<@escapeDollar "db.product.password"/>"/>
+        <property name="maxPoolSize" value="<@escapeDollar "db.product.maxPoolSize"/>"/>
+        <property name="minPoolSize" value="<@escapeDollar "db.product.minPoolSize"/>"/>
+        <property name="initialPoolSize" value="<@escapeDollar "db.product.initialPoolSize"/>"/>
+        <property name="maxIdleTime" value="<@escapeDollar "db.product.maxIdleTime"/>"/>
+    </bean>
+
+    <bean id="productSqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean" primary="true">
+        <property name="dataSource" ref="productDataSource" />
+        <property name="mapperLocations" value="classpath:product_mapper/*Mapper.xml" />
+        <property name="typeAliasesPackage" value="com.billing.product.orm" />
+    </bean>
+
+
+    <bean id="transactionManager" class="org.springframework.transaction.jta.JtaTransactionManager">
+        <property name="" ref="productSqlSessionFactory"/>
+    </bean>
+
+    <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true" />
+
+    <!--创建数据映射器，数据映射器必须为接口-->
+<!--    <bean id="userMapper" class="org.mybatis.spring.mapper.MapperFactoryBean" primary="true">
+        <property name="mapperInterface" value="com.billing.web.dao" />
+        <property name="sqlSessionFactory" ref="sqlSessionFactory" />
+    </bean>-->
+</beans>
