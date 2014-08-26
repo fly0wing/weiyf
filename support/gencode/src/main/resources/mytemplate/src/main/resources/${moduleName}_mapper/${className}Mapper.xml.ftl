@@ -12,7 +12,7 @@
 
 
     <!-- 字段名转换 -->
-    <resultMap id="RM.${className}" type="${basepackage}.model.${className}">
+    <resultMap id="RM.${className}" type="${basePackage}.model.${className}">
     <#list table.columns as column>
         <result property="${column.columnNameLower}" column="${column.sqlName}"/>
     </#list>
@@ -67,7 +67,7 @@
     </select>
 
     <!-- 插入 -->
-    <insert id="save" parameterType="${basepackage}.model.${className}" useGeneratedKeys="true" keyProperty="${table.idColumn.columnNameFirstLower}">
+    <insert id="save" parameterType="${basePackage}.model.${className}" useGeneratedKeys="true" keyProperty="${table.idColumn.columnNameFirstLower}">
         <![CDATA[
         INSERT INTO ${table.sqlName} (
             <#list table.columns as column> ${column.sqlName}<#if column_has_next>,</#if></#list>
