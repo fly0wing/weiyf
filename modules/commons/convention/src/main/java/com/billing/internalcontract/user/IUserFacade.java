@@ -4,6 +4,7 @@ import com.billing.internalcontract.BaseReq;
 import com.billing.internalcontract.BaseResp;
 
 /**
+ * 用户接口
  * Created by xiaoyouyi on 2014-8-23.
  */
 public interface IUserFacade {

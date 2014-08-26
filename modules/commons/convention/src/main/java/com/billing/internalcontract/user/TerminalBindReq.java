@@ -12,4 +12,20 @@ import com.billing.internalcontract.BaseReq;
 public class TerminalBindReq extends BaseReq {
     private TerminalBindEnum terminalBindType;
     private String terminalName;
+
+    public String getTerminalName() {
+        return terminalName;
+    }
+
+    public void setTerminalName(String terminalName) {
+        this.terminalName = terminalName;
+    }
+
+    public TerminalBindEnum getTerminalBindType() {
+        return terminalBindType;
+    }
+
+    public void setTerminalBindType(TerminalBindEnum terminalBindType) {
+        this.terminalBindType = terminalBindType;
+    }
 }
