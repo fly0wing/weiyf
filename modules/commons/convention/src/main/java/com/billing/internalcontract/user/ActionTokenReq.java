@@ -13,4 +13,20 @@ import com.billing.internalcontract.BaseReq;
 public class ActionTokenReq extends BaseReq {
     private ActionTokenEnum actionTokenType;
     private String phone;
+
+    public ActionTokenEnum getActionTokenType() {
+        return actionTokenType;
+    }
+
+    public void setActionTokenType(ActionTokenEnum actionTokenType) {
+        this.actionTokenType = actionTokenType;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
 }
