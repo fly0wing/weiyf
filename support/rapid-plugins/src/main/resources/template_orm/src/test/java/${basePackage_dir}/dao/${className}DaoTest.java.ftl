@@ -22,7 +22,7 @@ import static org.junit.Assert.*;
 // @TransactionConfiguration(
 //        transactionManager = "", defaultRollback=true)
 public class ${className}DaoTest {
-
+${gg.setOverride(false)}
     private static final Logger logger = LoggerFactory.getLogger(${className}DaoTest.class);
     @Autowired
     ${className}Dao ${classNameLower}Dao;
