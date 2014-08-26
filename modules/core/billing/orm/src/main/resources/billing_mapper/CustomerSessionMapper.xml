@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.billing.billing.orm.dao.CustomerSessionDao">
+
+
+    <!-- 字段名转换 -->
+    <resultMap id="RM_CustomerSession" type="com.billing.billing.orm.model.CustomerSession">
+        <result property="id" column="id"/>
+        <result property="customerId" column="customer_id"/>
+        <result property="partyId" column="party_id"/>
+        <result property="productId" column="product_id"/>
+        <result property="domainId" column="domain_id"/>
+        <result property="appId" column="app_id"/>
+        <result property="entryId" column="entry_id"/>
+        <result property="appArea" column="app_area"/>
+        <result property="geoId" column="geo_id"/>
+        <result property="isAnonymous" column="is_anonymous"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+    <!-- 查询字段 -->
+    <sql id="CustomerSession_columns">
+        <![CDATA[
+    id,customer_id,party_id,product_id,domain_id,app_id,entry_id,app_area,geo_id,is_anonymous,create_time
+        ]]>
+    </sql>
+
+
+    <select id="get" parameterType="long" resultMap="RM_CustomerSession">
+        <![CDATA[
+        select
+        <include refid="CustomerSession_columns" />
+        from customer_session
+        WHERE
+            <if test="@Ognl@isNotEmpty(id)">
+                1 = 0 AND
+            </if>
+            id = #{id} 
+        ]]>
+    </select>
+
+    <!-- 查询用户,演示: 1.输入用map传入多个参数 2.<where>语句, 智能添加where和and关键字 3.输出直接映射对象 -->
+    <select id="search" parameterType="map" resultMap="RM_CustomerSession">
+        <![CDATA[
+        select
+        <include refid="CustomerSession_columns" />
+        from customer_session
+        <where>
+                    <if test="@Ognl@isNotEmpty(id)">
+            AND id = #{id}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(customerId)">
+            AND customer_id = #{customerId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(partyId)">
+            AND party_id = #{partyId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(productId)">
+            AND product_id = #{productId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(domainId)">
+            AND domain_id = #{domainId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(appId)">
+            AND app_id = #{appId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(entryId)">
+            AND entry_id = #{entryId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(appArea)">
+            AND app_area = #{appArea}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(geoId)">
+            AND geo_id = #{geoId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(isAnonymous)">
+            AND is_anonymous = #{isAnonymous}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(createTimeBegin)">
+            AND create_time >= #{createTimeBegin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(createTimeEnd)">
+            AND create_time &lt;= #{createTimeEnd}
+                    </if>
+        </where>
+        ]]>
+    </select>
+
+    <!-- 插入 -->
+    <insert id="save" parameterType="com.billing.billing.orm.model.CustomerSession" useGeneratedKeys="true" keyProperty="id">
+        <![CDATA[
+        INSERT INTO customer_session (
+             id, customer_id, party_id, product_id, domain_id, app_id, entry_id, app_area, geo_id, is_anonymous, create_time
+        ) VALUES (
+             #{id}, #{customerId}, #{partyId}, #{productId}, #{domainId}, #{appId}, #{entryId}, #{appArea}, #{geoId}, #{isAnonymous}, #{createTime}
+        )
+        ]]>
+    </insert>
+
+    <delete id="delete">
+        <![CDATA[
+        DELETE FROM customer_session WHERE
+        id = #{id} 
+        ]]>
+    </delete>
+
+    <update id="update" >
+        <![CDATA[
+        UPDATE customer_session SET
+    customer_id = #{customerId} , party_id = #{partyId} , product_id = #{productId} , domain_id = #{domainId} , app_id = #{appId} , entry_id = #{entryId} , app_area = #{appArea} , geo_id = #{geoId} , is_anonymous = #{isAnonymous} , create_time = #{createTime}  
+        WHERE
+    id = #{id}  
+        ]]>
+    </update>
+
+</mapper>

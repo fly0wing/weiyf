@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.billing.billing.orm.dao.GoodsUsagePrincipalDao">
+
+
+    <!-- 字段名转换 -->
+    <resultMap id="RM_GoodsUsagePrincipal" type="com.billing.billing.orm.model.GoodsUsagePrincipal">
+        <result property="id" column="id"/>
+        <result property="customerGoodsId" column="customer_goods_id"/>
+        <result property="customerId" column="customer_id"/>
+        <result property="sessionId" column="session_id"/>
+        <result property="partyId" column="party_id"/>
+        <result property="billingPrincipalEnumId" column="billing_principal_enum_id"/>
+        <result property="billingPrincipalId" column="billing_principal_id"/>
+        <result property="fromDate" column="from_date"/>
+        <result property="thruDate" column="thru_date"/>
+        <result property="createdDate" column="created_date"/>
+        <result property="createdByUserLogin" column="created_by_user_login"/>
+    </resultMap>
+
+    <!-- 查询字段 -->
+    <sql id="GoodsUsagePrincipal_columns">
+        <![CDATA[
+    id,customer_goods_id,customer_id,session_id,party_id,billing_principal_enum_id,billing_principal_id,from_date,thru_date,created_date,created_by_user_login
+        ]]>
+    </sql>
+
+
+    <select id="get" parameterType="long" resultMap="RM_GoodsUsagePrincipal">
+        <![CDATA[
+        select
+        <include refid="GoodsUsagePrincipal_columns" />
+        from goods_usage_principal
+        WHERE
+            <if test="@Ognl@isNotEmpty(id)">
+                1 = 0 AND
+            </if>
+            id = #{id} 
+        ]]>
+    </select>
+
+    <!-- 查询用户,演示: 1.输入用map传入多个参数 2.<where>语句, 智能添加where和and关键字 3.输出直接映射对象 -->
+    <select id="search" parameterType="map" resultMap="RM_GoodsUsagePrincipal">
+        <![CDATA[
+        select
+        <include refid="GoodsUsagePrincipal_columns" />
+        from goods_usage_principal
+        <where>
+                    <if test="@Ognl@isNotEmpty(id)">
+            AND id = #{id}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(customerGoodsId)">
+            AND customer_goods_id = #{customerGoodsId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(customerId)">
+            AND customer_id = #{customerId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(sessionId)">
+            AND session_id = #{sessionId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(partyId)">
+            AND party_id = #{partyId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(billingPrincipalEnumId)">
+            AND billing_principal_enum_id = #{billingPrincipalEnumId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(billingPrincipalId)">
+            AND billing_principal_id = #{billingPrincipalId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(fromDateBegin)">
+            AND from_date >= #{fromDateBegin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(fromDateEnd)">
+            AND from_date &lt;= #{fromDateEnd}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(thruDateBegin)">
+            AND thru_date >= #{thruDateBegin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(thruDateEnd)">
+            AND thru_date &lt;= #{thruDateEnd}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(createdDateBegin)">
+            AND created_date >= #{createdDateBegin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(createdDateEnd)">
+            AND created_date &lt;= #{createdDateEnd}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(createdByUserLogin)">
+            AND created_by_user_login = #{createdByUserLogin}
+                    </if>
+        </where>
+        ]]>
+    </select>
+
+    <!-- 插入 -->
+    <insert id="save" parameterType="com.billing.billing.orm.model.GoodsUsagePrincipal" useGeneratedKeys="true" keyProperty="id">
+        <![CDATA[
+        INSERT INTO goods_usage_principal (
+             id, customer_goods_id, customer_id, session_id, party_id, billing_principal_enum_id, billing_principal_id, from_date, thru_date, created_date, created_by_user_login
+        ) VALUES (
+             #{id}, #{customerGoodsId}, #{customerId}, #{sessionId}, #{partyId}, #{billingPrincipalEnumId}, #{billingPrincipalId}, #{fromDate}, #{thruDate}, #{createdDate}, #{createdByUserLogin}
+        )
+        ]]>
+    </insert>
+
+    <delete id="delete">
+        <![CDATA[
+        DELETE FROM goods_usage_principal WHERE
+        id = #{id} 
+        ]]>
+    </delete>
+
+    <update id="update" >
+        <![CDATA[
+        UPDATE goods_usage_principal SET
+    customer_goods_id = #{customerGoodsId} , customer_id = #{customerId} , session_id = #{sessionId} , party_id = #{partyId} , billing_principal_enum_id = #{billingPrincipalEnumId} , billing_principal_id = #{billingPrincipalId} , from_date = #{fromDate} , thru_date = #{thruDate} , created_date = #{createdDate} , created_by_user_login = #{createdByUserLogin}  
+        WHERE
+    id = #{id}  
+        ]]>
+    </update>
+
+</mapper>
