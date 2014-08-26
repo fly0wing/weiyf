@@ -1,0 +1,42 @@
+<configuration debug="true" scan="true" scanPeriod="30 minutes">
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <!-- encoders are assigned the type
+             ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 当前文件名 -->
+        <file>d:/my_project/weiyifu/log/weiyifu-web.log</file>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- 归档文件名 -->
+            <fileNamePattern>
+                d:/my_project/weiyifu/log/backup/weiyifu-web_%d{yyyy-MM-dd}.log
+            </fileNamePattern>
+            <!-- 最多存放30个文件 -->
+            <maxHistory>
+                30
+            </maxHistory>
+        </rollingPolicy>
+    </appender>
+
+    <logger name="ch.qos.logback" level="WARN"/>
+    <logger name="com.mchange.v2" level="WARN"/>
+    <logger name="java.sql.Connection" level="DEBUG" />
+    <logger name="java.sql.Statement" level="DEBUG" />
+    <logger name="java.sql.PreparedStatement" level="DEBUG" />
+    <logger name="java.sql.ResultSet" level="DEBUG" />
+    <logger name="org.springframework.jdbc" level="DEBUG"/>
+    <logger name="org.springframework.transaction" level="DEBUG"/>
+
+
+    <root level="DEBUG">
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="file"/>
+    </root>
+</configuration>

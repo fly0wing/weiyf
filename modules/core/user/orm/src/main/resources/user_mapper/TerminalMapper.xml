@@ -25,21 +25,18 @@
 
 
     <select id="get" parameterType="long" resultMap="RM_Terminal">
-        <![CDATA[
         select
         <include refid="Terminal_columns" />
         from terminal
         WHERE
-            <if test="@Ognl@isNotEmpty(id)">
+            <if test="@Ognl@isEmpty(id)">
                 1 = 0 AND
             </if>
             id = #{id} 
-        ]]>
     </select>
 
     <!-- 查询用户,演示: 1.输入用map传入多个参数 2.<where>语句, 智能添加where和and关键字 3.输出直接映射对象 -->
     <select id="search" parameterType="map" resultMap="RM_Terminal">
-        <![CDATA[
         select
         <include refid="Terminal_columns" />
         from terminal
@@ -66,25 +63,20 @@
             AND first_activate_time &lt;= #{firstActivateTimeEnd}
                     </if>
         </where>
-        ]]>
     </select>
 
     <!-- 插入 -->
     <insert id="save" parameterType="com.billing.user.orm.model.Terminal" useGeneratedKeys="true" keyProperty="id">
-        <![CDATA[
         INSERT INTO terminal (
              id, fingerprint, default_name, terminal_type_id, first_session_id, first_activate_time
         ) VALUES (
              #{id}, #{fingerprint}, #{defaultName}, #{terminalTypeId}, #{firstSessionId}, #{firstActivateTime}
         )
-        ]]>
     </insert>
 
     <delete id="delete">
-        <![CDATA[
         DELETE FROM terminal WHERE
         id = #{id} 
-        ]]>
     </delete>
 
     <update id="update" >
