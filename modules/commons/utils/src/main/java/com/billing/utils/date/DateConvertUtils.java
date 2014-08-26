@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class DateConvertUtils {
 
+    public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
     public static java.util.Date parse(String dateString,String dateFormat) {
         return parse(dateString, dateFormat,java.util.Date.class);
     }
