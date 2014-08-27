@@ -15,7 +15,7 @@ ${gg.setOverride(false)}
 @MyBatisRepository
 public interface ${className}Dao {
 
-    ${className} get(@Param("id") Long id);
+    ${className} get(<#list table.pkColumns as column>@Param("${column.sqlName}") ${column.simpleJavaType} ${column.columnNameFirstLower}<#if column_has_next>, </#if></#list>);
 
     List<${className}> search(Map<String, Object> params);
 

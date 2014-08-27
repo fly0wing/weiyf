@@ -26,12 +26,12 @@
     </sql>
 
 
-    <select id="get" parameterType="long" resultMap="RM_${className}">
+    <select id="get" parameterType="map" resultMap="RM_${className}">
         select
         <include refid="<@namespace/>columns" />
         from ${table.sqlName}
         WHERE
-        <#list table.compositeIdColumns as column>
+        <#list table.pkColumns as column>
             <if test="@Ognl@isEmpty(${column.columnNameLower})">
                 1 = 0 AND
             </if>
