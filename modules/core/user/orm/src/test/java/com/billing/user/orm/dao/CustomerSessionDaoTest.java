@@ -3,6 +3,7 @@ package com.billing.user.orm.dao;
 import com.billing.user.orm.model.CustomerLogin;
 import com.billing.user.orm.model.CustomerSession;
 import com.google.common.collect.Iterators;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -32,18 +33,25 @@ public class CustomerSessionDaoTest {
     private static final Logger logger = LoggerFactory.getLogger(CustomerSessionDaoTest.class);
     @Autowired
     CustomerSessionDao customerSessionDao;
+    Long id = 999L;
+    HashMap<String, Object> params = new HashMap<>();
+    CustomerSession customerSession = new CustomerSession();
 
-    @Test
-    public void testGet() throws Exception {
-        CustomerSession customerSession = customerSessionDao.get(1L);
-        logger.info(customerSession.toString());
-        assertNotNull(customerSession);
-    }
+    @Before
+    public void initialize() {
+        customerSession.setAppArea("一区");
+        customerSession.setAppId(1L);
+        customerSession.setCreateTime(new Timestamp(System.currentTimeMillis()));
+        customerSession.setCustomerId(6L);
+        customerSession.setDomainId("");
+        customerSession.setEntryId(1L);
+        customerSession.setGeoId(1L);
+        customerSession.setId(id);
+        customerSession.setIsAnonymous(false);
+        customerSession.setPartyId(1L);
+        customerSession.setProductId(1L);
 
-    @Test
-    public void testSearch() throws Exception {
-        HashMap<String, Object> params = new HashMap<>();
-        params.put("id","1");
+        params.put("id",id);
         params.put("customerId","6");
         params.put("partyId","1");
         params.put("productId","1");
@@ -55,6 +63,27 @@ public class CustomerSessionDaoTest {
         params.put("isAnonymous",false);
         params.put("createTimeBegin","2014-01-01");
         params.put("createTimeEnd","2019-01-01");
+
+    }
+
+    @Test
+    public void testCase() throws Exception {
+        testSave();
+        testGet();
+        testSearch();
+        testUpdate();
+        testDelete();
+    }
+
+    @Test
+    public void testGet() throws Exception {
+        CustomerSession customerSession = customerSessionDao.get(id);
+        logger.info(customerSession.toString());
+        assertNotNull(customerSession);
+    }
+
+    @Test
+    public void testSearch() throws Exception {
         List<CustomerSession> search = customerSessionDao.search(params);
         assertNotNull(search);
         assertTrue(!search.isEmpty());
@@ -63,31 +92,21 @@ public class CustomerSessionDaoTest {
 
     @Test
     public void testSave() throws Exception {
-        CustomerSession customerSession = new CustomerSession();
-        customerSession.setAppArea("一区");
-        customerSession.setAppId(1L);
-        customerSession.setCreateTime(new Timestamp(System.currentTimeMillis()));
-        customerSession.setCustomerId(6L);
-        customerSession.setDomainId("");
-        customerSession.setEntryId(1L);
-        customerSession.setGeoId(1L);
-        customerSession.setId(1L);
-        customerSession.setIsAnonymous(false);
-        customerSession.setPartyId(1L);
-        customerSession.setProductId(1L);
-
         boolean save = customerSessionDao.save(customerSession);
         logger.info(customerSession.getId() + "~~~~");
         assertTrue(save);
+        id = customerSession.getId();
     }
 
     @Test
     public void testUpdate() throws Exception {
-        assertNotNull(null);
+        boolean update = customerSessionDao.update(customerSession);
+        assertTrue(update);
     }
 
     @Test
     public void testDelete() throws Exception {
-        assertNotNull(null);
+        boolean delete = customerSessionDao.delete(id);
+        assertTrue(delete);
     }
 }

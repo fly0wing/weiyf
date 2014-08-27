@@ -17,11 +17,11 @@ public interface TerminalDao {
 
     List<Terminal> search(Map<String, Object> params);
 
-    void save(Terminal obj);
+    boolean save(Terminal obj);
 
-    void update(Terminal obj);
+    boolean update(Terminal obj);
 
-    void delete(@Param("id") Long id);
+    boolean delete(@Param("id") Long id);
 
     Terminal getByFingerprint(@Param("fingerprint")String fingerprint);
 }
