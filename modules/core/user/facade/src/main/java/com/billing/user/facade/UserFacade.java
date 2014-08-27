@@ -8,6 +8,7 @@ import com.billing.user.orm.dao.CustomerTerminalDao;
 import com.billing.user.orm.model.CustomerLogin;
 import com.billing.user.orm.model.CustomerTerminal;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.function.Predicate;
 /**
  * Created by zkai on 2014/8/26.
  */
+@Service
 public class UserFacade implements IUserFacade {
     @Autowired
     private CustomerLoginDao loginDao;
