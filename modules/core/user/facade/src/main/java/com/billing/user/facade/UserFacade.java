@@ -163,6 +163,7 @@ public class UserFacade implements IUserFacade {
                 baseResp = new BaseResp(true, REG_FAILED, "注册失败");
             }
         }
+        // TODO:Token Generator
         return baseResp;
     }
     /**
@@ -225,6 +226,7 @@ public class UserFacade implements IUserFacade {
                 baseResp = new BaseResp(false, PASS_WRONG, "密码错误");
             }
         }
+        // TODO:Token Generator
         return baseResp;
     }
 
