@@ -65,6 +65,7 @@ public class UserFacade implements IUserFacade {
 
     /**
      * 用户注册，如果该终端上已经存在匿名注册的用户，直接绑定到该匿名用户上。
+     *
      * @param registerReq
      * @return
      */
@@ -74,11 +75,11 @@ public class UserFacade implements IUserFacade {
         CustomerLogin customerLogin = new CustomerLogin();
         boolean bAnonymousFlg = false;
         //SESSION检查
-        if(null  == registerReq.getSession()){
+        if (null == registerReq.getSession()) {
             return new BaseResp(false, SESSION_ERROR, "SESSION失效");
         }
         //输入参数检查(匿名模式除外）
-        if(LoginAccountEnum.Anonymous != registerReq.getLoginAccountType() && null == registerReq.getLoginAccount()){
+        if (LoginAccountEnum.Anonymous != registerReq.getLoginAccountType() && null == registerReq.getLoginAccount()) {
             return new BaseResp(true, PARAM_ERROR, "输入参数错误");
         }
         switch (registerReq.getLoginAccountType()) {
@@ -94,7 +95,7 @@ public class UserFacade implements IUserFacade {
                 customerLogin.setLoginName(registerReq.getLoginAccount());
                 customerLogin.setRequirePasswordChange(true);
                 customerLogin.setSecurityLevel(REG_ANONYMOUS);
-            //用户名注册模式
+                //用户名注册模式
             case LoginName:
                 customerLogin = loginDao.getByLoginName(registerReq.getLoginAccount());
                 if (null != customerLogin) {
@@ -160,9 +161,9 @@ public class UserFacade implements IUserFacade {
             customerLogin.setNickname("");
             customerLogin.setLastLoginTime(new Timestamp(System.currentTimeMillis()));
             customerLogin.setRegisterTime(new Timestamp(System.currentTimeMillis()));
-            if(customerLoginDao.update(customerLogin)){
+            if (customerLoginDao.update(customerLogin)) {
                 baseResp = new BaseResp(true, SUCCESS);
-            }else{
+            } else {
                 baseResp = new BaseResp(true, REG_FAILED, "注册失败");
             }
         } else {
@@ -185,6 +186,7 @@ public class UserFacade implements IUserFacade {
 
     /**
      * 用户登录，确定会话中的用户标识
+     *
      * @param loginReq
      * @return
      */
@@ -195,11 +197,11 @@ public class UserFacade implements IUserFacade {
         String sCurrentPass = "";
         Map<String, Object> params = new HashMap<>();
         //SESSION检查
-        if(null  == loginReq.getSession()){
+        if (null == loginReq.getSession()) {
             return new BaseResp(false, SESSION_ERROR, "SESSION失效");
         }
         //输入参数检查(匿名模式除外）
-        if(LoginAccountEnum.Anonymous != loginReq.getLoginAccountType() && null == loginReq.getLoginAccount()){
+        if (LoginAccountEnum.Anonymous != loginReq.getLoginAccountType() && null == loginReq.getLoginAccount()) {
             return new BaseResp(true, PARAM_ERROR, "输入参数错误");
         }
         switch (loginReq.getLoginAccountType()) {
@@ -260,6 +262,7 @@ public class UserFacade implements IUserFacade {
 
     /**
      * 验证终端Token
+     *
      * @param lCustomerId
      * @param lTermId
      * @param session
@@ -283,6 +286,7 @@ public class UserFacade implements IUserFacade {
 
     /**
      * 用户登出，主动结束会话，会话从内存及缓存中移除。
+     *
      * @param baseReq
      * @return void
      */
@@ -295,6 +299,7 @@ public class UserFacade implements IUserFacade {
     /**
      * 绑定手机号，在绑定前需要调用requestActionToken方法，传入待绑定的手机号，请求发送actionToken；
      * 在用户输入收到的actionToken后，再调用本方法传入用户输入的actionToken，以及请求actionToken时的reuestGuid:atRequestGuid。
+     *
      * @param baseReq
      * @return
      */
@@ -306,6 +311,7 @@ public class UserFacade implements IUserFacade {
 
     /**
      * 修改密码:stringReq传入老的密码，stringReq2传入新的密码
+     *
      * @param baseReq
      * @return
      */
@@ -314,16 +320,16 @@ public class UserFacade implements IUserFacade {
         BaseResp baseResp = new BaseResp(false);
         CustomerLogin customerLogin = customerLoginDao.get(baseReq.getSession().getCustomerId());
         //SESSION检查
-        if(null  == baseReq.getSession()){
+        if (null == baseReq.getSession()) {
             return new BaseResp(false, SESSION_ERROR, "SESSION失效");
         }
         //输入参数检查(匿名模式除外）
-        if(null == baseReq.getStringReq() || null == baseReq.getStringReq2()){
+        if (null == baseReq.getStringReq() || null == baseReq.getStringReq2()) {
             return new BaseResp(true, PARAM_ERROR, "输入参数错误");
         }
-        if(null == customerLogin){
+        if (null == customerLogin) {
             baseResp = new BaseResp(false, USER_NOT_EXISTS, "用户不存在");
-        } else if(!baseReq.getStringReq().equals(customerLogin.getCurrentPassword())){
+        } else if (!baseReq.getStringReq().equals(customerLogin.getCurrentPassword())) {
             baseResp = new BaseResp(false, PASS_WRONG, "现密码错误");
         } else {
             customerLogin.setCurrentPassword(baseReq.getStringReq2());
@@ -338,6 +344,7 @@ public class UserFacade implements IUserFacade {
 
     /**
      * 检查登录名(stringReq:用户LoginName)
+     *
      * @param baseReq
      * @return
      */
@@ -345,19 +352,20 @@ public class UserFacade implements IUserFacade {
     public BaseResp checkLoginName(BaseReq baseReq) {
         CustomerLogin customerLogin = null;
         //输入参数检查(匿名模式除外）
-        if(null == baseReq.getStringReq()){
+        if (null == baseReq.getStringReq()) {
             return new BaseResp(true, PARAM_ERROR, "输入参数错误");
         }
         customerLogin = loginDao.getByLoginName(baseReq.getStringReq());
         if (null == customerLogin) {
             return new BaseResp(true, USER_NOT_EXISTS, "用户不存在");
-        }else {
+        } else {
             return new BaseResp(true, USER_ALREADY_EXISTS, "用户名已注册");
         }
     }
 
     /**
      * 检查登录电话号码(longReq:电话号码)
+     *
      * @param baseReq
      * @return
      */
@@ -367,12 +375,14 @@ public class UserFacade implements IUserFacade {
         customerLogin = loginDao.getByLoginPhone(String.valueOf(baseReq.getLongReq()));
         if (null == customerLogin) {
             return new BaseResp(true, USER_NOT_EXISTS, "用户不存在");
-        }else {
+        } else {
             return new BaseResp(true, PHONE_ALREADY_EXISTS, "电话号码已注册");
         }
     }
+
     /**
      * 请求操作口令，例如：绑定手机号时，需要请求发送验证短信。
+     *
      * @param actionTokenReq
      * @return
      */
@@ -383,6 +393,7 @@ public class UserFacade implements IUserFacade {
 
     /**
      * 验证操作口令。
+     *
      * @param baseReq
      * @return
      */
@@ -391,9 +402,27 @@ public class UserFacade implements IUserFacade {
         return null;
     }
 
-    private String makeActionToken(int iLen){
+    /**
+     * 验证码生成。
+     *
+     * @param iLen
+     * @return
+     */
+    private static String makeActionToken(int iLen) {
         Random r = new Random();
-        r.nextInt(63);
-        return "";
+        String sRtn = "";
+        char cRandomChar;
+        for (int i = 0; i < iLen; i++) {
+            int iAscii = r.nextInt(62);
+            if (iAscii < 10) {
+                cRandomChar = (char) ('0' + iAscii);
+            } else if(iAscii < 36) {
+                cRandomChar = (char) ('a' + (iAscii - 10));
+            } else{
+                cRandomChar = (char) ('A' + (iAscii - 36));
+            }
+            sRtn += String.valueOf(cRandomChar);
+        }
+        return sRtn;
     }
 }
