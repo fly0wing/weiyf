@@ -36,16 +36,8 @@ ${gg.setOverride(false)}
         <property name="typeAliasesPackage" value="com.billing.${moduleName}.orm" />
     </bean>
 
-
-<!--    <bean id="transactionManager" class="org.springframework.transaction.jta.JtaTransactionManager">
-        <property name="" ref="${moduleName}SqlSessionFactory"/>
-    </bean>-->
-
-    <!--<tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true" />-->
-
-    <!--创建数据映射器，数据映射器必须为接口-->
-<!--    <bean id="userMapper" class="org.mybatis.spring.mapper.MapperFactoryBean" primary="true">
-        <property name="mapperInterface" value="com.billing.web.dao" />
-        <property name="sqlSessionFactory" ref="sqlSessionFactory" />
-    </bean>-->
+    <bean id="${moduleName}TransactionManager"
+          class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="${moduleName}DataSource" />
+    </bean>
 </beans>

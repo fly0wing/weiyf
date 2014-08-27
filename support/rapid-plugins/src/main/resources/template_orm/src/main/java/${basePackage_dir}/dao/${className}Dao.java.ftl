@@ -19,11 +19,11 @@ public interface ${className}Dao {
 
     List<${className}> search(Map<String, Object> params);
 
-    void save(${className} obj);
+    boolean save(${className} obj);
 
-    void update(${className} obj);
+    boolean update(${className} obj);
 
-    void delete(@Param("id") Long id);
+    boolean delete(@Param("id") Long id);
 <#list table.columns as column><#if column.unique && !column.pk>
 
     ${className} getBy${column.columnName}(@Param("${column.columnNameLower}")${column.simpleJavaType} ${column.columnNameLower});
