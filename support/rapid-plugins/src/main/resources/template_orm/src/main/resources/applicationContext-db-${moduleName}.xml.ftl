@@ -20,14 +20,14 @@ ${gg.setOverride(false)}
     <!-- 数据库连接池c3p0配置 -->
     <bean id="${moduleName}DataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
           destroy-method="close">
-        <property name="jdbcUrl" value="<@escapeDollar  "db.product.url"/>"/>
-        <property name="driverClass" value="<@escapeDollar "db.product.driverClassName"/>"/>
-        <property name="user" value="<@escapeDollar "db.product.username"/>"/>
-        <property name="password" value="<@escapeDollar "db.product.password"/>"/>
-        <property name="maxPoolSize" value="<@escapeDollar "db.product.maxPoolSize"/>"/>
-        <property name="minPoolSize" value="<@escapeDollar "db.product.minPoolSize"/>"/>
-        <property name="initialPoolSize" value="<@escapeDollar "db.product.initialPoolSize"/>"/>
-        <property name="maxIdleTime" value="<@escapeDollar "db.product.maxIdleTime"/>"/>
+        <property name="jdbcUrl" value="<@escapeDollar  "db.${moduleName}.url"/>"/>
+        <property name="driverClass" value="<@escapeDollar "db.${moduleName}.driverClassName"/>"/>
+        <property name="user" value="<@escapeDollar "db.${moduleName}.username"/>"/>
+        <property name="password" value="<@escapeDollar "db.${moduleName}.password"/>"/>
+        <property name="maxPoolSize" value="<@escapeDollar "db.${moduleName}.maxPoolSize"/>"/>
+        <property name="minPoolSize" value="<@escapeDollar "db.${moduleName}.minPoolSize"/>"/>
+        <property name="initialPoolSize" value="<@escapeDollar "db.${moduleName}.initialPoolSize"/>"/>
+        <property name="maxIdleTime" value="<@escapeDollar "db.${moduleName}.maxIdleTime"/>"/>
     </bean>
 
     <bean id="${moduleName}SqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean" primary="true">

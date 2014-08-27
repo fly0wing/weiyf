@@ -18,14 +18,14 @@
     <!-- 数据库连接池c3p0配置 -->
     <bean id="userDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
           destroy-method="close">
-        <property name="jdbcUrl" value="${db.product.url}"/>
-        <property name="driverClass" value="${db.product.driverClassName}"/>
-        <property name="user" value="${db.product.username}"/>
-        <property name="password" value="${db.product.password}"/>
-        <property name="maxPoolSize" value="${db.product.maxPoolSize}"/>
-        <property name="minPoolSize" value="${db.product.minPoolSize}"/>
-        <property name="initialPoolSize" value="${db.product.initialPoolSize}"/>
-        <property name="maxIdleTime" value="${db.product.maxIdleTime}"/>
+        <property name="jdbcUrl" value="${db.user.url}"/>
+        <property name="driverClass" value="${db.user.driverClassName}"/>
+        <property name="user" value="${db.user.username}"/>
+        <property name="password" value="${db.user.password}"/>
+        <property name="maxPoolSize" value="${db.user.maxPoolSize}"/>
+        <property name="minPoolSize" value="${db.user.minPoolSize}"/>
+        <property name="initialPoolSize" value="${db.user.initialPoolSize}"/>
+        <property name="maxIdleTime" value="${db.user.maxIdleTime}"/>
     </bean>
 
     <bean id="userSqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean" primary="true">
