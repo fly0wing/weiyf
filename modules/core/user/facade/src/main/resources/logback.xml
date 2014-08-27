@@ -33,7 +33,7 @@
     <logger name="java.sql.ResultSet" level="DEBUG" />
     <logger name="org.springframework.jdbc" level="DEBUG"/>
     <logger name="org.springframework.transaction" level="DEBUG"/>
-
+    <logger name="org.springframework.beans.factory.support.DefaultListableBeanFactory" level="DEBUG"/>
 
     <root level="DEBUG">
         <appender-ref ref="STDOUT"/>

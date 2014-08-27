@@ -17,9 +17,9 @@ public interface CustomerSessionDurableDao {
 
     List<CustomerSessionDurable> search(Map<String, Object> params);
 
-    void save(CustomerSessionDurable obj);
+    boolean save(CustomerSessionDurable obj);
 
-    void update(CustomerSessionDurable obj);
+    boolean update(CustomerSessionDurable obj);
 
-    void delete(@Param("id") Long id);
+    boolean delete(@Param("id") Long id);
 }

@@ -17,9 +17,9 @@ public interface TerminalTypeDao {
 
     List<TerminalType> search(Map<String, Object> params);
 
-    void save(TerminalType obj);
+    boolean save(TerminalType obj);
 
-    void update(TerminalType obj);
+    boolean update(TerminalType obj);
 
-    void delete(@Param("id") Long id);
+    boolean delete(@Param("id") Long id);
 }
