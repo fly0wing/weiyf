@@ -388,7 +388,11 @@ public class UserFacade implements IUserFacade {
      */
     @Override
     public BaseResp requestActionToken(ActionTokenReq actionTokenReq) {
-        return null;
+        BaseResp baseResp = new BaseResp(true);
+        baseResp.getSession().setSessionToken(makeActionToken(6));
+        //TODO:Guid
+        baseResp.setRequestGuid("");
+        return baseResp;
     }
 
     /**
