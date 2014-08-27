@@ -8,7 +8,7 @@ import com.billing.internalcontract.UserSession;
  */
 public interface ISessionFacade {
 
-    UserSession getBySessionId(long sessionId);
+    UserSession getSessionById(long sessionId);
 
-    UserSession getBySessionGuid(String guid);
+    UserSession getSessionByGuid(String guid);
 }
