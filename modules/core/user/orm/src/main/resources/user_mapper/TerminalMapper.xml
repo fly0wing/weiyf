@@ -68,9 +68,9 @@
     <!-- 插入 -->
     <insert id="save" parameterType="com.billing.user.orm.model.Terminal" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO terminal (
-             id, fingerprint, default_name, terminal_type_id, first_session_id, first_activate_time
+             fingerprint, default_name, terminal_type_id, first_session_id, first_activate_time
         ) VALUES (
-             #{id}, #{fingerprint}, #{defaultName}, #{terminalTypeId}, #{firstSessionId}, #{firstActivateTime}
+             #{fingerprint}, #{defaultName}, #{terminalTypeId}, #{firstSessionId}, #{firstActivateTime}
         )
     </insert>
 

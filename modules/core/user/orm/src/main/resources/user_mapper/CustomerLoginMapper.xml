@@ -6,7 +6,7 @@
 <mapper namespace="com.billing.user.orm.dao.CustomerLoginDao">
 
 
-    <!-- 字段名转换 -->
+    <!-- 字段名                      转换 -->
     <resultMap id="RM_CustomerLogin" type="com.billing.user.orm.model.CustomerLogin">
         <result property="id" column="id"/>
         <result property="loginName" column="login_name"/>

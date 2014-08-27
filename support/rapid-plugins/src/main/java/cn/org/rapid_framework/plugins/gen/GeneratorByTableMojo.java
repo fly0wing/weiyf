@@ -3,8 +3,10 @@
  */
 package cn.org.rapid_framework.plugins.gen;
 
+import java.io.File;
 import java.io.IOException;
 
+import cn.org.rapid_framework.generator.GeneratorProperties;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 
@@ -40,19 +42,45 @@ public class GeneratorByTableMojo extends AbstarctGeneratorMojo {
 		ClassLoader oldClassLoader = currentThread.getContextClassLoader();
 
 		try {
-			currentThread.setContextClassLoader(getClassLoader());
-			System.out.println("current project to build: "
-					+ getProject().getName() + "\n"
-					+ getProject().getFile().getParent());
-			g = new GeneratorFacade();
-			g.getGenerator().setTemplateRootDirs(parseStringArray(templateRootDirs));//("classpath:template");
+            currentThread.setContextClassLoader(getClassLoader());
+            System.out.println("current project to build: "
+                    + getProject().getName() + "\n"
+                    + getProject().getFile().getParent());
+            g = new GeneratorFacade();
+            GeneratorProperties.load(absolutePath("./mygenerator.properties"));
+            g.getGenerator().setOutRootDir(GeneratorProperties.getProperty("outRoot"));
 
-			genByTable(parseStringArray(tableParameter));
+            if ( g.getGenerator().getOutRootDir().startsWith("./")) {
+                g.getGenerator().setOutRootDir(absolutePath(g.getGenerator().getOutRootDir()));
+            }
+            String[] templateDirs =parseStringArray( GeneratorProperties.getProperty("templateRootDirs" ));
+            for (int i = 0; i < templateDirs.length; i++) {
+                templateDirs[i] = absolutePath(templateDirs[i]);
+            }
+            g.getGenerator().setTemplateRootDirs( templateDirs);//("classpath:template");
+
+            String tables = tableParameter==null || tableParameter.trim().length()==0 ? null : tableParameter;
+            if( tables==null){
+                tables= GeneratorProperties.getProperty("tables");
+            }
+            genByTable( parseStringArray( tables ));
+        }catch(Exception e){
+            e.printStackTrace();
 		} finally {
 			currentThread.setContextClassLoader(oldClassLoader);
 		}
-
 	}
+    public String absolutePath(  String path){
+        String projectBaseDir = getProject().getBasedir().getAbsolutePath();
+        if(path==null) return projectBaseDir;
+        if( path.startsWith("./") ){
+          return  new File(  getProject().getBasedir() , path.substring(2)).getAbsolutePath();
+        }
+        return path;
+    }
+
+
+
 
 	public void genByTable(String... table) {
 		try {

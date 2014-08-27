@@ -58,10 +58,6 @@
                 <groupId>com.googlecode.rapid-framework</groupId>
                 <artifactId>rapid-plugins</artifactId>
                 <version>4.0.7-SNAPSHOT</version>
-                <configuration>
-                    <tableParameter>*</tableParameter>
-                    <templateRootDirs>classpath:template,classpath:template_orm</templateRootDirs>
-                </configuration>
             </plugin>
         </plugins>
     </build>

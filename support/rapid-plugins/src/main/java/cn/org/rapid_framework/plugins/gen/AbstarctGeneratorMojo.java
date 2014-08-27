@@ -32,16 +32,6 @@ public abstract class AbstarctGeneratorMojo extends AbstractMojo {
 	 */
 	private MavenProject project;
 
-
-    /**
-     * 在插件引用的参数处赋值。
-     * -DtempDirs=classpath:template,classpath:mytemplate
-     *
-     * @parameter expression="${tempDirs}"
-     *
-     */
-    public String templateRootDirs;
-
 	/**
 	 * 改变plugin classloader，使其可以加载当前工程的classpath以及dependency
 	 * 
