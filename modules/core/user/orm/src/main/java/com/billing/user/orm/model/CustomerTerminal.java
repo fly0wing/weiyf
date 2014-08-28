@@ -14,7 +14,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import com.billing.utils.date.DateConvertUtils;
 
 /**
- * Created by gencode on 2014-8-28 13:52:50.
+ * Created by gencode on 2014-8-28 15:17:29.
  */
 public class CustomerTerminal implements Serializable {
     private static final long serialVersionUID = 5454155825314635342L;
@@ -202,5 +202,16 @@ public class CustomerTerminal implements Serializable {
             .append(getId(),other.getId())
             .isEquals();
     }
+
+    public static final String FN_id = "id";
+    public static final String FN_customerId = "customerId";
+    public static final String FN_terminalId = "terminalId";
+    public static final String FN_terminalName = "terminalName";
+    public static final String FN_bindStatus = "bindStatus";
+    public static final String FN_currentOpTime = "currentOpTime";
+    public static final String FN_lastOpTime = "lastOpTime";
+    public static final String FN_firstBindTime = "firstBindTime";
+    public static final String FN_isAutoLogin = "isAutoLogin";
+    public static final String FN_lastLoginToken = "lastLoginToken";
 
 }
