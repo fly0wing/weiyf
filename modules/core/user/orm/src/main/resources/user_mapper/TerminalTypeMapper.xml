@@ -27,7 +27,7 @@
     </sql>
 
 
-    <select id="get" parameterType="long" resultMap="RM_TerminalType">
+    <select id="get" parameterType="map" resultMap="RM_TerminalType">
         select
         <include refid="TerminalType_columns" />
         from terminal_type
@@ -83,9 +83,9 @@
     <!-- 插入 -->
     <insert id="save" parameterType="com.billing.user.orm.model.TerminalType" useGeneratedKeys="true" keyProperty="terminalTypeId">
         INSERT INTO terminal_type (
-             terminal_type_id, parent_type_id, os_type, screen_size_enum_id, description, last_modified_date, last_modified_by_user_login, created_date, created_by_user_login
+             parent_type_id, os_type, screen_size_enum_id, description, last_modified_date, last_modified_by_user_login, created_date, created_by_user_login
         ) VALUES (
-             #{terminalTypeId}, #{parentTypeId}, #{osType}, #{screenSizeEnumId}, #{description}, #{lastModifiedDate}, #{lastModifiedByUserLogin}, #{createdDate}, #{createdByUserLogin}
+             #{parentTypeId}, #{osType}, #{screenSizeEnumId}, #{description}, #{lastModifiedDate}, #{lastModifiedByUserLogin}, #{createdDate}, #{createdByUserLogin}
         )
     </insert>
 

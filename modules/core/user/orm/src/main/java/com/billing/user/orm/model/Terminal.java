@@ -14,7 +14,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import com.billing.utils.date.DateConvertUtils;
 
 /**
- * Created by gencode on 2014-8-27 8:05:18.
+ * Created by gencode on 2014-8-28 13:52:50.
  */
 public class Terminal implements Serializable {
     private static final long serialVersionUID = 5454155825314635342L;

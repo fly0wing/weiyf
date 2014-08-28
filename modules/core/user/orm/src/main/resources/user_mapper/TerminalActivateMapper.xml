@@ -22,7 +22,7 @@
     </sql>
 
 
-    <select id="get" parameterType="long" resultMap="RM_TerminalActivate">
+    <select id="get" parameterType="map" resultMap="RM_TerminalActivate">
         select
         <include refid="TerminalActivate_columns" />
         from terminal_activate
@@ -60,9 +60,9 @@
     <!-- 插入 -->
     <insert id="save" parameterType="com.billing.user.orm.model.TerminalActivate" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO terminal_activate (
-             id, terminal_id, session_id, activate_time
+             terminal_id, session_id, activate_time
         ) VALUES (
-             #{id}, #{terminalId}, #{sessionId}, #{activateTime}
+             #{terminalId}, #{sessionId}, #{activateTime}
         )
     </insert>
 

@@ -12,7 +12,7 @@
         <result property="customerId" column="customer_id"/>
         <result property="terminalId" column="terminal_id"/>
         <result property="terminalName" column="terminal_name"/>
-        <result property="bindStatusId" column="bind_status_id"/>
+        <result property="bindStatus" column="bind_status"/>
         <result property="currentOpTime" column="current_op_time"/>
         <result property="lastOpTime" column="last_op_time"/>
         <result property="firstBindTime" column="first_bind_time"/>
@@ -23,12 +23,12 @@
     <!-- 查询字段 -->
     <sql id="CustomerTerminal_columns">
         <![CDATA[
-    id,customer_id,terminal_id,terminal_name,bind_status_id,current_op_time,last_op_time,first_bind_time,is_auto_login,last_login_token
+    id,customer_id,terminal_id,terminal_name,bind_status,current_op_time,last_op_time,first_bind_time,is_auto_login,last_login_token
         ]]>
     </sql>
 
 
-    <select id="get" parameterType="long" resultMap="RM_CustomerTerminal">
+    <select id="get" parameterType="map" resultMap="RM_CustomerTerminal">
         select
         <include refid="CustomerTerminal_columns" />
         from customer_terminal
@@ -57,8 +57,8 @@
                     <if test="@Ognl@isNotEmpty(terminalName)">
             AND terminal_name = #{terminalName}
                     </if>
-                    <if test="@Ognl@isNotEmpty(bindStatusId)">
-            AND bind_status_id = #{bindStatusId}
+                    <if test="@Ognl@isNotEmpty(bindStatus)">
+            AND bind_status = #{bindStatus}
                     </if>
                     <if test="@Ognl@isNotEmpty(currentOpTimeBegin)">
             AND current_op_time >= #{currentOpTimeBegin}
@@ -90,9 +90,9 @@
     <!-- 插入 -->
     <insert id="save" parameterType="com.billing.user.orm.model.CustomerTerminal" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO customer_terminal (
-             id, customer_id, terminal_id, terminal_name, bind_status_id, current_op_time, last_op_time, first_bind_time, is_auto_login, last_login_token
+             customer_id, terminal_id, terminal_name, bind_status, current_op_time, last_op_time, first_bind_time, is_auto_login, last_login_token
         ) VALUES (
-             #{id}, #{customerId}, #{terminalId}, #{terminalName}, #{bindStatusId}, #{currentOpTime}, #{lastOpTime}, #{firstBindTime}, #{isAutoLogin}, #{lastLoginToken}
+             #{customerId}, #{terminalId}, #{terminalName}, #{bindStatus}, #{currentOpTime}, #{lastOpTime}, #{firstBindTime}, #{isAutoLogin}, #{lastLoginToken}
         )
     </insert>
 
@@ -104,7 +104,7 @@
     <update id="update" >
         <![CDATA[
         UPDATE customer_terminal SET
-    customer_id = #{customerId} , terminal_id = #{terminalId} , terminal_name = #{terminalName} , bind_status_id = #{bindStatusId} , current_op_time = #{currentOpTime} , last_op_time = #{lastOpTime} , first_bind_time = #{firstBindTime} , is_auto_login = #{isAutoLogin} , last_login_token = #{lastLoginToken}  
+    customer_id = #{customerId} , terminal_id = #{terminalId} , terminal_name = #{terminalName} , bind_status = #{bindStatus} , current_op_time = #{currentOpTime} , last_op_time = #{lastOpTime} , first_bind_time = #{firstBindTime} , is_auto_login = #{isAutoLogin} , last_login_token = #{lastLoginToken}  
         WHERE
     id = #{id}  
         ]]>

@@ -14,9 +14,9 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import com.billing.utils.date.DateConvertUtils;
 
 /**
- * Created by gencode on 2014-8-26 16:12:41.
+ * Created by gencode on 2014-8-28 13:52:52.
  */
-public class CustomerSessionDurable implements Serializable {
+public class UserSessionDurable implements Serializable {
     private static final long serialVersionUID = 5454155825314635342L;
 
     /**
@@ -60,10 +60,25 @@ public class CustomerSessionDurable implements Serializable {
      */
     private Long geoId;
     /**
+     * db_column: terminal_id
+     * remarks from db:终端标识
+     */
+    private Long terminalId;
+    /**
      * db_column: app_area
      * remarks from db:应用分区
      */
     private String appArea;
+    /**
+     * db_column: login_oken
+     * remarks from db:登录令牌
+     */
+    private String loginOken;
+    /**
+     * db_column: is_bound
+     * remarks from db:已绑定否
+     */
+    private Boolean isBound;
     /**
      * db_column: is_anonymous
      * remarks from db:是否匿名
@@ -75,10 +90,10 @@ public class CustomerSessionDurable implements Serializable {
      */
     private Timestamp createTime;
 
-	public CustomerSessionDurable() {
+	public UserSessionDurable() {
 	}
 
-	public CustomerSessionDurable(
+	public UserSessionDurable(
 		Long id
 	) {
 		this.id = id;
@@ -148,12 +163,36 @@ public class CustomerSessionDurable implements Serializable {
 		return this.geoId;
 	}
 
+	public void setTerminalId(Long value) {
+		this.terminalId = value;
+	}
+
+	public Long getTerminalId() {
+		return this.terminalId;
+	}
+
 	public void setAppArea(String value) {
 		this.appArea = value;
 	}
 
 	public String getAppArea() {
 		return this.appArea;
+	}
+
+	public void setLoginOken(String value) {
+		this.loginOken = value;
+	}
+
+	public String getLoginOken() {
+		return this.loginOken;
+	}
+
+	public void setIsBound(Boolean value) {
+		this.isBound = value;
+	}
+
+	public Boolean getIsBound() {
+		return this.isBound;
 	}
 
 	public void setIsAnonymous(Boolean value) {
@@ -192,9 +231,9 @@ public class CustomerSessionDurable implements Serializable {
     }
 
     public boolean equals(Object obj) {
-        if(obj instanceof CustomerSessionDurable == false) return false;
+        if(obj instanceof UserSessionDurable == false) return false;
         if(this == obj) return true;
-        CustomerSessionDurable other = (CustomerSessionDurable)obj;
+        UserSessionDurable other = (UserSessionDurable)obj;
         return new EqualsBuilder()
             .append(getId(),other.getId())
             .isEquals();

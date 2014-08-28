@@ -14,7 +14,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import com.billing.utils.date.DateConvertUtils;
 
 /**
- * Created by gencode on 2014-8-26 16:12:41.
+ * Created by gencode on 2014-8-28 13:52:50.
  */
 public class CustomerTerminal implements Serializable {
     private static final long serialVersionUID = 5454155825314635342L;
@@ -40,10 +40,10 @@ public class CustomerTerminal implements Serializable {
      */
     private String terminalName;
     /**
-     * db_column: bind_status_id
-     * remarks from db:绑定状态标识
+     * db_column: bind_status
+     * remarks from db:绑定状态
      */
-    private Long bindStatusId;
+    private Boolean bindStatus;
     /**
      * db_column: current_op_time
      * remarks from db:当前操作时间
@@ -111,12 +111,12 @@ public class CustomerTerminal implements Serializable {
 		return this.terminalName;
 	}
 
-	public void setBindStatusId(Long value) {
-		this.bindStatusId = value;
+	public void setBindStatus(Boolean value) {
+		this.bindStatus = value;
 	}
 
-	public Long getBindStatusId() {
-		return this.bindStatusId;
+	public Boolean getBindStatus() {
+		return this.bindStatus;
 	}
 
 	public String getCurrentOpTimeString() {

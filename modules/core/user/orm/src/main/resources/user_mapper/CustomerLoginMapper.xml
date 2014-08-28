@@ -6,7 +6,7 @@
 <mapper namespace="com.billing.user.orm.dao.CustomerLoginDao">
 
 
-    <!-- 字段名                      转换 -->
+    <!-- 字段名转换 -->
     <resultMap id="RM_CustomerLogin" type="com.billing.user.orm.model.CustomerLogin">
         <result property="id" column="id"/>
         <result property="loginName" column="login_name"/>
@@ -31,7 +31,7 @@
     </sql>
 
 
-    <select id="get" parameterType="long" resultMap="RM_CustomerLogin">
+    <select id="get" parameterType="map" resultMap="RM_CustomerLogin">
         select
         <include refid="CustomerLogin_columns" />
         from customer_login
@@ -99,9 +99,9 @@
     <!-- 插入 -->
     <insert id="save" parameterType="com.billing.user.orm.model.CustomerLogin" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO customer_login (
-              login_name, login_email, login_phone, nickname, is_anonymous, current_password, enabled, first_session_id, require_password_change, security_level, register_time, last_login_time
+             login_name, login_email, login_phone, nickname, is_anonymous, current_password, enabled, first_session_id, require_password_change, security_level, register_time, last_login_time
         ) VALUES (
-              #{loginName}, #{loginEmail}, #{loginPhone}, #{nickname}, #{isAnonymous}, #{currentPassword}, #{enabled}, #{firstSessionId}, #{requirePasswordChange}, #{securityLevel}, #{registerTime}, #{lastLoginTime}
+             #{loginName}, #{loginEmail}, #{loginPhone}, #{nickname}, #{isAnonymous}, #{currentPassword}, #{enabled}, #{firstSessionId}, #{requirePasswordChange}, #{securityLevel}, #{registerTime}, #{lastLoginTime}
         )
     </insert>
 

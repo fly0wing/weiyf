@@ -24,7 +24,7 @@
     </sql>
 
 
-    <select id="get" parameterType="long" resultMap="RM_Terminal">
+    <select id="get" parameterType="map" resultMap="RM_Terminal">
         select
         <include refid="Terminal_columns" />
         from terminal

@@ -3,11 +3,11 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 
-<mapper namespace="com.billing.user.orm.dao.CustomerSessionDao">
+<mapper namespace="com.billing.user.orm.dao.UserSessionDao">
 
 
     <!-- 字段名转换 -->
-    <resultMap id="RM_CustomerSession" type="com.billing.user.orm.model.CustomerSession">
+    <resultMap id="RM_UserSession" type="com.billing.user.orm.model.UserSession">
         <result property="id" column="id"/>
         <result property="customerId" column="customer_id"/>
         <result property="partyId" column="party_id"/>
@@ -16,23 +16,26 @@
         <result property="appId" column="app_id"/>
         <result property="entryId" column="entry_id"/>
         <result property="geoId" column="geo_id"/>
+        <result property="terminalId" column="terminal_id"/>
         <result property="appArea" column="app_area"/>
+        <result property="loginOken" column="login_oken"/>
+        <result property="isBound" column="is_bound"/>
         <result property="isAnonymous" column="is_anonymous"/>
         <result property="createTime" column="create_time"/>
     </resultMap>
 
     <!-- 查询字段 -->
-    <sql id="CustomerSession_columns">
+    <sql id="UserSession_columns">
         <![CDATA[
-    id,customer_id,party_id,product_id,domain_id,app_id,entry_id,geo_id,app_area,is_anonymous,create_time
+    id,customer_id,party_id,product_id,domain_id,app_id,entry_id,geo_id,terminal_id,app_area,login_oken,is_bound,is_anonymous,create_time
         ]]>
     </sql>
 
 
-    <select id="get" parameterType="long" resultMap="RM_CustomerSession">
+    <select id="get" parameterType="map" resultMap="RM_UserSession">
         select
-        <include refid="CustomerSession_columns" />
-        from customer_session
+        <include refid="UserSession_columns" />
+        from user_session
         WHERE
             <if test="@Ognl@isEmpty(id)">
                 1 = 0 AND
@@ -41,10 +44,10 @@
     </select>
 
     <!-- 查询用户,演示: 1.输入用map传入多个参数 2.<where>语句, 智能添加where和and关键字 3.输出直接映射对象 -->
-    <select id="search" parameterType="map" resultMap="RM_CustomerSession">
+    <select id="search" parameterType="map" resultMap="RM_UserSession">
         select
-        <include refid="CustomerSession_columns" />
-        from customer_session
+        <include refid="UserSession_columns" />
+        from user_session
         <where>
                     <if test="@Ognl@isNotEmpty(id)">
             AND id = #{id}
@@ -70,8 +73,17 @@
                     <if test="@Ognl@isNotEmpty(geoId)">
             AND geo_id = #{geoId}
                     </if>
+                    <if test="@Ognl@isNotEmpty(terminalId)">
+            AND terminal_id = #{terminalId}
+                    </if>
                     <if test="@Ognl@isNotEmpty(appArea)">
             AND app_area = #{appArea}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(loginOken)">
+            AND login_oken = #{loginOken}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(isBound)">
+            AND is_bound = #{isBound}
                     </if>
                     <if test="@Ognl@isNotEmpty(isAnonymous)">
             AND is_anonymous = #{isAnonymous}
@@ -86,23 +98,23 @@
     </select>
 
     <!-- 插入 -->
-    <insert id="save" parameterType="com.billing.user.orm.model.CustomerSession" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO customer_session (
-             id, customer_id, party_id, product_id, domain_id, app_id, entry_id, geo_id, app_area, is_anonymous, create_time
+    <insert id="save" parameterType="com.billing.user.orm.model.UserSession" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO user_session (
+             customer_id, party_id, product_id, domain_id, app_id, entry_id, geo_id, terminal_id, app_area, login_oken, is_bound, is_anonymous, create_time
         ) VALUES (
-             #{id}, #{customerId}, #{partyId}, #{productId}, #{domainId}, #{appId}, #{entryId}, #{geoId}, #{appArea}, #{isAnonymous}, #{createTime}
+             #{customerId}, #{partyId}, #{productId}, #{domainId}, #{appId}, #{entryId}, #{geoId}, #{terminalId}, #{appArea}, #{loginOken}, #{isBound}, #{isAnonymous}, #{createTime}
         )
     </insert>
 
     <delete id="delete">
-        DELETE FROM customer_session WHERE
+        DELETE FROM user_session WHERE
         id = #{id} 
     </delete>
 
     <update id="update" >
         <![CDATA[
-        UPDATE customer_session SET
-    customer_id = #{customerId} , party_id = #{partyId} , product_id = #{productId} , domain_id = #{domainId} , app_id = #{appId} , entry_id = #{entryId} , geo_id = #{geoId} , app_area = #{appArea} , is_anonymous = #{isAnonymous} , create_time = #{createTime}  
+        UPDATE user_session SET
+    customer_id = #{customerId} , party_id = #{partyId} , product_id = #{productId} , domain_id = #{domainId} , app_id = #{appId} , entry_id = #{entryId} , geo_id = #{geoId} , terminal_id = #{terminalId} , app_area = #{appArea} , login_oken = #{loginOken} , is_bound = #{isBound} , is_anonymous = #{isAnonymous} , create_time = #{createTime}  
         WHERE
     id = #{id}  
         ]]>
