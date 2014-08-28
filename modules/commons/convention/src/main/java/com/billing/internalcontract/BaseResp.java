@@ -37,6 +37,7 @@ public class BaseResp<T> implements Serializable {
      * 结果集
      */
     private T objResult;
+
     public BaseResp(){
 
     }
@@ -109,6 +110,14 @@ public class BaseResp<T> implements Serializable {
 
     public void setLongResult(long longResult) {
         this.longResult = longResult;
+    }
+
+    public T getObjResult() {
+        return objResult;
+    }
+
+    public void setObjResult(T objResult) {
+        this.objResult = objResult;
     }
 
     public String getStringResult() {
