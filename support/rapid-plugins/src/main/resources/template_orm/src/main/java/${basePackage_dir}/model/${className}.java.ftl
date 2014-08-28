@@ -60,4 +60,8 @@ public class ${className} implements Serializable {
             .isEquals();
     }
 
+<#list table.columns as column>
+    public static final String FN_${column.columnNameLower} = "${column.columnNameLower}";
+</#list>
+
 }
