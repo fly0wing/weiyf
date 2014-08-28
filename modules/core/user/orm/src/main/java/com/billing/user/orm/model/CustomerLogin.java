@@ -14,7 +14,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import com.billing.utils.date.DateConvertUtils;
 
 /**
- * Created by gencode on 2014-8-28 13:52:49.
+ * Created by gencode on 2014-8-28 15:17:29.
  */
 public class CustomerLogin implements Serializable {
     private static final long serialVersionUID = 5454155825314635342L;
@@ -233,5 +233,19 @@ public class CustomerLogin implements Serializable {
             .append(getId(),other.getId())
             .isEquals();
     }
+
+    public static final String FN_id = "id";
+    public static final String FN_loginName = "loginName";
+    public static final String FN_loginEmail = "loginEmail";
+    public static final String FN_loginPhone = "loginPhone";
+    public static final String FN_nickname = "nickname";
+    public static final String FN_isAnonymous = "isAnonymous";
+    public static final String FN_currentPassword = "currentPassword";
+    public static final String FN_enabled = "enabled";
+    public static final String FN_firstSessionId = "firstSessionId";
+    public static final String FN_requirePasswordChange = "requirePasswordChange";
+    public static final String FN_securityLevel = "securityLevel";
+    public static final String FN_registerTime = "registerTime";
+    public static final String FN_lastLoginTime = "lastLoginTime";
 
 }

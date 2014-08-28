@@ -14,7 +14,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import com.billing.utils.date.DateConvertUtils;
 
 /**
- * Created by gencode on 2014-8-28 13:52:51.
+ * Created by gencode on 2014-8-28 15:17:30.
  */
 public class TerminalActivate implements Serializable {
     private static final long serialVersionUID = 5454155825314635342L;
@@ -108,5 +108,10 @@ public class TerminalActivate implements Serializable {
             .append(getId(),other.getId())
             .isEquals();
     }
+
+    public static final String FN_id = "id";
+    public static final String FN_terminalId = "terminalId";
+    public static final String FN_sessionId = "sessionId";
+    public static final String FN_activateTime = "activateTime";
 
 }
