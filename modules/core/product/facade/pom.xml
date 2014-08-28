@@ -11,5 +11,16 @@
 
     <artifactId>weiyifu-product-facade</artifactId>
 
-
+<dependencies>
+    <dependency>
+        <groupId>com.91billing</groupId>
+        <artifactId>weiyifu-commons-convention</artifactId>
+        <version>${weiyifu.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>com.91billing</groupId>
+        <artifactId>weiyifu-product-orm</artifactId>
+        <version>${weiyifu.version}</version>
+    </dependency>
+</dependencies>
 </project>
