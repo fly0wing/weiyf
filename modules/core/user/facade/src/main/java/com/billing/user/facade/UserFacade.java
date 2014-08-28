@@ -204,9 +204,17 @@ public class UserFacade implements IUserFacade {
             // TODO:Token Generator
             /** 登录成功，检查更新终端绑定状态 */
             if(LoginAccountEnum.Anonymous != registerReq.getLoginAccountType()) {
-                updBindSts(registerReq, true);
+                TerminalBindReq terminalBindReq = new TerminalBindReq();
+                terminalBindReq.setSession(registerReq.getSession());
+                terminalBindReq.setAuto(true);
+                terminalBindReq.setTerminalName("");
+                baseResp = userTermFacade.bindTerminal(terminalBindReq);
             }else{
-                updBindSts(registerReq, false);
+                TerminalBindReq terminalBindReq = new TerminalBindReq();
+                terminalBindReq.setSession(registerReq.getSession());
+                terminalBindReq.setAuto(false);
+                terminalBindReq.setTerminalName("");
+                baseResp = userTermFacade.bindTerminal(terminalBindReq);
             }
         }
         return baseResp;
@@ -220,6 +228,26 @@ public class UserFacade implements IUserFacade {
      */
     @Override
     public BaseResp login(LoginReq loginReq) {
+        BaseResp baseResp = chkLoginUser(loginReq);
+        if (baseResp.isOK()) {
+            /** 登录成功，检查更新终端绑定状态 */
+            TerminalBindReq terminalBindReq = new TerminalBindReq();
+            terminalBindReq.setSession(loginReq.getSession());
+            terminalBindReq.setAuto(loginReq.isAuto());
+            terminalBindReq.setTerminalName("");
+            baseResp = userTermFacade.bindTerminal(terminalBindReq);
+        }
+        // TODO:Token Generator
+        return baseResp;
+    }
+
+    /**
+     * 登录用户情报检查
+     *
+     * @param loginReq 登录请求
+     * @return
+     */
+    public BaseResp chkLoginUser(LoginReq loginReq){
         BaseResp baseResp = new BaseResp(false);
         CustomerLogin customerLogin = null;
         String sCurrentPass = "";
@@ -287,72 +315,8 @@ public class UserFacade implements IUserFacade {
                 baseResp = new BaseResp(false, PASS_WRONG, "密码错误");
             }
         }
-        if (baseResp.isOK()) {
-            /** 登录成功，检查更新终端绑定状态 */
-                updBindSts(loginReq, loginReq.isAuto());
-        }
-        // TODO:Token Generator
         return baseResp;
     }
-
-    /**
-     * 检查终端的绑定状态，绑定状态为解绑或从未绑定时，绑定终端
-     *
-     * @param baseReq  基本请求
-     * @param bAuto 是否自动登录
-     * @return
-     */
-    private void updBindSts(BaseReq baseReq, boolean bAuto) {
-
-        /** 获取绑定终端列表 */
-        List<Long> lstTermsId = (List<Long>) userTermFacade.getBoundTerminals(baseReq).getObjResult();
-        boolean bFlg = false;
-        for (Long lTermId : lstTermsId) {
-            if (baseReq.getSession().getTerminalId() == lTermId) {
-                bFlg = true;
-                break;
-            }
-        }
-        /** 未绑定终端*/
-        if (!bFlg) {
-            Map<String, Object> params = new HashMap<>();
-            params.put("customerId", baseReq.getSession().getCustomerId());
-            params.put("terminalId", baseReq.getSession().getTerminalId());
-            List<CustomerTerminal> lstCustomerTerms = customerTermDao.search(params);
-            /** 该终端从未绑定过*/
-            if (0 == lstCustomerTerms.size()) {
-                /** 获取默认终端名*/
-                CustomerTerminal customerTerm = new CustomerTerminal();
-                params.clear();
-                params.put("fingerprint", baseReq.getSession().getFingerprint());
-                List<Terminal> lstTerms = terminalDao.search(params);
-                params.clear();
-                if (0 == lstTerms.size()) {
-                    params.put("terminalName", "");
-                } else {
-                    params.put("terminalName", lstTerms.get(0).getDefaultName());
-                }
-                params.put("customerId", baseReq.getSession().getCustomerId());
-                params.put("terminalId", baseReq.getSession().getTerminalId());
-                params.put("bindStatusId", true);
-                params.put("currentOpTime", new Timestamp(System.currentTimeMillis()));
-                params.put("lastOpTime", new Timestamp(System.currentTimeMillis()));
-                params.put("firstBindTime", new Timestamp(System.currentTimeMillis()));
-                params.put("isAutoLogin", bAuto);
-                //TODO:lastLoginToken
-                params.put("lastLoginToken", "");
-                /** 插入用户终端信息*/
-                customerTermDao.save(customerTerm);
-            } else {
-                /** 该终端为解绑状态 */
-                CustomerTerminal updCustomerTerm = lstCustomerTerms.get(0);
-                updCustomerTerm.setBindStatus(true);
-                /** 更新用户终端绑定状态 */
-                customerTermDao.update(updCustomerTerm);
-            }
-        }
-    }
-
     /**
      * 验证终端Token
      *
