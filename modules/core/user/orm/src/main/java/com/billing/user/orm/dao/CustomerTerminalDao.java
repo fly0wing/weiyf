@@ -17,9 +17,9 @@ public interface CustomerTerminalDao {
 
     List<CustomerTerminal> search(Map<String, Object> params);
 
-    void save(CustomerTerminal obj);
+    boolean save(CustomerTerminal obj);
 
-    void update(CustomerTerminal obj);
+    boolean update(CustomerTerminal obj);
 
-    void delete(@Param("id") Long id);
+    boolean delete(@Param("id") Long id);
 }

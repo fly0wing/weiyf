@@ -17,9 +17,9 @@ public interface TerminalActivateDao {
 
     List<TerminalActivate> search(Map<String, Object> params);
 
-    void save(TerminalActivate obj);
+    boolean save(TerminalActivate obj);
 
-    void update(TerminalActivate obj);
+    boolean update(TerminalActivate obj);
 
-    void delete(@Param("id") Long id);
+    boolean delete(@Param("id") Long id);
 }

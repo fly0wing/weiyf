@@ -18,14 +18,14 @@
     <!-- 数据库连接池c3p0配置 -->
     <bean id="userDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
           destroy-method="close">
-        <property name="jdbcUrl" value="${db.product.url}"/>
-        <property name="driverClass" value="${db.product.driverClassName}"/>
-        <property name="user" value="${db.product.username}"/>
-        <property name="password" value="${db.product.password}"/>
-        <property name="maxPoolSize" value="${db.product.maxPoolSize}"/>
-        <property name="minPoolSize" value="${db.product.minPoolSize}"/>
-        <property name="initialPoolSize" value="${db.product.initialPoolSize}"/>
-        <property name="maxIdleTime" value="${db.product.maxIdleTime}"/>
+        <property name="jdbcUrl" value="${db.user.url}"/>
+        <property name="driverClass" value="${db.user.driverClassName}"/>
+        <property name="user" value="${db.user.username}"/>
+        <property name="password" value="${db.user.password}"/>
+        <property name="maxPoolSize" value="${db.user.maxPoolSize}"/>
+        <property name="minPoolSize" value="${db.user.minPoolSize}"/>
+        <property name="initialPoolSize" value="${db.user.initialPoolSize}"/>
+        <property name="maxIdleTime" value="${db.user.maxIdleTime}"/>
     </bean>
 
     <bean id="userSqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean" primary="true">
@@ -34,16 +34,14 @@
         <property name="typeAliasesPackage" value="com.billing.user.orm" />
     </bean>
 
-
-<!--    <bean id="transactionManager" class="org.springframework.transaction.jta.JtaTransactionManager">
-        <property name="" ref="userSqlSessionFactory"/>
-    </bean>-->
-
-    <!--<tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true" />-->
-
-    <!--创建数据映射器，数据映射器必须为接口-->
-<!--    <bean id="userMapper" class="org.mybatis.spring.mapper.MapperFactoryBean" primary="true">
-        <property name="mapperInterface" value="com.billing.web.dao" />
-        <property name="sqlSessionFactory" ref="sqlSessionFactory" />
-    </bean>-->
+    <bean id="userTransactionManager"
+          class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="userDataSource" />
+    </bean>
+    
+    <!-- 扫描basePackage下所有以@MyBatisRepository标识的 接口-->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.billing" />
+        <property name="annotationClass" value="com.billing.utils.mybatis.MyBatisRepository"/>
+    </bean>
 </beans>

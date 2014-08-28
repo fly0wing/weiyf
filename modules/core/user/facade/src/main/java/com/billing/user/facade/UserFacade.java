@@ -2,6 +2,7 @@ package com.billing.user.facade;
 
 import com.billing.internalcontract.BaseReq;
 import com.billing.internalcontract.BaseResp;
+import com.billing.internalcontract.UserSession;
 import com.billing.internalcontract.user.*;
 import com.billing.user.orm.dao.CustomerLoginDao;
 import com.billing.user.orm.dao.CustomerTerminalDao;
@@ -10,9 +11,11 @@ import com.billing.user.orm.model.CustomerTerminal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
-import java.util.function.Predicate;
+import java.util.Map;
+import java.util.Random;
 
 /**
  * Created by zkai on 2014/8/26.
@@ -26,71 +29,224 @@ public class UserFacade implements IUserFacade {
     @Autowired
     private CustomerLoginDao customerLoginDao;
 
-    private final static int SUCCESS = 0;
-    private final static int USER_NOT_EXISTS = 1;
-    private final static int TERM_NOT_EXISTS = 2;
-    private final static int PASS_WRONG = 3;
-    private final static int TOKEN_WRONG = 4;
+    //成功
+    public final static int SUCCESS = 0;
+    //用户不存在
+    public final static int USER_NOT_EXISTS = 1;
+    //客户端不存在
+    public final static int TERM_NOT_EXISTS = 2;
+    //密码错误
+    public final static int PASS_WRONG = 3;
+    //令牌错误
+    public final static int TOKEN_WRONG = 4;
+    //注册失败
+    public final static int REG_FAILED = 5;
+    //用户名已注册
+    public final static int USER_ALREADY_EXISTS = 6;
+    //Email已注册
+    public final static int EMAIL_ALREADY_EXISTS = 7;
+    //电话号码已注册
+    public final static int PHONE_ALREADY_EXISTS = 8;
+    //密码更新失败
+    public final static int PASS_UPD_FAILED = 9;
+    //参数错误
+    public final static int PARAM_ERROR = -1;
+    //SESSION失效
+    public final static int SESSION_ERROR = -2;
 
+    //安全级别：匿名
+    public final static int REG_ANONYMOUS = 0;
+    //安全级别：用户名绑定
+    public final static int REG_LOGIN_NAME = 1;
+    //安全级别：Email绑定
+    public final static int REG_EMAIL = 2;
+    //安全级别：电话号码绑定
+    public final static int REG_PHONE = 4;
+
+    /**
+     * 用户注册，如果该终端上已经存在匿名注册的用户，直接绑定到该匿名用户上。
+     *
+     * @param registerReq
+     * @return
+     */
     @Override
     public BaseResp register(RegisterReq registerReq) {
-
-        return null;
+        BaseResp baseResp = new BaseResp(false);
+        CustomerLogin customerLogin = new CustomerLogin();
+        boolean bAnonymousFlg = false;
+        //SESSION检查
+        if (null == registerReq.getSession()) {
+            return new BaseResp(false, SESSION_ERROR, "SESSION失效");
+        }
+        //输入参数检查(匿名模式除外）
+        if (LoginAccountEnum.Anonymous != registerReq.getLoginAccountType() && null == registerReq.getLoginAccount()) {
+            return new BaseResp(true, PARAM_ERROR, "输入参数错误");
+        }
+        switch (registerReq.getLoginAccountType()) {
+            //匿名注册模式
+            case Anonymous:
+                //TODO:Anonymous ID
+                customerLogin = loginDao.getByLoginName(registerReq.getLoginAccount());
+                if (null != customerLogin) {
+                    return new BaseResp(false, USER_ALREADY_EXISTS, "匿名用户已注册");
+                }
+                customerLogin.setEnabled(true);
+                customerLogin.setIsAnonymous(true);
+                customerLogin.setLoginName(registerReq.getLoginAccount());
+                customerLogin.setRequirePasswordChange(true);
+                customerLogin.setSecurityLevel(REG_ANONYMOUS);
+                //用户名注册模式
+            case LoginName:
+                customerLogin = loginDao.getByLoginName(registerReq.getLoginAccount());
+                if (null != customerLogin) {
+                    return new BaseResp(true, USER_ALREADY_EXISTS, "用户名已注册");
+                }
+                if (SUCCESS == chkToken(customerLogin.getId(), registerReq.getSession().getTerminalId(), registerReq.getSession())) {
+                    bAnonymousFlg = true;
+                    customerLogin.setLoginName(registerReq.getLoginAccount());
+                    customerLogin.setSecurityLevel(customerLogin.getSecurityLevel() + REG_LOGIN_NAME);
+                } else {
+                    customerLogin.setEnabled(true);
+                    customerLogin.setIsAnonymous(false);
+                    customerLogin.setLoginName(registerReq.getLoginAccount());
+                    customerLogin.setCurrentPassword(registerReq.getPassword());
+                    customerLogin.setRequirePasswordChange(false);
+                    customerLogin.setSecurityLevel(REG_LOGIN_NAME);
+                }
+                break;
+            // Email注册模式
+            case LoginEmail:
+                customerLogin = loginDao.getByLoginEmail(registerReq.getLoginAccount());
+                if (null != customerLogin) {
+                    return new BaseResp(true, EMAIL_ALREADY_EXISTS, "Email已注册");
+                }
+                if (SUCCESS == chkToken(customerLogin.getId(), registerReq.getSession().getTerminalId(), registerReq.getSession())) {
+                    bAnonymousFlg = true;
+                    customerLogin.setLoginEmail(registerReq.getLoginAccount());
+                    customerLogin.setSecurityLevel(customerLogin.getSecurityLevel() + REG_EMAIL);
+                } else {
+                    customerLogin.setEnabled(true);
+                    customerLogin.setIsAnonymous(false);
+                    customerLogin.setLoginEmail(registerReq.getLoginAccount());
+                    customerLogin.setCurrentPassword(registerReq.getPassword());
+                    customerLogin.setRequirePasswordChange(false);
+                    customerLogin.setSecurityLevel(REG_EMAIL);
+                }
+                break;
+            // 电话注册模式
+            case LoginPhone:
+                customerLogin = loginDao.getByLoginPhone(registerReq.getLoginAccount());
+                if (null != customerLogin) {
+                    return new BaseResp(true, PHONE_ALREADY_EXISTS, "电话号码已注册");
+                }
+                if (SUCCESS == chkToken(customerLogin.getId(), registerReq.getSession().getTerminalId(), registerReq.getSession())) {
+                    bAnonymousFlg = true;
+                    customerLogin.setLoginPhone(registerReq.getLoginAccount());
+                    customerLogin.setSecurityLevel(customerLogin.getSecurityLevel() + REG_PHONE);
+                } else {
+                    customerLogin.setEnabled(true);
+                    customerLogin.setIsAnonymous(false);
+                    customerLogin.setLoginPhone(registerReq.getLoginAccount());
+                    customerLogin.setCurrentPassword(registerReq.getPassword());
+                    customerLogin.setRequirePasswordChange(false);
+                    customerLogin.setSecurityLevel(REG_PHONE);
+                }
+                break;
+        }
+        //客户端存在匿名用户，绑定匿名用户
+        if (bAnonymousFlg) {
+            customerLogin.setIsAnonymous(false);
+            customerLogin.setCurrentPassword(registerReq.getPassword());
+            customerLogin.setRequirePasswordChange(false);
+            customerLogin.setNickname("");
+            customerLogin.setLastLoginTime(new Timestamp(System.currentTimeMillis()));
+            customerLogin.setRegisterTime(new Timestamp(System.currentTimeMillis()));
+            if (customerLoginDao.update(customerLogin)) {
+                baseResp = new BaseResp(true, SUCCESS);
+            } else {
+                baseResp = new BaseResp(true, REG_FAILED, "注册失败");
+            }
+        } else {
+            //客户端无匿名用户
+            //TODO:SessionId
+            customerLogin.setFirstSessionId(1L);
+//                customerLogin.setId(Session.getId());
+            customerLogin.setNickname("");
+            customerLogin.setLastLoginTime(new Timestamp(System.currentTimeMillis()));
+            customerLogin.setRegisterTime(new Timestamp(System.currentTimeMillis()));
+            if (customerLoginDao.save(customerLogin)) {
+                baseResp = new BaseResp(true, SUCCESS);
+            } else {
+                baseResp = new BaseResp(true, REG_FAILED, "注册失败");
+            }
+        }
+        // TODO:Token Generator
+        return baseResp;
     }
 
+    /**
+     * 用户登录，确定会话中的用户标识
+     *
+     * @param loginReq
+     * @return
+     */
     @Override
     public BaseResp login(LoginReq loginReq) {
         BaseResp baseResp = new BaseResp(false);
         CustomerLogin customerLogin = null;
         String sCurrentPass = "";
-        HashMap<String, Object> params = new HashMap<>();
+        Map<String, Object> params = new HashMap<>();
+        //SESSION检查
+        if (null == loginReq.getSession()) {
+            return new BaseResp(false, SESSION_ERROR, "SESSION失效");
+        }
+        //输入参数检查(匿名模式除外）
+        if (LoginAccountEnum.Anonymous != loginReq.getLoginAccountType() && null == loginReq.getLoginAccount()) {
+            return new BaseResp(true, PARAM_ERROR, "输入参数错误");
+        }
         switch (loginReq.getLoginAccountType()) {
             case Anonymous:
-                //TODO:ID
-                customerLogin = loginDao.get(Long.parseLong(loginReq.getLoginAccount()));
+                //TODO:Anonymous ID
+                customerLogin = loginDao.getByLoginName(loginReq.getLoginAccount());
                 if (null == customerLogin) {
                     return new BaseResp(false, USER_NOT_EXISTS, "用户不存在");
-                } else {
-                    sCurrentPass = customerLogin.getCurrentPassword();
                 }
                 break;
+            //用户名LOGIN 模式
             case LoginName:
                 customerLogin = loginDao.getByLoginName(loginReq.getLoginAccount());
                 if (null == customerLogin) {
                     return new BaseResp(false, USER_NOT_EXISTS, "用户不存在");
-                } else {
+                } else if (!loginReq.isAuto()) {
                     sCurrentPass = customerLogin.getCurrentPassword();
                 }
                 break;
+            // Email LOGIN模式
             case LoginEmail:
                 customerLogin = loginDao.getByLoginEmail(loginReq.getLoginAccount());
                 if (null == customerLogin) {
-                    return new BaseResp(false, USER_NOT_EXISTS, "用户不存在");
-                } else {
+                    return new BaseResp(false, TERM_NOT_EXISTS, "用户不存在");
+                } else if (!loginReq.isAuto()) {
                     sCurrentPass = customerLogin.getCurrentPassword();
                 }
                 break;
+            // 电话LOGIN模式
             case LoginPhone:
                 customerLogin = loginDao.getByLoginPhone(loginReq.getLoginAccount());
                 if (null == customerLogin) {
                     baseResp = new BaseResp(false, USER_NOT_EXISTS, "用户不存在");
-                }
-                else {
+                } else if (!loginReq.isAuto()) {
                     sCurrentPass = customerLogin.getCurrentPassword();
                 }
                 break;
         }
         if (loginReq.isAuto()) {
-            params.put("customerId", customerLogin.getId());
-            params.put("terminalId", loginReq.getSession().getTerminalId());
-            List<CustomerTerminal> lstTerm = terminalDao.search(params);
-            if (lstTerm.size() > 0) {
-                if (lstTerm.get(0).getLastLoginToken().equals(loginReq.getSession().getSessionToken())) {
-                    baseResp = new BaseResp(true, SUCCESS, "");
-                } else {
-                    baseResp = new BaseResp(true, TOKEN_WRONG, "客户端令牌错误");
-                }
-            } else {
+            int iRet = chkToken(customerLogin.getId(), loginReq.getSession().getTerminalId(), loginReq.getSession());
+            if (SUCCESS == iRet) {
+                baseResp = new BaseResp(true, SUCCESS, "");
+            } else if (TOKEN_WRONG == iRet) {
+                baseResp = new BaseResp(true, TOKEN_WRONG, "客户端令牌错误");
+            } else if (TERM_NOT_EXISTS == iRet) {
                 baseResp = new BaseResp(true, TERM_NOT_EXISTS, "客户端不存在");
             }
         } else {
@@ -100,41 +256,177 @@ public class UserFacade implements IUserFacade {
                 baseResp = new BaseResp(false, PASS_WRONG, "密码错误");
             }
         }
+        // TODO:Token Generator
         return baseResp;
     }
 
+    /**
+     * 验证终端Token
+     *
+     * @param lCustomerId
+     * @param lTermId
+     * @param session
+     * @return
+     */
+    private int chkToken(Long lCustomerId, Long lTermId, UserSession session) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("customerId", lCustomerId);
+        params.put("terminalId", lTermId);
+        List<CustomerTerminal> lstTerm = terminalDao.search(params);
+        if (lstTerm.size() > 0) {
+            if (lstTerm.get(0).getLastLoginToken().equals(session.getSessionToken())) {
+                return SUCCESS;
+            } else {
+                return TOKEN_WRONG;
+            }
+        } else {
+            return TERM_NOT_EXISTS;
+        }
+    }
+
+    /**
+     * 用户登出，主动结束会话，会话从内存及缓存中移除。
+     *
+     * @param baseReq
+     * @return void
+     */
     @Override
     public void loginout(BaseReq baseReq) {
-
+        //TODO:
+        //session.delete(baseReq.getSession().getSessionId());
     }
 
+    /**
+     * 绑定手机号，在绑定前需要调用requestActionToken方法，传入待绑定的手机号，请求发送actionToken；
+     * 在用户输入收到的actionToken后，再调用本方法传入用户输入的actionToken，以及请求actionToken时的reuestGuid:atRequestGuid。
+     *
+     * @param baseReq
+     * @return
+     */
     @Override
     public BaseResp bindPhone(BaseReq baseReq) {
+
         return null;
     }
 
+    /**
+     * 修改密码:stringReq传入老的密码，stringReq2传入新的密码
+     *
+     * @param baseReq
+     * @return
+     */
     @Override
     public BaseResp changePassword(BaseReq baseReq) {
-        return null;
+        BaseResp baseResp = new BaseResp(false);
+        CustomerLogin customerLogin = customerLoginDao.get(baseReq.getSession().getCustomerId());
+        //SESSION检查
+        if (null == baseReq.getSession()) {
+            return new BaseResp(false, SESSION_ERROR, "SESSION失效");
+        }
+        //输入参数检查(匿名模式除外）
+        if (null == baseReq.getStringReq() || null == baseReq.getStringReq2()) {
+            return new BaseResp(true, PARAM_ERROR, "输入参数错误");
+        }
+        if (null == customerLogin) {
+            baseResp = new BaseResp(false, USER_NOT_EXISTS, "用户不存在");
+        } else if (!baseReq.getStringReq().equals(customerLogin.getCurrentPassword())) {
+            baseResp = new BaseResp(false, PASS_WRONG, "现密码错误");
+        } else {
+            customerLogin.setCurrentPassword(baseReq.getStringReq2());
+            if (customerLoginDao.update(customerLogin)) {
+                baseResp = new BaseResp(true, SUCCESS, "");
+            } else {
+                baseResp = new BaseResp(true, PASS_UPD_FAILED, "密码更新失败");
+            }
+        }
+        return baseResp;
     }
 
+    /**
+     * 检查登录名(stringReq:用户LoginName)
+     *
+     * @param baseReq
+     * @return
+     */
     @Override
     public BaseResp checkLoginName(BaseReq baseReq) {
-        return null;
+        CustomerLogin customerLogin = null;
+        //输入参数检查(匿名模式除外）
+        if (null == baseReq.getStringReq()) {
+            return new BaseResp(true, PARAM_ERROR, "输入参数错误");
+        }
+        customerLogin = loginDao.getByLoginName(baseReq.getStringReq());
+        if (null == customerLogin) {
+            return new BaseResp(true, USER_NOT_EXISTS, "用户不存在");
+        } else {
+            return new BaseResp(true, USER_ALREADY_EXISTS, "用户名已注册");
+        }
     }
 
+    /**
+     * 检查登录电话号码(longReq:电话号码)
+     *
+     * @param baseReq
+     * @return
+     */
     @Override
     public BaseResp checkLoginPhone(BaseReq baseReq) {
-        return null;
+        CustomerLogin customerLogin = null;
+        customerLogin = loginDao.getByLoginPhone(String.valueOf(baseReq.getLongReq()));
+        if (null == customerLogin) {
+            return new BaseResp(true, USER_NOT_EXISTS, "用户不存在");
+        } else {
+            return new BaseResp(true, PHONE_ALREADY_EXISTS, "电话号码已注册");
+        }
     }
 
+    /**
+     * 请求操作口令，例如：绑定手机号时，需要请求发送验证短信。
+     *
+     * @param actionTokenReq
+     * @return
+     */
     @Override
     public BaseResp requestActionToken(ActionTokenReq actionTokenReq) {
-        return null;
+        BaseResp baseResp = new BaseResp(true);
+        baseResp.getSession().setSessionToken(makeActionToken(6));
+        //TODO:Guid
+        baseResp.setRequestGuid("");
+        return baseResp;
     }
 
+    /**
+     * 验证操作口令。
+     *
+     * @param baseReq
+     * @return
+     */
     @Override
     public BaseResp authActionToken(BaseReq baseReq) {
         return null;
+    }
+
+    /**
+     * 验证码生成。
+     *
+     * @param iLen
+     * @return
+     */
+    private static String makeActionToken(int iLen) {
+        Random r = new Random();
+        String sRtn = "";
+        char cRandomChar;
+        for (int i = 0; i < iLen; i++) {
+            int iAscii = r.nextInt(62);
+            if (iAscii < 10) {
+                cRandomChar = (char) ('0' + iAscii);
+            } else if(iAscii < 36) {
+                cRandomChar = (char) ('a' + (iAscii - 10));
+            } else{
+                cRandomChar = (char) ('A' + (iAscii - 36));
+            }
+            sRtn += String.valueOf(cRandomChar);
+        }
+        return sRtn;
     }
 }

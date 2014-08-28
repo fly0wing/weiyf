@@ -7,6 +7,11 @@ import static org.junit.Assert.*;
 public class UserTerminalFacadeTest {
 
     @Test
+    public void testActiveTerminal() throws Exception {
+
+    }
+
+    @Test
     public void testBindTerminal() throws Exception {
 
     }
