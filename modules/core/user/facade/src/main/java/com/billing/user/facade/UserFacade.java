@@ -1,8 +1,10 @@
 package com.billing.user.facade;
 
+import com.billing.internalcontract.ActionTokenEnum;
 import com.billing.internalcontract.BaseReq;
 import com.billing.internalcontract.BaseResp;
 import com.billing.internalcontract.UserSession;
+import com.billing.internalcontract.session.ISessionFacade;
 import com.billing.internalcontract.user.*;
 import com.billing.user.orm.dao.CustomerLoginDao;
 import com.billing.user.orm.dao.CustomerTerminalDao;
@@ -10,6 +12,7 @@ import com.billing.user.orm.dao.TerminalDao;
 import com.billing.user.orm.model.CustomerLogin;
 import com.billing.user.orm.model.CustomerTerminal;
 import com.billing.user.orm.model.Terminal;
+import com.mchange.lang.LongUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +24,7 @@ import java.util.Map;
 import java.util.Random;
 
 /**
+ * 用户服务
  * Created by zkai on 2014/8/26.
  */
 @Service
@@ -35,6 +39,11 @@ public class UserFacade implements IUserFacade {
     private TerminalDao terminalDao;
 
     IUserTerminalFacade userTermFacade = new UserTerminalFacade();
+
+    //TODO: Dummy token服务
+    Map<String,Object[]> mToken = new HashMap<String, Object[]>();
+    //TODO: Dummy sessionFacade
+//    ISessionFacade sessionFacade = new SessionFacade();
 
     public final static int UNIT_USER_FACADE = 1000;
     //成功
@@ -76,7 +85,7 @@ public class UserFacade implements IUserFacade {
     /**
      * 用户注册，如果该终端上已经存在匿名注册的用户，直接绑定到该匿名用户上。
      *
-     * @param registerReq
+     * @param registerReq 注册请求
      * @return
      */
     @Override
@@ -206,8 +215,8 @@ public class UserFacade implements IUserFacade {
     /**
      * 用户登录，确定会话中的用户标识
      *
-     * @param loginReq
-     * @return 返回结果
+     * @param loginReq 登录请求
+     * @return
      */
     @Override
     public BaseResp login(LoginReq loginReq) {
@@ -289,8 +298,8 @@ public class UserFacade implements IUserFacade {
     /**
      * 检查终端的绑定状态，绑定状态为解绑或从未绑定时，绑定终端
      *
-     * @param baseReq
-     * @param bAuto
+     * @param baseReq  基本请求
+     * @param bAuto 是否自动登录
      * @return
      */
     private void updBindSts(BaseReq baseReq, boolean bAuto) {
@@ -347,9 +356,9 @@ public class UserFacade implements IUserFacade {
     /**
      * 验证终端Token
      *
-     * @param lCustomerId
-     * @param lTermId
-     * @param session
+     * @param lCustomerId 客户ID
+     * @param lTermId 终端ID
+     * @param session Session
      * @return
      */
     private int chkToken(Long lCustomerId, Long lTermId, UserSession session) {
@@ -371,32 +380,51 @@ public class UserFacade implements IUserFacade {
     /**
      * 用户登出，主动结束会话，会话从内存及缓存中移除。
      *
-     * @param baseReq
-     * @return void
+     * @param baseReq 基本请求
+     * @return
      */
     @Override
     public void loginout(BaseReq baseReq) {
         //TODO:
-        //session.delete(baseReq.getSession().getSessionId());
+        //sessionFacade.stopSession(baseReq);
     }
 
     /**
      * 绑定手机号，在绑定前需要调用requestActionToken方法，传入待绑定的手机号，请求发送actionToken；
      * 在用户输入收到的actionToken后，再调用本方法传入用户输入的actionToken，以及请求actionToken时的reuestGuid:atRequestGuid。
+     * stringReq传入电话号码
      *
-     * @param baseReq
+     * @param baseReq 基本请求
      * @return
      */
     @Override
     public BaseResp bindPhone(BaseReq baseReq) {
+        BaseResp baseResp = new BaseResp(false);
+        /** SESSION检查 */
+        if (null == baseReq.getSession()) {
+            return new BaseResp(true, SESSION_ERROR, "SESSION失效");
+        }
+        if(StringUtils.isBlank(baseReq.getStringReq())){
+            return new BaseResp(true, PARAM_ERROR, "输入参数错误");
+        }
+        CustomerLogin customerLogin = customerLoginDao.get(baseReq.getSession().getCustomerId());
 
-        return null;
+        customerLogin.setLoginPhone(baseReq.getStringReq());
+        if(0 < customerLogin.getLoginPhone().length()){
+            customerLogin.setSecurityLevel(customerLogin.getSecurityLevel() + REG_PHONE);
+        };
+        if (customerLoginDao.update(customerLogin)) {
+            baseResp = new BaseResp(true, SUCCESS);
+        } else {
+            baseResp = new BaseResp(true, REG_FAILED, "注册失败");
+        }
+        return baseResp;
     }
 
     /**
      * 修改密码:stringReq传入老的密码，stringReq2传入新的密码
      *
-     * @param baseReq
+     * @param baseReq 基本请求
      * @return
      */
     @Override
@@ -429,7 +457,7 @@ public class UserFacade implements IUserFacade {
     /**
      * 检查登录名(stringReq:用户LoginName)
      *
-     * @param baseReq
+     * @param baseReq 基本请求
      * @return
      */
     @Override
@@ -450,7 +478,7 @@ public class UserFacade implements IUserFacade {
     /**
      * 检查登录电话号码(longReq:电话号码)
      *
-     * @param baseReq
+     * @param baseReq 基本请求
      * @return
      */
     @Override
@@ -467,22 +495,22 @@ public class UserFacade implements IUserFacade {
     /**
      * 请求操作口令，例如：绑定手机号时，需要请求发送验证短信。
      *
-     * @param actionTokenReq
+     * @param actionTokenReq 行动令牌请求
      * @return
      */
     @Override
     public BaseResp requestActionToken(ActionTokenReq actionTokenReq) {
         BaseResp baseResp = new BaseResp(true);
-        baseResp.getSession().setSessionToken(makeActionToken(6));
-        //TODO:Guid
-        baseResp.setRequestGuid("");
+        if(ActionTokenEnum.Sms.equals(actionTokenReq.getActionTokenType())) {
+            mToken.put(actionTokenReq.getRequestGuid(),new Object[]{actionTokenReq.getPhone(),makeActionToken(6)});
+        }
         return baseResp;
     }
 
     /**
      * 验证操作口令。
      *
-     * @param baseReq
+     * @param baseReq 基本请求
      * @return
      */
     @Override
@@ -492,10 +520,11 @@ public class UserFacade implements IUserFacade {
             return new BaseResp(false, SESSION_ERROR, "SESSION失效");
         }
         //输入参数检查(匿名模式除外）
-        if (StringUtils.isBlank(baseReq.getActionToken())) {
+        if (StringUtils.isBlank(baseReq.getAtRequestGuid())) {
             return new BaseResp(true, PARAM_ERROR, "输入参数错误");
         }
-        if (baseReq.getActionToken().equals(baseReq.getSession().getSessionToken())) {
+        Object[] oInfo = mToken.get(baseReq.getAtRequestGuid());
+        if (baseReq.getActionToken().equals(String.valueOf(oInfo[1]))) {
             return new BaseResp(true, SUCCESS);
         } else {
             return new BaseResp(true, TOKEN_ERROR, "输入验证码错误");
@@ -505,7 +534,7 @@ public class UserFacade implements IUserFacade {
     /**
      * 验证码生成。
      *
-     * @param iLen
+     * @param iLen 验证码长度
      * @return
      */
     private static String makeActionToken(int iLen) {
