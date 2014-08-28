@@ -38,6 +38,14 @@
                 </excludes>
             </resource>
         </resources>
+        <plugins>
+            <plugin>
+                <groupId>com.googlecode.rapid-framework</groupId>
+                <artifactId>rapid-plugins</artifactId>
+                <version>4.0.7-SNAPSHOT</version>
+            </plugin>
+        </plugins>
+
     </build>
 
 </project>

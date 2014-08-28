@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.billing.product.orm.dao.ContactMechDao">
+
+
+    <!-- 字段名转换 -->
+    <resultMap id="RM_ContactMech" type="com.billing.product.orm.model.ContactMech">
+        <result property="id" column="id"/>
+        <result property="contactMechTypeId" column="contact_mech_type_id"/>
+        <result property="stringInfo" column="string_info"/>
+        <result property="contactName" column="contact_name"/>
+        <result property="contactPhoneArea" column="contact_phone_area"/>
+        <result property="contactPhone" column="contact_phone"/>
+        <result property="contactPhone1Area" column="contact_phone1_area"/>
+        <result property="contactPhone1" column="contact_phone1"/>
+        <result property="contactQq" column="contact_qq"/>
+        <result property="lastUpdatedStamp" column="last_updated_stamp"/>
+        <result property="createdStamp" column="created_stamp"/>
+    </resultMap>
+
+    <!-- 查询字段 -->
+    <sql id="ContactMech_columns">
+        <![CDATA[
+    id,contact_mech_type_id,string_info,contact_name,contact_phone_area,contact_phone,contact_phone1_area,contact_phone1,contact_qq,last_updated_stamp,created_stamp
+        ]]>
+    </sql>
+
+
+    <select id="get" parameterType="map" resultMap="RM_ContactMech">
+        select
+        <include refid="ContactMech_columns" />
+        from contact_mech
+        WHERE
+            <if test="@Ognl@isEmpty(id)">
+                1 = 0 AND
+            </if>
+            id = #{id} 
+    </select>
+
+    <!-- 查询用户,演示: 1.输入用map传入多个参数 2.<where>语句, 智能添加where和and关键字 3.输出直接映射对象 -->
+    <select id="search" parameterType="map" resultMap="RM_ContactMech">
+        select
+        <include refid="ContactMech_columns" />
+        from contact_mech
+        <where>
+                    <if test="@Ognl@isNotEmpty(id)">
+            AND id = #{id}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(contactMechTypeId)">
+            AND contact_mech_type_id = #{contactMechTypeId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(stringInfo)">
+            AND string_info = #{stringInfo}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(contactName)">
+            AND contact_name = #{contactName}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(contactPhoneArea)">
+            AND contact_phone_area = #{contactPhoneArea}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(contactPhone)">
+            AND contact_phone = #{contactPhone}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(contactPhone1Area)">
+            AND contact_phone1_area = #{contactPhone1Area}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(contactPhone1)">
+            AND contact_phone1 = #{contactPhone1}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(contactQq)">
+            AND contact_qq = #{contactQq}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(lastUpdatedStampBegin)">
+            AND last_updated_stamp >= #{lastUpdatedStampBegin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(lastUpdatedStampEnd)">
+            AND last_updated_stamp &lt;= #{lastUpdatedStampEnd}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(createdStampBegin)">
+            AND created_stamp >= #{createdStampBegin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(createdStampEnd)">
+            AND created_stamp &lt;= #{createdStampEnd}
+                    </if>
+        </where>
+    </select>
+
+    <!-- 插入 -->
+    <insert id="save" parameterType="com.billing.product.orm.model.ContactMech" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO contact_mech (
+             contact_mech_type_id, string_info, contact_name, contact_phone_area, contact_phone, contact_phone1_area, contact_phone1, contact_qq, last_updated_stamp, created_stamp
+        ) VALUES (
+             #{contactMechTypeId}, #{stringInfo}, #{contactName}, #{contactPhoneArea}, #{contactPhone}, #{contactPhone1Area}, #{contactPhone1}, #{contactQq}, #{lastUpdatedStamp}, #{createdStamp}
+        )
+    </insert>
+
+    <delete id="delete">
+        DELETE FROM contact_mech WHERE
+        id = #{id} 
+    </delete>
+
+    <update id="update" >
+        <![CDATA[
+        UPDATE contact_mech SET
+    contact_mech_type_id = #{contactMechTypeId} , string_info = #{stringInfo} , contact_name = #{contactName} , contact_phone_area = #{contactPhoneArea} , contact_phone = #{contactPhone} , contact_phone1_area = #{contactPhone1Area} , contact_phone1 = #{contactPhone1} , contact_qq = #{contactQq} , last_updated_stamp = #{lastUpdatedStamp} , created_stamp = #{createdStamp}  
+        WHERE
+    id = #{id}  
+        ]]>
+    </update>
+
+</mapper>

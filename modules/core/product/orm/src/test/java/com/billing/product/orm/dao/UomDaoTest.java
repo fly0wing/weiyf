@@ -1,6 +1,6 @@
 package com.billing.product.orm.dao;
 
-import com.billing.product.orm.model.Customer;
+import com.billing.product.orm.model.Uom;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -17,18 +17,36 @@ import static org.junit.Assert.*;
 @RunWith(SpringJUnit4ClassRunner.class)
 @DirtiesContext
 @ContextConfiguration(locations = {"classpath:applicationContext-private.xml","classpath:applicationContext-db-product.xml"})
-@TransactionConfiguration(
-        transactionManager = "", defaultRollback=true)
-public class CustomerDaoTest {
+// @TransactionConfiguration(
+//        transactionManager = "", defaultRollback=true)
+public class UomDaoTest {
 
-    private static final Logger logger = LoggerFactory.getLogger(CustomerDaoTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(UomDaoTest.class);
     @Autowired
-    CustomerDao customerDao;
+    UomDao uomDao;
 
     @Test
-    public void testFindById() throws Exception {
-        Customer byId = customerDao.findById(1L);
+    public void testGet() throws Exception {
+        assertNotNull(null);
+    }
 
-        assertNotNull(byId);
+    @Test
+    public void testSearch() throws Exception {
+        assertNotNull(null);
+    }
+
+    @Test
+    public void testSave() throws Exception {
+        assertNotNull(null);
+    }
+
+    @Test
+    public void testUpdate() throws Exception {
+        assertNotNull(null);
+    }
+
+    @Test
+    public void testDelete() throws Exception {
+        assertNotNull(null);
     }
 }

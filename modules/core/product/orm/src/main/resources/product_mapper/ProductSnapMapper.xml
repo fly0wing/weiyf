@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.billing.product.orm.dao.ProductSnapDao">
+
+
+    <!-- 字段名转换 -->
+    <resultMap id="RM_ProductSnap" type="com.billing.product.orm.model.ProductSnap">
+        <result property="id" column="id"/>
+        <result property="productId" column="product_id"/>
+        <result property="partyId" column="party_id"/>
+        <result property="domainId" column="domain_id"/>
+        <result property="appId" column="app_id"/>
+        <result property="entryId" column="entry_id"/>
+        <result property="productName" column="product_name"/>
+        <result property="billingPrincipalEnumId" column="billing_principal_enum_id"/>
+        <result property="quantityUomId" column="quantity_uom_id"/>
+        <result property="quantityIncluded" column="quantity_included"/>
+        <result property="priceUomId" column="price_uom_id"/>
+        <result property="priceAmount" column="price_amount"/>
+        <result property="includeInPromotions" column="include_in_promotions"/>
+        <result property="lastModifiedDate" column="last_modified_date"/>
+        <result property="lastModifiedByUserLogin" column="last_modified_by_user_login"/>
+        <result property="createdDate" column="created_date"/>
+        <result property="createdByUserLogin" column="created_by_user_login"/>
+    </resultMap>
+
+    <!-- 查询字段 -->
+    <sql id="ProductSnap_columns">
+        <![CDATA[
+    id,product_id,party_id,domain_id,app_id,entry_id,product_name,billing_principal_enum_id,quantity_uom_id,quantity_included,price_uom_id,price_amount,include_in_promotions,last_modified_date,last_modified_by_user_login,created_date,created_by_user_login
+        ]]>
+    </sql>
+
+
+    <select id="get" parameterType="map" resultMap="RM_ProductSnap">
+        select
+        <include refid="ProductSnap_columns" />
+        from product_snap
+        WHERE
+            <if test="@Ognl@isEmpty(id)">
+                1 = 0 AND
+            </if>
+            id = #{id} 
+    </select>
+
+    <!-- 查询用户,演示: 1.输入用map传入多个参数 2.<where>语句, 智能添加where和and关键字 3.输出直接映射对象 -->
+    <select id="search" parameterType="map" resultMap="RM_ProductSnap">
+        select
+        <include refid="ProductSnap_columns" />
+        from product_snap
+        <where>
+                    <if test="@Ognl@isNotEmpty(id)">
+            AND id = #{id}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(productId)">
+            AND product_id = #{productId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(partyId)">
+            AND party_id = #{partyId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(domainId)">
+            AND domain_id = #{domainId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(appId)">
+            AND app_id = #{appId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(entryId)">
+            AND entry_id = #{entryId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(productName)">
+            AND product_name = #{productName}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(billingPrincipalEnumId)">
+            AND billing_principal_enum_id = #{billingPrincipalEnumId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(quantityUomId)">
+            AND quantity_uom_id = #{quantityUomId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(quantityIncluded)">
+            AND quantity_included = #{quantityIncluded}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(priceUomId)">
+            AND price_uom_id = #{priceUomId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(priceAmount)">
+            AND price_amount = #{priceAmount}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(includeInPromotions)">
+            AND include_in_promotions = #{includeInPromotions}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(lastModifiedDateBegin)">
+            AND last_modified_date >= #{lastModifiedDateBegin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(lastModifiedDateEnd)">
+            AND last_modified_date &lt;= #{lastModifiedDateEnd}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(lastModifiedByUserLogin)">
+            AND last_modified_by_user_login = #{lastModifiedByUserLogin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(createdDateBegin)">
+            AND created_date >= #{createdDateBegin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(createdDateEnd)">
+            AND created_date &lt;= #{createdDateEnd}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(createdByUserLogin)">
+            AND created_by_user_login = #{createdByUserLogin}
+                    </if>
+        </where>
+    </select>
+
+    <!-- 插入 -->
+    <insert id="save" parameterType="com.billing.product.orm.model.ProductSnap" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO product_snap (
+             product_id, party_id, domain_id, app_id, entry_id, product_name, billing_principal_enum_id, quantity_uom_id, quantity_included, price_uom_id, price_amount, include_in_promotions, last_modified_date, last_modified_by_user_login, created_date, created_by_user_login
+        ) VALUES (
+             #{productId}, #{partyId}, #{domainId}, #{appId}, #{entryId}, #{productName}, #{billingPrincipalEnumId}, #{quantityUomId}, #{quantityIncluded}, #{priceUomId}, #{priceAmount}, #{includeInPromotions}, #{lastModifiedDate}, #{lastModifiedByUserLogin}, #{createdDate}, #{createdByUserLogin}
+        )
+    </insert>
+
+    <delete id="delete">
+        DELETE FROM product_snap WHERE
+        id = #{id} 
+    </delete>
+
+    <update id="update" >
+        <![CDATA[
+        UPDATE product_snap SET
+    product_id = #{productId} , party_id = #{partyId} , domain_id = #{domainId} , app_id = #{appId} , entry_id = #{entryId} , product_name = #{productName} , billing_principal_enum_id = #{billingPrincipalEnumId} , quantity_uom_id = #{quantityUomId} , quantity_included = #{quantityIncluded} , price_uom_id = #{priceUomId} , price_amount = #{priceAmount} , include_in_promotions = #{includeInPromotions} , last_modified_date = #{lastModifiedDate} , last_modified_by_user_login = #{lastModifiedByUserLogin} , created_date = #{createdDate} , created_by_user_login = #{createdByUserLogin}  
+        WHERE
+    id = #{id}  
+        ]]>
+    </update>
+
+    <select id="getByPartyId" resultMap="RM_ProductSnap" parameterType="java.lang.Long">
+        SELECT <include refid="ProductSnap_columns"/>
+        FROM product_snap where party_id = #{partyId}
+    </select>
+
+</mapper>

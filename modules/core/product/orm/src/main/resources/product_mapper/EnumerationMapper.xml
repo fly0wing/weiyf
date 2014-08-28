@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.billing.product.orm.dao.EnumerationDao">
+
+
+    <!-- 字段名转换 -->
+    <resultMap id="RM_Enumeration" type="com.billing.product.orm.model.Enumeration">
+        <result property="enumId" column="enum_id"/>
+        <result property="enumTypeId" column="enum_type_id"/>
+        <result property="enumCode" column="enum_code"/>
+        <result property="sequenceId" column="sequence_id"/>
+        <result property="description" column="description"/>
+        <result property="lastUpdatedStamp" column="last_updated_stamp"/>
+        <result property="createdStamp" column="created_stamp"/>
+    </resultMap>
+
+    <!-- 查询字段 -->
+    <sql id="Enumeration_columns">
+        <![CDATA[
+    enum_id,enum_type_id,enum_code,sequence_id,description,last_updated_stamp,created_stamp
+        ]]>
+    </sql>
+
+
+    <select id="get" parameterType="map" resultMap="RM_Enumeration">
+        select
+        <include refid="Enumeration_columns" />
+        from enumeration
+        WHERE
+            <if test="@Ognl@isEmpty(enumId)">
+                1 = 0 AND
+            </if>
+            enum_id = #{enumId} 
+    </select>
+
+    <!-- 查询用户,演示: 1.输入用map传入多个参数 2.<where>语句, 智能添加where和and关键字 3.输出直接映射对象 -->
+    <select id="search" parameterType="map" resultMap="RM_Enumeration">
+        select
+        <include refid="Enumeration_columns" />
+        from enumeration
+        <where>
+                    <if test="@Ognl@isNotEmpty(enumId)">
+            AND enum_id = #{enumId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(enumTypeId)">
+            AND enum_type_id = #{enumTypeId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(enumCode)">
+            AND enum_code = #{enumCode}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(sequenceId)">
+            AND sequence_id = #{sequenceId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(description)">
+            AND description = #{description}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(lastUpdatedStampBegin)">
+            AND last_updated_stamp >= #{lastUpdatedStampBegin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(lastUpdatedStampEnd)">
+            AND last_updated_stamp &lt;= #{lastUpdatedStampEnd}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(createdStampBegin)">
+            AND created_stamp >= #{createdStampBegin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(createdStampEnd)">
+            AND created_stamp &lt;= #{createdStampEnd}
+                    </if>
+        </where>
+    </select>
+
+    <!-- 插入 -->
+    <insert id="save" parameterType="com.billing.product.orm.model.Enumeration" useGeneratedKeys="true" keyProperty="enumId">
+        INSERT INTO enumeration (
+             enum_type_id, enum_code, sequence_id, description, last_updated_stamp, created_stamp
+        ) VALUES (
+             #{enumTypeId}, #{enumCode}, #{sequenceId}, #{description}, #{lastUpdatedStamp}, #{createdStamp}
+        )
+    </insert>
+
+    <delete id="delete">
+        DELETE FROM enumeration WHERE
+        enum_id = #{enumId} 
+    </delete>
+
+    <update id="update" >
+        <![CDATA[
+        UPDATE enumeration SET
+    enum_type_id = #{enumTypeId} , enum_code = #{enumCode} , sequence_id = #{sequenceId} , description = #{description} , last_updated_stamp = #{lastUpdatedStamp} , created_stamp = #{createdStamp}  
+        WHERE
+    enum_id = #{enumId}  
+        ]]>
+    </update>
+
+</mapper>

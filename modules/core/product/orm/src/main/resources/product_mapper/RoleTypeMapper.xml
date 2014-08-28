@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.billing.product.orm.dao.RoleTypeDao">
+
+
+    <!-- 字段名转换 -->
+    <resultMap id="RM_RoleType" type="com.billing.product.orm.model.RoleType">
+        <result property="roleTypeId" column="role_type_id"/>
+        <result property="parentTypeId" column="parent_type_id"/>
+        <result property="description" column="description"/>
+        <result property="lastUpdatedStamp" column="last_updated_stamp"/>
+        <result property="createdStamp" column="created_stamp"/>
+    </resultMap>
+
+    <!-- 查询字段 -->
+    <sql id="RoleType_columns">
+        <![CDATA[
+    role_type_id,parent_type_id,description,last_updated_stamp,created_stamp
+        ]]>
+    </sql>
+
+
+    <select id="get" parameterType="map" resultMap="RM_RoleType">
+        select
+        <include refid="RoleType_columns" />
+        from role_type
+        WHERE
+            <if test="@Ognl@isEmpty(roleTypeId)">
+                1 = 0 AND
+            </if>
+            role_type_id = #{roleTypeId} 
+    </select>
+
+    <!-- 查询用户,演示: 1.输入用map传入多个参数 2.<where>语句, 智能添加where和and关键字 3.输出直接映射对象 -->
+    <select id="search" parameterType="map" resultMap="RM_RoleType">
+        select
+        <include refid="RoleType_columns" />
+        from role_type
+        <where>
+                    <if test="@Ognl@isNotEmpty(roleTypeId)">
+            AND role_type_id = #{roleTypeId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(parentTypeId)">
+            AND parent_type_id = #{parentTypeId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(description)">
+            AND description = #{description}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(lastUpdatedStampBegin)">
+            AND last_updated_stamp >= #{lastUpdatedStampBegin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(lastUpdatedStampEnd)">
+            AND last_updated_stamp &lt;= #{lastUpdatedStampEnd}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(createdStampBegin)">
+            AND created_stamp >= #{createdStampBegin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(createdStampEnd)">
+            AND created_stamp &lt;= #{createdStampEnd}
+                    </if>
+        </where>
+    </select>
+
+    <!-- 插入 -->
+    <insert id="save" parameterType="com.billing.product.orm.model.RoleType" useGeneratedKeys="true" keyProperty="roleTypeId">
+        INSERT INTO role_type (
+             parent_type_id, description, last_updated_stamp, created_stamp
+        ) VALUES (
+             #{parentTypeId}, #{description}, #{lastUpdatedStamp}, #{createdStamp}
+        )
+    </insert>
+
+    <delete id="delete">
+        DELETE FROM role_type WHERE
+        role_type_id = #{roleTypeId} 
+    </delete>
+
+    <update id="update" >
+        <![CDATA[
+        UPDATE role_type SET
+    parent_type_id = #{parentTypeId} , description = #{description} , last_updated_stamp = #{lastUpdatedStamp} , created_stamp = #{createdStamp}  
+        WHERE
+    role_type_id = #{roleTypeId}  
+        ]]>
+    </update>
+
+</mapper>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.billing.product.orm.dao.GeoTypeDao">
+
+
+    <!-- 字段名转换 -->
+    <resultMap id="RM_GeoType" type="com.billing.product.orm.model.GeoType">
+        <result property="geoTypeId" column="geo_type_id"/>
+        <result property="parentTypeId" column="parent_type_id"/>
+        <result property="description" column="description"/>
+    </resultMap>
+
+    <!-- 查询字段 -->
+    <sql id="GeoType_columns">
+        <![CDATA[
+    geo_type_id,parent_type_id,description
+        ]]>
+    </sql>
+
+
+    <select id="get" parameterType="map" resultMap="RM_GeoType">
+        select
+        <include refid="GeoType_columns" />
+        from geo_type
+        WHERE
+            <if test="@Ognl@isEmpty(geoTypeId)">
+                1 = 0 AND
+            </if>
+            geo_type_id = #{geoTypeId} 
+    </select>
+
+    <!-- 查询用户,演示: 1.输入用map传入多个参数 2.<where>语句, 智能添加where和and关键字 3.输出直接映射对象 -->
+    <select id="search" parameterType="map" resultMap="RM_GeoType">
+        select
+        <include refid="GeoType_columns" />
+        from geo_type
+        <where>
+                    <if test="@Ognl@isNotEmpty(geoTypeId)">
+            AND geo_type_id = #{geoTypeId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(parentTypeId)">
+            AND parent_type_id = #{parentTypeId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(description)">
+            AND description = #{description}
+                    </if>
+        </where>
+    </select>
+
+    <!-- 插入 -->
+    <insert id="save" parameterType="com.billing.product.orm.model.GeoType" useGeneratedKeys="true" keyProperty="geoTypeId">
+        INSERT INTO geo_type (
+             parent_type_id, description
+        ) VALUES (
+             #{parentTypeId}, #{description}
+        )
+    </insert>
+
+    <delete id="delete">
+        DELETE FROM geo_type WHERE
+        geo_type_id = #{geoTypeId} 
+    </delete>
+
+    <update id="update" >
+        <![CDATA[
+        UPDATE geo_type SET
+    parent_type_id = #{parentTypeId} , description = #{description}  
+        WHERE
+    geo_type_id = #{geoTypeId}  
+        ]]>
+    </update>
+
+</mapper>

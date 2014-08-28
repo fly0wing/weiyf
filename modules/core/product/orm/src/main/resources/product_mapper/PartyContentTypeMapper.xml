@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.billing.product.orm.dao.PartyContentTypeDao">
+
+
+    <!-- 字段名转换 -->
+    <resultMap id="RM_PartyContentType" type="com.billing.product.orm.model.PartyContentType">
+        <result property="partyContentTypeId" column="party_content_type_id"/>
+        <result property="parentTypeId" column="parent_type_id"/>
+        <result property="description" column="description"/>
+        <result property="lastUpdatedStamp" column="last_updated_stamp"/>
+        <result property="createdStamp" column="created_stamp"/>
+    </resultMap>
+
+    <!-- 查询字段 -->
+    <sql id="PartyContentType_columns">
+        <![CDATA[
+    party_content_type_id,parent_type_id,description,last_updated_stamp,created_stamp
+        ]]>
+    </sql>
+
+
+    <select id="get" parameterType="map" resultMap="RM_PartyContentType">
+        select
+        <include refid="PartyContentType_columns" />
+        from party_content_type
+        WHERE
+            <if test="@Ognl@isEmpty(partyContentTypeId)">
+                1 = 0 AND
+            </if>
+            party_content_type_id = #{partyContentTypeId} 
+    </select>
+
+    <!-- 查询用户,演示: 1.输入用map传入多个参数 2.<where>语句, 智能添加where和and关键字 3.输出直接映射对象 -->
+    <select id="search" parameterType="map" resultMap="RM_PartyContentType">
+        select
+        <include refid="PartyContentType_columns" />
+        from party_content_type
+        <where>
+                    <if test="@Ognl@isNotEmpty(partyContentTypeId)">
+            AND party_content_type_id = #{partyContentTypeId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(parentTypeId)">
+            AND parent_type_id = #{parentTypeId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(description)">
+            AND description = #{description}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(lastUpdatedStampBegin)">
+            AND last_updated_stamp >= #{lastUpdatedStampBegin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(lastUpdatedStampEnd)">
+            AND last_updated_stamp &lt;= #{lastUpdatedStampEnd}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(createdStampBegin)">
+            AND created_stamp >= #{createdStampBegin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(createdStampEnd)">
+            AND created_stamp &lt;= #{createdStampEnd}
+                    </if>
+        </where>
+    </select>
+
+    <!-- 插入 -->
+    <insert id="save" parameterType="com.billing.product.orm.model.PartyContentType" useGeneratedKeys="true" keyProperty="partyContentTypeId">
+        INSERT INTO party_content_type (
+             parent_type_id, description, last_updated_stamp, created_stamp
+        ) VALUES (
+             #{parentTypeId}, #{description}, #{lastUpdatedStamp}, #{createdStamp}
+        )
+    </insert>
+
+    <delete id="delete">
+        DELETE FROM party_content_type WHERE
+        party_content_type_id = #{partyContentTypeId} 
+    </delete>
+
+    <update id="update" >
+        <![CDATA[
+        UPDATE party_content_type SET
+    parent_type_id = #{parentTypeId} , description = #{description} , last_updated_stamp = #{lastUpdatedStamp} , created_stamp = #{createdStamp}  
+        WHERE
+    party_content_type_id = #{partyContentTypeId}  
+        ]]>
+    </update>
+
+</mapper>

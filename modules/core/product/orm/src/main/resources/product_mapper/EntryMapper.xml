@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.billing.product.orm.dao.EntryDao">
+
+
+    <!-- 字段名转换 -->
+    <resultMap id="RM_Entry" type="com.billing.product.orm.model.Entry">
+        <result property="id" column="id"/>
+        <result property="partyId" column="party_id"/>
+        <result property="appId" column="app_id"/>
+        <result property="entryName" column="entry_name"/>
+        <result property="entryTypeId" column="entry_type_id"/>
+        <result property="entryUri" column="entry_uri"/>
+        <result property="entryKey" column="entry_key"/>
+        <result property="statustId" column="statust_id"/>
+        <result property="createdDate" column="created_date"/>
+        <result property="createdByUserLogin" column="created_by_user_login"/>
+        <result property="lastModifiedDate" column="last_modified_date"/>
+        <result property="lastModifiedByUserLogin" column="last_modified_by_user_login"/>
+    </resultMap>
+
+    <!-- 查询字段 -->
+    <sql id="Entry_columns">
+        <![CDATA[
+    id,party_id,app_id,entry_name,entry_type_id,entry_uri,entry_key,statust_id,created_date,created_by_user_login,last_modified_date,last_modified_by_user_login
+        ]]>
+    </sql>
+
+
+    <select id="get" parameterType="map" resultMap="RM_Entry">
+        select
+        <include refid="Entry_columns" />
+        from entry
+        WHERE
+            <if test="@Ognl@isEmpty(id)">
+                1 = 0 AND
+            </if>
+            id = #{id} 
+    </select>
+
+    <!-- 查询用户,演示: 1.输入用map传入多个参数 2.<where>语句, 智能添加where和and关键字 3.输出直接映射对象 -->
+    <select id="search" parameterType="map" resultMap="RM_Entry">
+        select
+        <include refid="Entry_columns" />
+        from entry
+        <where>
+                    <if test="@Ognl@isNotEmpty(id)">
+            AND id = #{id}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(partyId)">
+            AND party_id = #{partyId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(appId)">
+            AND app_id = #{appId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(entryName)">
+            AND entry_name = #{entryName}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(entryTypeId)">
+            AND entry_type_id = #{entryTypeId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(entryUri)">
+            AND entry_uri = #{entryUri}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(entryKey)">
+            AND entry_key = #{entryKey}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(statustId)">
+            AND statust_id = #{statustId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(createdDateBegin)">
+            AND created_date >= #{createdDateBegin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(createdDateEnd)">
+            AND created_date &lt;= #{createdDateEnd}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(createdByUserLogin)">
+            AND created_by_user_login = #{createdByUserLogin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(lastModifiedDateBegin)">
+            AND last_modified_date >= #{lastModifiedDateBegin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(lastModifiedDateEnd)">
+            AND last_modified_date &lt;= #{lastModifiedDateEnd}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(lastModifiedByUserLogin)">
+            AND last_modified_by_user_login = #{lastModifiedByUserLogin}
+                    </if>
+        </where>
+    </select>
+
+    <!-- 插入 -->
+    <insert id="save" parameterType="com.billing.product.orm.model.Entry" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO entry (
+             party_id, app_id, entry_name, entry_type_id, entry_uri, entry_key, statust_id, created_date, created_by_user_login, last_modified_date, last_modified_by_user_login
+        ) VALUES (
+             #{partyId}, #{appId}, #{entryName}, #{entryTypeId}, #{entryUri}, #{entryKey}, #{statustId}, #{createdDate}, #{createdByUserLogin}, #{lastModifiedDate}, #{lastModifiedByUserLogin}
+        )
+    </insert>
+
+    <delete id="delete">
+        DELETE FROM entry WHERE
+        id = #{id} 
+    </delete>
+
+    <update id="update" >
+        <![CDATA[
+        UPDATE entry SET
+    party_id = #{partyId} , app_id = #{appId} , entry_name = #{entryName} , entry_type_id = #{entryTypeId} , entry_uri = #{entryUri} , entry_key = #{entryKey} , statust_id = #{statustId} , created_date = #{createdDate} , created_by_user_login = #{createdByUserLogin} , last_modified_date = #{lastModifiedDate} , last_modified_by_user_login = #{lastModifiedByUserLogin}  
+        WHERE
+    id = #{id}  
+        ]]>
+    </update>
+
+</mapper>

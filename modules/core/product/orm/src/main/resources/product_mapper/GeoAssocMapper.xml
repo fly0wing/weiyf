@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.billing.product.orm.dao.GeoAssocDao">
+
+
+    <!-- 字段名转换 -->
+    <resultMap id="RM_GeoAssoc" type="com.billing.product.orm.model.GeoAssoc">
+        <result property="id" column="id"/>
+        <result property="geoId" column="geo_id"/>
+        <result property="geoIdTo" column="geo_id_to"/>
+        <result property="geoAssocTypeId" column="geo_assoc_type_id"/>
+        <result property="description" column="description"/>
+    </resultMap>
+
+    <!-- 查询字段 -->
+    <sql id="GeoAssoc_columns">
+        <![CDATA[
+    id,geo_id,geo_id_to,geo_assoc_type_id,description
+        ]]>
+    </sql>
+
+
+    <select id="get" parameterType="map" resultMap="RM_GeoAssoc">
+        select
+        <include refid="GeoAssoc_columns" />
+        from geo_assoc
+        WHERE
+            <if test="@Ognl@isEmpty(id)">
+                1 = 0 AND
+            </if>
+            id = #{id} 
+    </select>
+
+    <!-- 查询用户,演示: 1.输入用map传入多个参数 2.<where>语句, 智能添加where和and关键字 3.输出直接映射对象 -->
+    <select id="search" parameterType="map" resultMap="RM_GeoAssoc">
+        select
+        <include refid="GeoAssoc_columns" />
+        from geo_assoc
+        <where>
+                    <if test="@Ognl@isNotEmpty(id)">
+            AND id = #{id}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(geoId)">
+            AND geo_id = #{geoId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(geoIdTo)">
+            AND geo_id_to = #{geoIdTo}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(geoAssocTypeId)">
+            AND geo_assoc_type_id = #{geoAssocTypeId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(description)">
+            AND description = #{description}
+                    </if>
+        </where>
+    </select>
+
+    <!-- 插入 -->
+    <insert id="save" parameterType="com.billing.product.orm.model.GeoAssoc" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO geo_assoc (
+             geo_id, geo_id_to, geo_assoc_type_id, description
+        ) VALUES (
+             #{geoId}, #{geoIdTo}, #{geoAssocTypeId}, #{description}
+        )
+    </insert>
+
+    <delete id="delete">
+        DELETE FROM geo_assoc WHERE
+        id = #{id} 
+    </delete>
+
+    <update id="update" >
+        <![CDATA[
+        UPDATE geo_assoc SET
+    geo_id = #{geoId} , geo_id_to = #{geoIdTo} , geo_assoc_type_id = #{geoAssocTypeId} , description = #{description}  
+        WHERE
+    id = #{id}  
+        ]]>
+    </update>
+
+</mapper>

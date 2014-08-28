@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.billing.product.orm.dao.PartyContactMechDao">
+
+
+    <!-- 字段名转换 -->
+    <resultMap id="RM_PartyContactMech" type="com.billing.product.orm.model.PartyContactMech">
+        <result property="id" column="id"/>
+        <result property="partyId" column="party_id"/>
+        <result property="contactMechId" column="contact_mech_id"/>
+        <result property="fromDate" column="from_date"/>
+        <result property="thruDate" column="thru_date"/>
+        <result property="roleTypeId" column="role_type_id"/>
+        <result property="allowSolicitation" column="allow_solicitation"/>
+        <result property="extension" column="extension"/>
+        <result property="verified" column="verified"/>
+        <result property="comments" column="comments"/>
+        <result property="yearsWithContactMech" column="years_with_contact_mech"/>
+        <result property="monthsWithContactMech" column="months_with_contact_mech"/>
+        <result property="lastUpdatedStamp" column="last_updated_stamp"/>
+        <result property="createdStamp" column="created_stamp"/>
+    </resultMap>
+
+    <!-- 查询字段 -->
+    <sql id="PartyContactMech_columns">
+        <![CDATA[
+    id,party_id,contact_mech_id,from_date,thru_date,role_type_id,allow_solicitation,extension,verified,comments,years_with_contact_mech,months_with_contact_mech,last_updated_stamp,created_stamp
+        ]]>
+    </sql>
+
+
+    <select id="get" parameterType="map" resultMap="RM_PartyContactMech">
+        select
+        <include refid="PartyContactMech_columns" />
+        from party_contact_mech
+        WHERE
+            <if test="@Ognl@isEmpty(id)">
+                1 = 0 AND
+            </if>
+            id = #{id} 
+    </select>
+
+    <!-- 查询用户,演示: 1.输入用map传入多个参数 2.<where>语句, 智能添加where和and关键字 3.输出直接映射对象 -->
+    <select id="search" parameterType="map" resultMap="RM_PartyContactMech">
+        select
+        <include refid="PartyContactMech_columns" />
+        from party_contact_mech
+        <where>
+                    <if test="@Ognl@isNotEmpty(id)">
+            AND id = #{id}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(partyId)">
+            AND party_id = #{partyId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(contactMechId)">
+            AND contact_mech_id = #{contactMechId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(fromDateBegin)">
+            AND from_date >= #{fromDateBegin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(fromDateEnd)">
+            AND from_date &lt;= #{fromDateEnd}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(thruDateBegin)">
+            AND thru_date >= #{thruDateBegin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(thruDateEnd)">
+            AND thru_date &lt;= #{thruDateEnd}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(roleTypeId)">
+            AND role_type_id = #{roleTypeId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(allowSolicitation)">
+            AND allow_solicitation = #{allowSolicitation}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(extension)">
+            AND extension = #{extension}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(verified)">
+            AND verified = #{verified}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(comments)">
+            AND comments = #{comments}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(yearsWithContactMech)">
+            AND years_with_contact_mech = #{yearsWithContactMech}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(monthsWithContactMech)">
+            AND months_with_contact_mech = #{monthsWithContactMech}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(lastUpdatedStampBegin)">
+            AND last_updated_stamp >= #{lastUpdatedStampBegin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(lastUpdatedStampEnd)">
+            AND last_updated_stamp &lt;= #{lastUpdatedStampEnd}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(createdStampBegin)">
+            AND created_stamp >= #{createdStampBegin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(createdStampEnd)">
+            AND created_stamp &lt;= #{createdStampEnd}
+                    </if>
+        </where>
+    </select>
+
+    <!-- 插入 -->
+    <insert id="save" parameterType="com.billing.product.orm.model.PartyContactMech" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO party_contact_mech (
+             party_id, contact_mech_id, from_date, thru_date, role_type_id, allow_solicitation, extension, verified, comments, years_with_contact_mech, months_with_contact_mech, last_updated_stamp, created_stamp
+        ) VALUES (
+             #{partyId}, #{contactMechId}, #{fromDate}, #{thruDate}, #{roleTypeId}, #{allowSolicitation}, #{extension}, #{verified}, #{comments}, #{yearsWithContactMech}, #{monthsWithContactMech}, #{lastUpdatedStamp}, #{createdStamp}
+        )
+    </insert>
+
+    <delete id="delete">
+        DELETE FROM party_contact_mech WHERE
+        id = #{id} 
+    </delete>
+
+    <update id="update" >
+        <![CDATA[
+        UPDATE party_contact_mech SET
+    party_id = #{partyId} , contact_mech_id = #{contactMechId} , from_date = #{fromDate} , thru_date = #{thruDate} , role_type_id = #{roleTypeId} , allow_solicitation = #{allowSolicitation} , extension = #{extension} , verified = #{verified} , comments = #{comments} , years_with_contact_mech = #{yearsWithContactMech} , months_with_contact_mech = #{monthsWithContactMech} , last_updated_stamp = #{lastUpdatedStamp} , created_stamp = #{createdStamp}  
+        WHERE
+    id = #{id}  
+        ]]>
+    </update>
+
+</mapper>

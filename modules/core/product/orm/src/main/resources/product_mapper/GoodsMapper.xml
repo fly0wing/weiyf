@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.billing.product.orm.dao.GoodsDao">
+
+
+    <!-- 字段名转换 -->
+    <resultMap id="RM_Goods" type="com.billing.product.orm.model.Goods">
+        <result property="id" column="id"/>
+        <result property="productId" column="product_id"/>
+        <result property="partyId" column="party_id"/>
+        <result property="domainId" column="domain_id"/>
+        <result property="appId" column="app_id"/>
+        <result property="entryId" column="entry_id"/>
+        <result property="goodsName" column="goods_name"/>
+        <result property="copyNumber" column="copy_number"/>
+        <result property="billingMethodEnumId" column="billing_method_enum_id"/>
+        <result property="resourceRepeatBillingTimes" column="resource_repeat_billing_times"/>
+        <result property="principalLimitPurchaseTimes" column="principal_limit_purchase_times"/>
+        <result property="inventoryQuantity" column="inventory_quantity"/>
+        <result property="showPriority" column="show_priority"/>
+        <result property="introductionDate" column="introduction_date"/>
+        <result property="releaseDate" column="release_date"/>
+        <result property="supportDiscontinuationDate" column="support_discontinuation_date"/>
+        <result property="salesDiscontinuationDate" column="sales_discontinuation_date"/>
+        <result property="salesDiscWhenNotAvail" column="sales_disc_when_not_avail"/>
+        <result property="internalName" column="internal_name"/>
+        <result property="comments" column="comments"/>
+        <result property="description" column="description"/>
+        <result property="priceDetailText" column="price_detail_text"/>
+        <result property="inventoryMessage" column="inventory_message"/>
+        <result property="requireInventory" column="require_inventory"/>
+        <result property="quantityUomId" column="quantity_uom_id"/>
+        <result property="quantityIncluded" column="quantity_included"/>
+        <result property="timeUomId" column="time_uom_id"/>
+        <result property="timeIncluded" column="time_included"/>
+        <result property="priceIndication" column="price_indication"/>
+        <result property="priceSale" column="price_sale"/>
+        <result property="pricePromotion" column="price_promotion"/>
+        <result property="priceUomId" column="price_uom_id"/>
+        <result property="returnable" column="returnable"/>
+        <result property="includeInPromotions" column="include_in_promotions"/>
+        <result property="lastModifiedDate" column="last_modified_date"/>
+        <result property="lastModifiedByUserLogin" column="last_modified_by_user_login"/>
+        <result property="createdDate" column="created_date"/>
+        <result property="createdByUserLogin" column="created_by_user_login"/>
+    </resultMap>
+
+    <!-- 查询字段 -->
+    <sql id="Goods_columns">
+        <![CDATA[
+    id,product_id,party_id,domain_id,app_id,entry_id,goods_name,copy_number,billing_method_enum_id,resource_repeat_billing_times,principal_limit_purchase_times,inventory_quantity,show_priority,introduction_date,release_date,support_discontinuation_date,sales_discontinuation_date,sales_disc_when_not_avail,internal_name,comments,description,price_detail_text,inventory_message,require_inventory,quantity_uom_id,quantity_included,time_uom_id,time_included,price_indication,price_sale,price_promotion,price_uom_id,returnable,include_in_promotions,last_modified_date,last_modified_by_user_login,created_date,created_by_user_login
+        ]]>
+    </sql>
+
+
+    <select id="get" parameterType="map" resultMap="RM_Goods">
+        select
+        <include refid="Goods_columns" />
+        from goods
+        WHERE
+            <if test="@Ognl@isEmpty(id)">
+                1 = 0 AND
+            </if>
+            id = #{id} 
+    </select>
+
+    <!-- 查询用户,演示: 1.输入用map传入多个参数 2.<where>语句, 智能添加where和and关键字 3.输出直接映射对象 -->
+    <select id="search" parameterType="map" resultMap="RM_Goods">
+        select
+        <include refid="Goods_columns" />
+        from goods
+        <where>
+                    <if test="@Ognl@isNotEmpty(id)">
+            AND id = #{id}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(productId)">
+            AND product_id = #{productId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(partyId)">
+            AND party_id = #{partyId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(domainId)">
+            AND domain_id = #{domainId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(appId)">
+            AND app_id = #{appId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(entryId)">
+            AND entry_id = #{entryId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(goodsName)">
+            AND goods_name = #{goodsName}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(copyNumber)">
+            AND copy_number = #{copyNumber}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(billingMethodEnumId)">
+            AND billing_method_enum_id = #{billingMethodEnumId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(resourceRepeatBillingTimes)">
+            AND resource_repeat_billing_times = #{resourceRepeatBillingTimes}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(principalLimitPurchaseTimes)">
+            AND principal_limit_purchase_times = #{principalLimitPurchaseTimes}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(inventoryQuantity)">
+            AND inventory_quantity = #{inventoryQuantity}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(showPriority)">
+            AND show_priority = #{showPriority}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(introductionDateBegin)">
+            AND introduction_date >= #{introductionDateBegin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(introductionDateEnd)">
+            AND introduction_date &lt;= #{introductionDateEnd}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(releaseDateBegin)">
+            AND release_date >= #{releaseDateBegin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(releaseDateEnd)">
+            AND release_date &lt;= #{releaseDateEnd}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(supportDiscontinuationDateBegin)">
+            AND support_discontinuation_date >= #{supportDiscontinuationDateBegin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(supportDiscontinuationDateEnd)">
+            AND support_discontinuation_date &lt;= #{supportDiscontinuationDateEnd}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(salesDiscontinuationDateBegin)">
+            AND sales_discontinuation_date >= #{salesDiscontinuationDateBegin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(salesDiscontinuationDateEnd)">
+            AND sales_discontinuation_date &lt;= #{salesDiscontinuationDateEnd}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(salesDiscWhenNotAvail)">
+            AND sales_disc_when_not_avail = #{salesDiscWhenNotAvail}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(internalName)">
+            AND internal_name = #{internalName}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(comments)">
+            AND comments = #{comments}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(description)">
+            AND description = #{description}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(priceDetailText)">
+            AND price_detail_text = #{priceDetailText}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(inventoryMessage)">
+            AND inventory_message = #{inventoryMessage}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(requireInventory)">
+            AND require_inventory = #{requireInventory}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(quantityUomId)">
+            AND quantity_uom_id = #{quantityUomId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(quantityIncluded)">
+            AND quantity_included = #{quantityIncluded}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(timeUomId)">
+            AND time_uom_id = #{timeUomId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(timeIncluded)">
+            AND time_included = #{timeIncluded}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(priceIndication)">
+            AND price_indication = #{priceIndication}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(priceSale)">
+            AND price_sale = #{priceSale}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(pricePromotion)">
+            AND price_promotion = #{pricePromotion}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(priceUomId)">
+            AND price_uom_id = #{priceUomId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(returnable)">
+            AND returnable = #{returnable}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(includeInPromotions)">
+            AND include_in_promotions = #{includeInPromotions}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(lastModifiedDateBegin)">
+            AND last_modified_date >= #{lastModifiedDateBegin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(lastModifiedDateEnd)">
+            AND last_modified_date &lt;= #{lastModifiedDateEnd}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(lastModifiedByUserLogin)">
+            AND last_modified_by_user_login = #{lastModifiedByUserLogin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(createdDateBegin)">
+            AND created_date >= #{createdDateBegin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(createdDateEnd)">
+            AND created_date &lt;= #{createdDateEnd}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(createdByUserLogin)">
+            AND created_by_user_login = #{createdByUserLogin}
+                    </if>
+        </where>
+    </select>
+
+    <!-- 插入 -->
+    <insert id="save" parameterType="com.billing.product.orm.model.Goods" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO goods (
+             product_id, party_id, domain_id, app_id, entry_id, goods_name, copy_number, billing_method_enum_id, resource_repeat_billing_times, principal_limit_purchase_times, inventory_quantity, show_priority, introduction_date, release_date, support_discontinuation_date, sales_discontinuation_date, sales_disc_when_not_avail, internal_name, comments, description, price_detail_text, inventory_message, require_inventory, quantity_uom_id, quantity_included, time_uom_id, time_included, price_indication, price_sale, price_promotion, price_uom_id, returnable, include_in_promotions, last_modified_date, last_modified_by_user_login, created_date, created_by_user_login
+        ) VALUES (
+             #{productId}, #{partyId}, #{domainId}, #{appId}, #{entryId}, #{goodsName}, #{copyNumber}, #{billingMethodEnumId}, #{resourceRepeatBillingTimes}, #{principalLimitPurchaseTimes}, #{inventoryQuantity}, #{showPriority}, #{introductionDate}, #{releaseDate}, #{supportDiscontinuationDate}, #{salesDiscontinuationDate}, #{salesDiscWhenNotAvail}, #{internalName}, #{comments}, #{description}, #{priceDetailText}, #{inventoryMessage}, #{requireInventory}, #{quantityUomId}, #{quantityIncluded}, #{timeUomId}, #{timeIncluded}, #{priceIndication}, #{priceSale}, #{pricePromotion}, #{priceUomId}, #{returnable}, #{includeInPromotions}, #{lastModifiedDate}, #{lastModifiedByUserLogin}, #{createdDate}, #{createdByUserLogin}
+        )
+    </insert>
+
+    <delete id="delete">
+        DELETE FROM goods WHERE
+        id = #{id} 
+    </delete>
+
+    <update id="update" >
+        <![CDATA[
+        UPDATE goods SET
+    product_id = #{productId} , party_id = #{partyId} , domain_id = #{domainId} , app_id = #{appId} , entry_id = #{entryId} , goods_name = #{goodsName} , copy_number = #{copyNumber} , billing_method_enum_id = #{billingMethodEnumId} , resource_repeat_billing_times = #{resourceRepeatBillingTimes} , principal_limit_purchase_times = #{principalLimitPurchaseTimes} , inventory_quantity = #{inventoryQuantity} , show_priority = #{showPriority} , introduction_date = #{introductionDate} , release_date = #{releaseDate} , support_discontinuation_date = #{supportDiscontinuationDate} , sales_discontinuation_date = #{salesDiscontinuationDate} , sales_disc_when_not_avail = #{salesDiscWhenNotAvail} , internal_name = #{internalName} , comments = #{comments} , description = #{description} , price_detail_text = #{priceDetailText} , inventory_message = #{inventoryMessage} , require_inventory = #{requireInventory} , quantity_uom_id = #{quantityUomId} , quantity_included = #{quantityIncluded} , time_uom_id = #{timeUomId} , time_included = #{timeIncluded} , price_indication = #{priceIndication} , price_sale = #{priceSale} , price_promotion = #{pricePromotion} , price_uom_id = #{priceUomId} , returnable = #{returnable} , include_in_promotions = #{includeInPromotions} , last_modified_date = #{lastModifiedDate} , last_modified_by_user_login = #{lastModifiedByUserLogin} , created_date = #{createdDate} , created_by_user_login = #{createdByUserLogin}  
+        WHERE
+    id = #{id}  
+        ]]>
+    </update>
+
+</mapper>

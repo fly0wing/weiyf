@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.billing.product.orm.dao.GeoDao">
+
+
+    <!-- 字段名转换 -->
+    <resultMap id="RM_Geo" type="com.billing.product.orm.model.Geo">
+        <result property="id" column="id"/>
+        <result property="geoType" column="geo_type"/>
+        <result property="geoCode" column="geo_code"/>
+        <result property="geoName" column="geo_name"/>
+        <result property="parentCode" column="parent_code"/>
+        <result property="level" column="level"/>
+        <result property="geoSecdode" column="geo_secdode"/>
+        <result property="abbreviation" column="abbreviation"/>
+        <result property="wellknownText" column="wellknownText"/>
+    </resultMap>
+
+    <!-- 查询字段 -->
+    <sql id="Geo_columns">
+        <![CDATA[
+    id,geo_type,geo_code,geo_name,parent_code,level,geo_secdode,abbreviation,wellknownText
+        ]]>
+    </sql>
+
+
+    <select id="get" parameterType="map" resultMap="RM_Geo">
+        select
+        <include refid="Geo_columns" />
+        from geo
+        WHERE
+            <if test="@Ognl@isEmpty(id)">
+                1 = 0 AND
+            </if>
+            id = #{id} 
+    </select>
+
+    <!-- 查询用户,演示: 1.输入用map传入多个参数 2.<where>语句, 智能添加where和and关键字 3.输出直接映射对象 -->
+    <select id="search" parameterType="map" resultMap="RM_Geo">
+        select
+        <include refid="Geo_columns" />
+        from geo
+        <where>
+                    <if test="@Ognl@isNotEmpty(id)">
+            AND id = #{id}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(geoType)">
+            AND geo_type = #{geoType}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(geoCode)">
+            AND geo_code = #{geoCode}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(geoName)">
+            AND geo_name = #{geoName}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(parentCode)">
+            AND parent_code = #{parentCode}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(level)">
+            AND level = #{level}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(geoSecdode)">
+            AND geo_secdode = #{geoSecdode}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(abbreviation)">
+            AND abbreviation = #{abbreviation}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(wellknownText)">
+            AND wellknownText = #{wellknownText}
+                    </if>
+        </where>
+    </select>
+
+    <!-- 插入 -->
+    <insert id="save" parameterType="com.billing.product.orm.model.Geo" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO geo (
+             geo_type, geo_code, geo_name, parent_code, level, geo_secdode, abbreviation, wellknownText
+        ) VALUES (
+             #{geoType}, #{geoCode}, #{geoName}, #{parentCode}, #{level}, #{geoSecdode}, #{abbreviation}, #{wellknownText}
+        )
+    </insert>
+
+    <delete id="delete">
+        DELETE FROM geo WHERE
+        id = #{id} 
+    </delete>
+
+    <update id="update" >
+        <![CDATA[
+        UPDATE geo SET
+    geo_type = #{geoType} , geo_code = #{geoCode} , geo_name = #{geoName} , parent_code = #{parentCode} , level = #{level} , geo_secdode = #{geoSecdode} , abbreviation = #{abbreviation} , wellknownText = #{wellknownText}  
+        WHERE
+    id = #{id}  
+        ]]>
+    </update>
+
+</mapper>

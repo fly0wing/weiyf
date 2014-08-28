@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.billing.product.orm.dao.PartyGroupDao">
+
+
+    <!-- 字段名转换 -->
+    <resultMap id="RM_PartyGroup" type="com.billing.product.orm.model.PartyGroup">
+        <result property="id" column="id"/>
+        <result property="groupName" column="group_name"/>
+        <result property="groupNameLocal" column="group_name_local"/>
+        <result property="officeSiteName" column="office_site_name"/>
+        <result property="annualRevenue" column="annual_revenue"/>
+        <result property="numEmployees" column="num_employees"/>
+        <result property="comments" column="comments"/>
+        <result property="logoImageUrl" column="logo_image_url"/>
+        <result property="statustId" column="statust_id"/>
+        <result property="createdDate" column="created_date"/>
+        <result property="createdByUserLogin" column="created_by_user_login"/>
+        <result property="lastModifiedDate" column="last_modified_date"/>
+        <result property="lastModifiedByUserLogin" column="last_modified_by_user_login"/>
+    </resultMap>
+
+    <!-- 查询字段 -->
+    <sql id="PartyGroup_columns">
+        <![CDATA[
+    id,group_name,group_name_local,office_site_name,annual_revenue,num_employees,comments,logo_image_url,statust_id,created_date,created_by_user_login,last_modified_date,last_modified_by_user_login
+        ]]>
+    </sql>
+
+
+    <select id="get" parameterType="map" resultMap="RM_PartyGroup">
+        select
+        <include refid="PartyGroup_columns" />
+        from party_group
+        WHERE
+            <if test="@Ognl@isEmpty(id)">
+                1 = 0 AND
+            </if>
+            id = #{id} 
+    </select>
+
+    <!-- 查询用户,演示: 1.输入用map传入多个参数 2.<where>语句, 智能添加where和and关键字 3.输出直接映射对象 -->
+    <select id="search" parameterType="map" resultMap="RM_PartyGroup">
+        select
+        <include refid="PartyGroup_columns" />
+        from party_group
+        <where>
+                    <if test="@Ognl@isNotEmpty(id)">
+            AND id = #{id}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(groupName)">
+            AND group_name = #{groupName}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(groupNameLocal)">
+            AND group_name_local = #{groupNameLocal}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(officeSiteName)">
+            AND office_site_name = #{officeSiteName}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(annualRevenue)">
+            AND annual_revenue = #{annualRevenue}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(numEmployees)">
+            AND num_employees = #{numEmployees}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(comments)">
+            AND comments = #{comments}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(logoImageUrl)">
+            AND logo_image_url = #{logoImageUrl}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(statustId)">
+            AND statust_id = #{statustId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(createdDateBegin)">
+            AND created_date >= #{createdDateBegin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(createdDateEnd)">
+            AND created_date &lt;= #{createdDateEnd}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(createdByUserLogin)">
+            AND created_by_user_login = #{createdByUserLogin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(lastModifiedDateBegin)">
+            AND last_modified_date >= #{lastModifiedDateBegin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(lastModifiedDateEnd)">
+            AND last_modified_date &lt;= #{lastModifiedDateEnd}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(lastModifiedByUserLogin)">
+            AND last_modified_by_user_login = #{lastModifiedByUserLogin}
+                    </if>
+        </where>
+    </select>
+
+    <!-- 插入 -->
+    <insert id="save" parameterType="com.billing.product.orm.model.PartyGroup" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO party_group (
+             group_name, group_name_local, office_site_name, annual_revenue, num_employees, comments, logo_image_url, statust_id, created_date, created_by_user_login, last_modified_date, last_modified_by_user_login
+        ) VALUES (
+             #{groupName}, #{groupNameLocal}, #{officeSiteName}, #{annualRevenue}, #{numEmployees}, #{comments}, #{logoImageUrl}, #{statustId}, #{createdDate}, #{createdByUserLogin}, #{lastModifiedDate}, #{lastModifiedByUserLogin}
+        )
+    </insert>
+
+    <delete id="delete">
+        DELETE FROM party_group WHERE
+        id = #{id} 
+    </delete>
+
+    <update id="update" >
+        <![CDATA[
+        UPDATE party_group SET
+    group_name = #{groupName} , group_name_local = #{groupNameLocal} , office_site_name = #{officeSiteName} , annual_revenue = #{annualRevenue} , num_employees = #{numEmployees} , comments = #{comments} , logo_image_url = #{logoImageUrl} , statust_id = #{statustId} , created_date = #{createdDate} , created_by_user_login = #{createdByUserLogin} , last_modified_date = #{lastModifiedDate} , last_modified_by_user_login = #{lastModifiedByUserLogin}  
+        WHERE
+    id = #{id}  
+        ]]>
+    </update>
+
+</mapper>

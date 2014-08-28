@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.billing.product.orm.dao.StatusValidChangeDao">
+
+
+    <!-- 字段名转换 -->
+    <resultMap id="RM_StatusValidChange" type="com.billing.product.orm.model.StatusValidChange">
+        <result property="statusId" column="status_id"/>
+        <result property="statusIdTo" column="status_id_to"/>
+        <result property="isForbidden" column="is_forbidden"/>
+        <result property="transitionName" column="transition_name"/>
+        <result property="description" column="description"/>
+        <result property="conditionExpression" column="condition_expression"/>
+        <result property="lastUpdatedStamp" column="last_updated_stamp"/>
+        <result property="createdStamp" column="created_stamp"/>
+    </resultMap>
+
+    <!-- 查询字段 -->
+    <sql id="StatusValidChange_columns">
+        <![CDATA[
+    status_id,status_id_to,is_forbidden,transition_name,description,condition_expression,last_updated_stamp,created_stamp
+        ]]>
+    </sql>
+
+
+    <select id="get" parameterType="map" resultMap="RM_StatusValidChange">
+        select
+        <include refid="StatusValidChange_columns" />
+        from status_valid_change
+        WHERE
+            <if test="@Ognl@isEmpty(statusId)">
+                1 = 0 AND
+            </if>
+            status_id = #{statusId}  AND 
+            <if test="@Ognl@isEmpty(statusIdTo)">
+                1 = 0 AND
+            </if>
+            status_id_to = #{statusIdTo} 
+    </select>
+
+    <!-- 查询用户,演示: 1.输入用map传入多个参数 2.<where>语句, 智能添加where和and关键字 3.输出直接映射对象 -->
+    <select id="search" parameterType="map" resultMap="RM_StatusValidChange">
+        select
+        <include refid="StatusValidChange_columns" />
+        from status_valid_change
+        <where>
+                    <if test="@Ognl@isNotEmpty(statusId)">
+            AND status_id = #{statusId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(statusIdTo)">
+            AND status_id_to = #{statusIdTo}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(isForbidden)">
+            AND is_forbidden = #{isForbidden}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(transitionName)">
+            AND transition_name = #{transitionName}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(description)">
+            AND description = #{description}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(conditionExpression)">
+            AND condition_expression = #{conditionExpression}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(lastUpdatedStampBegin)">
+            AND last_updated_stamp >= #{lastUpdatedStampBegin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(lastUpdatedStampEnd)">
+            AND last_updated_stamp &lt;= #{lastUpdatedStampEnd}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(createdStampBegin)">
+            AND created_stamp >= #{createdStampBegin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(createdStampEnd)">
+            AND created_stamp &lt;= #{createdStampEnd}
+                    </if>
+        </where>
+    </select>
+
+    <!-- 插入 -->
+    <insert id="save" parameterType="com.billing.product.orm.model.StatusValidChange" useGeneratedKeys="true" keyProperty="statusId">
+        INSERT INTO status_valid_change (
+             is_forbidden, transition_name, description, condition_expression, last_updated_stamp, created_stamp
+        ) VALUES (
+             #{isForbidden}, #{transitionName}, #{description}, #{conditionExpression}, #{lastUpdatedStamp}, #{createdStamp}
+        )
+    </insert>
+
+    <delete id="delete">
+        DELETE FROM status_valid_change WHERE
+        status_id = #{statusId}  AND 
+        status_id_to = #{statusIdTo} 
+    </delete>
+
+    <update id="update" >
+        <![CDATA[
+        UPDATE status_valid_change SET
+    is_forbidden = #{isForbidden} , transition_name = #{transitionName} , description = #{description} , condition_expression = #{conditionExpression} , last_updated_stamp = #{lastUpdatedStamp} , created_stamp = #{createdStamp}  
+        WHERE
+    status_id = #{statusId}  AND  status_id_to = #{statusIdTo}  
+        ]]>
+    </update>
+
+</mapper>

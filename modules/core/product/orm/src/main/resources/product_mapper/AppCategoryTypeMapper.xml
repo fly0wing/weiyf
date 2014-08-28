@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.billing.product.orm.dao.AppCategoryTypeDao">
+
+
+    <!-- 字段名转换 -->
+    <resultMap id="RM_AppCategoryType" type="com.billing.product.orm.model.AppCategoryType">
+        <result property="appCategoryTypeId" column="app_category_type_id"/>
+        <result property="parentTypeId" column="parent_type_id"/>
+        <result property="partyId" column="party_id"/>
+        <result property="description" column="description"/>
+        <result property="statustId" column="statust_id"/>
+        <result property="createdDate" column="created_date"/>
+        <result property="createdByUserLogin" column="created_by_user_login"/>
+        <result property="lastModifiedDate" column="last_modified_date"/>
+        <result property="lastModifiedByUserLogin" column="last_modified_by_user_login"/>
+        <result property="lastUpdatedStamp" column="last_updated_stamp"/>
+        <result property="createdStamp" column="created_stamp"/>
+    </resultMap>
+
+    <!-- 查询字段 -->
+    <sql id="AppCategoryType_columns">
+        <![CDATA[
+    app_category_type_id,parent_type_id,party_id,description,statust_id,created_date,created_by_user_login,last_modified_date,last_modified_by_user_login,last_updated_stamp,created_stamp
+        ]]>
+    </sql>
+
+
+    <select id="get" parameterType="map" resultMap="RM_AppCategoryType">
+        select
+        <include refid="AppCategoryType_columns" />
+        from app_category_type
+        WHERE
+            <if test="@Ognl@isEmpty(appCategoryTypeId)">
+                1 = 0 AND
+            </if>
+            app_category_type_id = #{appCategoryTypeId} 
+    </select>
+
+    <!-- 查询用户,演示: 1.输入用map传入多个参数 2.<where>语句, 智能添加where和and关键字 3.输出直接映射对象 -->
+    <select id="search" parameterType="map" resultMap="RM_AppCategoryType">
+        select
+        <include refid="AppCategoryType_columns" />
+        from app_category_type
+        <where>
+                    <if test="@Ognl@isNotEmpty(appCategoryTypeId)">
+            AND app_category_type_id = #{appCategoryTypeId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(parentTypeId)">
+            AND parent_type_id = #{parentTypeId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(partyId)">
+            AND party_id = #{partyId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(description)">
+            AND description = #{description}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(statustId)">
+            AND statust_id = #{statustId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(createdDateBegin)">
+            AND created_date >= #{createdDateBegin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(createdDateEnd)">
+            AND created_date &lt;= #{createdDateEnd}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(createdByUserLogin)">
+            AND created_by_user_login = #{createdByUserLogin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(lastModifiedDateBegin)">
+            AND last_modified_date >= #{lastModifiedDateBegin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(lastModifiedDateEnd)">
+            AND last_modified_date &lt;= #{lastModifiedDateEnd}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(lastModifiedByUserLogin)">
+            AND last_modified_by_user_login = #{lastModifiedByUserLogin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(lastUpdatedStampBegin)">
+            AND last_updated_stamp >= #{lastUpdatedStampBegin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(lastUpdatedStampEnd)">
+            AND last_updated_stamp &lt;= #{lastUpdatedStampEnd}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(createdStampBegin)">
+            AND created_stamp >= #{createdStampBegin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(createdStampEnd)">
+            AND created_stamp &lt;= #{createdStampEnd}
+                    </if>
+        </where>
+    </select>
+
+    <!-- 插入 -->
+    <insert id="save" parameterType="com.billing.product.orm.model.AppCategoryType" useGeneratedKeys="true" keyProperty="appCategoryTypeId">
+        INSERT INTO app_category_type (
+             parent_type_id, party_id, description, statust_id, created_date, created_by_user_login, last_modified_date, last_modified_by_user_login, last_updated_stamp, created_stamp
+        ) VALUES (
+             #{parentTypeId}, #{partyId}, #{description}, #{statustId}, #{createdDate}, #{createdByUserLogin}, #{lastModifiedDate}, #{lastModifiedByUserLogin}, #{lastUpdatedStamp}, #{createdStamp}
+        )
+    </insert>
+
+    <delete id="delete">
+        DELETE FROM app_category_type WHERE
+        app_category_type_id = #{appCategoryTypeId} 
+    </delete>
+
+    <update id="update" >
+        <![CDATA[
+        UPDATE app_category_type SET
+    parent_type_id = #{parentTypeId} , party_id = #{partyId} , description = #{description} , statust_id = #{statustId} , created_date = #{createdDate} , created_by_user_login = #{createdByUserLogin} , last_modified_date = #{lastModifiedDate} , last_modified_by_user_login = #{lastModifiedByUserLogin} , last_updated_stamp = #{lastUpdatedStamp} , created_stamp = #{createdStamp}  
+        WHERE
+    app_category_type_id = #{appCategoryTypeId}  
+        ]]>
+    </update>
+
+</mapper>

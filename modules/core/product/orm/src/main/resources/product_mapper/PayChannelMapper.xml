@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.billing.product.orm.dao.PayChannelDao">
+
+
+    <!-- 字段名转换 -->
+    <resultMap id="RM_PayChannel" type="com.billing.product.orm.model.PayChannel">
+        <result property="payChannelId" column="pay_channel_id"/>
+        <result property="payGatewayId" column="pay_gateway_id"/>
+        <result property="partyId" column="party_id"/>
+        <result property="statustId" column="statust_id"/>
+        <result property="description" column="description"/>
+        <result property="lastModifiedDate" column="last_modified_date"/>
+        <result property="lastModifiedByUserLogin" column="last_modified_by_user_login"/>
+        <result property="createdDate" column="created_date"/>
+        <result property="createdByUserLogin" column="created_by_user_login"/>
+    </resultMap>
+
+    <!-- 查询字段 -->
+    <sql id="PayChannel_columns">
+        <![CDATA[
+    pay_channel_id,pay_gateway_id,party_id,statust_id,description,last_modified_date,last_modified_by_user_login,created_date,created_by_user_login
+        ]]>
+    </sql>
+
+
+    <select id="get" parameterType="map" resultMap="RM_PayChannel">
+        select
+        <include refid="PayChannel_columns" />
+        from pay_channel
+        WHERE
+            <if test="@Ognl@isEmpty(payChannelId)">
+                1 = 0 AND
+            </if>
+            pay_channel_id = #{payChannelId} 
+    </select>
+
+    <!-- 查询用户,演示: 1.输入用map传入多个参数 2.<where>语句, 智能添加where和and关键字 3.输出直接映射对象 -->
+    <select id="search" parameterType="map" resultMap="RM_PayChannel">
+        select
+        <include refid="PayChannel_columns" />
+        from pay_channel
+        <where>
+                    <if test="@Ognl@isNotEmpty(payChannelId)">
+            AND pay_channel_id = #{payChannelId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(payGatewayId)">
+            AND pay_gateway_id = #{payGatewayId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(partyId)">
+            AND party_id = #{partyId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(statustId)">
+            AND statust_id = #{statustId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(description)">
+            AND description = #{description}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(lastModifiedDateBegin)">
+            AND last_modified_date >= #{lastModifiedDateBegin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(lastModifiedDateEnd)">
+            AND last_modified_date &lt;= #{lastModifiedDateEnd}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(lastModifiedByUserLogin)">
+            AND last_modified_by_user_login = #{lastModifiedByUserLogin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(createdDateBegin)">
+            AND created_date >= #{createdDateBegin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(createdDateEnd)">
+            AND created_date &lt;= #{createdDateEnd}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(createdByUserLogin)">
+            AND created_by_user_login = #{createdByUserLogin}
+                    </if>
+        </where>
+    </select>
+
+    <!-- 插入 -->
+    <insert id="save" parameterType="com.billing.product.orm.model.PayChannel" useGeneratedKeys="true" keyProperty="payChannelId">
+        INSERT INTO pay_channel (
+             pay_gateway_id, party_id, statust_id, description, last_modified_date, last_modified_by_user_login, created_date, created_by_user_login
+        ) VALUES (
+             #{payGatewayId}, #{partyId}, #{statustId}, #{description}, #{lastModifiedDate}, #{lastModifiedByUserLogin}, #{createdDate}, #{createdByUserLogin}
+        )
+    </insert>
+
+    <delete id="delete">
+        DELETE FROM pay_channel WHERE
+        pay_channel_id = #{payChannelId} 
+    </delete>
+
+    <update id="update" >
+        <![CDATA[
+        UPDATE pay_channel SET
+    pay_gateway_id = #{payGatewayId} , party_id = #{partyId} , statust_id = #{statustId} , description = #{description} , last_modified_date = #{lastModifiedDate} , last_modified_by_user_login = #{lastModifiedByUserLogin} , created_date = #{createdDate} , created_by_user_login = #{createdByUserLogin}  
+        WHERE
+    pay_channel_id = #{payChannelId}  
+        ]]>
+    </update>
+
+</mapper>

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.billing.product.orm.dao.PayGatewayDao">
+
+
+    <!-- 字段名转换 -->
+    <resultMap id="RM_PayGateway" type="com.billing.product.orm.model.PayGateway">
+        <result property="payGatewayId" column="pay_gateway_id"/>
+        <result property="partyId" column="party_id"/>
+        <result property="statustId" column="statust_id"/>
+        <result property="description" column="description"/>
+        <result property="lastModifiedDate" column="last_modified_date"/>
+        <result property="lastModifiedByUserLogin" column="last_modified_by_user_login"/>
+        <result property="createdDate" column="created_date"/>
+        <result property="createdByUserLogin" column="created_by_user_login"/>
+    </resultMap>
+
+    <!-- 查询字段 -->
+    <sql id="PayGateway_columns">
+        <![CDATA[
+    pay_gateway_id,party_id,statust_id,description,last_modified_date,last_modified_by_user_login,created_date,created_by_user_login
+        ]]>
+    </sql>
+
+
+    <select id="get" parameterType="map" resultMap="RM_PayGateway">
+        select
+        <include refid="PayGateway_columns" />
+        from pay_gateway
+        WHERE
+            <if test="@Ognl@isEmpty(payGatewayId)">
+                1 = 0 AND
+            </if>
+            pay_gateway_id = #{payGatewayId} 
+    </select>
+
+    <!-- 查询用户,演示: 1.输入用map传入多个参数 2.<where>语句, 智能添加where和and关键字 3.输出直接映射对象 -->
+    <select id="search" parameterType="map" resultMap="RM_PayGateway">
+        select
+        <include refid="PayGateway_columns" />
+        from pay_gateway
+        <where>
+                    <if test="@Ognl@isNotEmpty(payGatewayId)">
+            AND pay_gateway_id = #{payGatewayId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(partyId)">
+            AND party_id = #{partyId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(statustId)">
+            AND statust_id = #{statustId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(description)">
+            AND description = #{description}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(lastModifiedDateBegin)">
+            AND last_modified_date >= #{lastModifiedDateBegin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(lastModifiedDateEnd)">
+            AND last_modified_date &lt;= #{lastModifiedDateEnd}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(lastModifiedByUserLogin)">
+            AND last_modified_by_user_login = #{lastModifiedByUserLogin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(createdDateBegin)">
+            AND created_date >= #{createdDateBegin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(createdDateEnd)">
+            AND created_date &lt;= #{createdDateEnd}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(createdByUserLogin)">
+            AND created_by_user_login = #{createdByUserLogin}
+                    </if>
+        </where>
+    </select>
+
+    <!-- 插入 -->
+    <insert id="save" parameterType="com.billing.product.orm.model.PayGateway" useGeneratedKeys="true" keyProperty="payGatewayId">
+        INSERT INTO pay_gateway (
+             party_id, statust_id, description, last_modified_date, last_modified_by_user_login, created_date, created_by_user_login
+        ) VALUES (
+             #{partyId}, #{statustId}, #{description}, #{lastModifiedDate}, #{lastModifiedByUserLogin}, #{createdDate}, #{createdByUserLogin}
+        )
+    </insert>
+
+    <delete id="delete">
+        DELETE FROM pay_gateway WHERE
+        pay_gateway_id = #{payGatewayId} 
+    </delete>
+
+    <update id="update" >
+        <![CDATA[
+        UPDATE pay_gateway SET
+    party_id = #{partyId} , statust_id = #{statustId} , description = #{description} , last_modified_date = #{lastModifiedDate} , last_modified_by_user_login = #{lastModifiedByUserLogin} , created_date = #{createdDate} , created_by_user_login = #{createdByUserLogin}  
+        WHERE
+    pay_gateway_id = #{payGatewayId}  
+        ]]>
+    </update>
+
+</mapper>

@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.billing.product.orm.dao.UserLoginDao">
+
+
+    <!-- 字段名转换 -->
+    <resultMap id="RM_UserLogin" type="com.billing.product.orm.model.UserLogin">
+        <result property="userLoginId" column="user_login_id"/>
+        <result property="currentPassword" column="current_password"/>
+        <result property="passwordHint" column="password_hint"/>
+        <result property="isSystem" column="is_system"/>
+        <result property="enabled" column="enabled"/>
+        <result property="hasLoggedOut" column="has_logged_out"/>
+        <result property="requirePasswordChange" column="require_password_change"/>
+        <result property="lastCurrencyUom" column="last_currency_uom"/>
+        <result property="lastLocale" column="last_locale"/>
+        <result property="lastTimeZone" column="last_time_zone"/>
+        <result property="disabledDateTime" column="disabled_date_time"/>
+        <result property="successiveFailedLogins" column="successive_failed_logins"/>
+        <result property="externalAuthId" column="external_auth_id"/>
+        <result property="userLdapDn" column="user_ldap_dn"/>
+        <result property="partyId" column="party_id"/>
+        <result property="lastUpdatedStamp" column="last_updated_stamp"/>
+        <result property="createdStamp" column="created_stamp"/>
+    </resultMap>
+
+    <!-- 查询字段 -->
+    <sql id="UserLogin_columns">
+        <![CDATA[
+    user_login_id,current_password,password_hint,is_system,enabled,has_logged_out,require_password_change,last_currency_uom,last_locale,last_time_zone,disabled_date_time,successive_failed_logins,external_auth_id,user_ldap_dn,party_id,last_updated_stamp,created_stamp
+        ]]>
+    </sql>
+
+
+    <select id="get" parameterType="map" resultMap="RM_UserLogin">
+        select
+        <include refid="UserLogin_columns" />
+        from user_login
+        WHERE
+            <if test="@Ognl@isEmpty(userLoginId)">
+                1 = 0 AND
+            </if>
+            user_login_id = #{userLoginId} 
+    </select>
+
+    <!-- 查询用户,演示: 1.输入用map传入多个参数 2.<where>语句, 智能添加where和and关键字 3.输出直接映射对象 -->
+    <select id="search" parameterType="map" resultMap="RM_UserLogin">
+        select
+        <include refid="UserLogin_columns" />
+        from user_login
+        <where>
+                    <if test="@Ognl@isNotEmpty(userLoginId)">
+            AND user_login_id = #{userLoginId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(currentPassword)">
+            AND current_password = #{currentPassword}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(passwordHint)">
+            AND password_hint = #{passwordHint}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(isSystem)">
+            AND is_system = #{isSystem}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(enabled)">
+            AND enabled = #{enabled}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(hasLoggedOut)">
+            AND has_logged_out = #{hasLoggedOut}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(requirePasswordChange)">
+            AND require_password_change = #{requirePasswordChange}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(lastCurrencyUom)">
+            AND last_currency_uom = #{lastCurrencyUom}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(lastLocale)">
+            AND last_locale = #{lastLocale}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(lastTimeZone)">
+            AND last_time_zone = #{lastTimeZone}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(disabledDateTimeBegin)">
+            AND disabled_date_time >= #{disabledDateTimeBegin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(disabledDateTimeEnd)">
+            AND disabled_date_time &lt;= #{disabledDateTimeEnd}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(successiveFailedLogins)">
+            AND successive_failed_logins = #{successiveFailedLogins}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(externalAuthId)">
+            AND external_auth_id = #{externalAuthId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(userLdapDn)">
+            AND user_ldap_dn = #{userLdapDn}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(partyId)">
+            AND party_id = #{partyId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(lastUpdatedStampBegin)">
+            AND last_updated_stamp >= #{lastUpdatedStampBegin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(lastUpdatedStampEnd)">
+            AND last_updated_stamp &lt;= #{lastUpdatedStampEnd}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(createdStampBegin)">
+            AND created_stamp >= #{createdStampBegin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(createdStampEnd)">
+            AND created_stamp &lt;= #{createdStampEnd}
+                    </if>
+        </where>
+    </select>
+
+    <!-- 插入 -->
+    <insert id="save" parameterType="com.billing.product.orm.model.UserLogin" useGeneratedKeys="true" keyProperty="userLoginId">
+        INSERT INTO user_login (
+             current_password, password_hint, is_system, enabled, has_logged_out, require_password_change, last_currency_uom, last_locale, last_time_zone, disabled_date_time, successive_failed_logins, external_auth_id, user_ldap_dn, party_id, last_updated_stamp, created_stamp
+        ) VALUES (
+             #{currentPassword}, #{passwordHint}, #{isSystem}, #{enabled}, #{hasLoggedOut}, #{requirePasswordChange}, #{lastCurrencyUom}, #{lastLocale}, #{lastTimeZone}, #{disabledDateTime}, #{successiveFailedLogins}, #{externalAuthId}, #{userLdapDn}, #{partyId}, #{lastUpdatedStamp}, #{createdStamp}
+        )
+    </insert>
+
+    <delete id="delete">
+        DELETE FROM user_login WHERE
+        user_login_id = #{userLoginId} 
+    </delete>
+
+    <update id="update" >
+        <![CDATA[
+        UPDATE user_login SET
+    current_password = #{currentPassword} , password_hint = #{passwordHint} , is_system = #{isSystem} , enabled = #{enabled} , has_logged_out = #{hasLoggedOut} , require_password_change = #{requirePasswordChange} , last_currency_uom = #{lastCurrencyUom} , last_locale = #{lastLocale} , last_time_zone = #{lastTimeZone} , disabled_date_time = #{disabledDateTime} , successive_failed_logins = #{successiveFailedLogins} , external_auth_id = #{externalAuthId} , user_ldap_dn = #{userLdapDn} , party_id = #{partyId} , last_updated_stamp = #{lastUpdatedStamp} , created_stamp = #{createdStamp}  
+        WHERE
+    user_login_id = #{userLoginId}  
+        ]]>
+    </update>
+
+</mapper>

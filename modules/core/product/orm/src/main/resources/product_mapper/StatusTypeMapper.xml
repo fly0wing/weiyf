@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.billing.product.orm.dao.StatusTypeDao">
+
+
+    <!-- 字段名转换 -->
+    <resultMap id="RM_StatusType" type="com.billing.product.orm.model.StatusType">
+        <result property="statusTypeId" column="status_type_id"/>
+        <result property="parentTypeId" column="parent_type_id"/>
+        <result property="description" column="description"/>
+        <result property="forbiddenModeEnumId" column="forbidden_mode_enum_id"/>
+        <result property="lastUpdatedStamp" column="last_updated_stamp"/>
+        <result property="createdStamp" column="created_stamp"/>
+    </resultMap>
+
+    <!-- 查询字段 -->
+    <sql id="StatusType_columns">
+        <![CDATA[
+    status_type_id,parent_type_id,description,forbidden_mode_enum_id,last_updated_stamp,created_stamp
+        ]]>
+    </sql>
+
+
+    <select id="get" parameterType="map" resultMap="RM_StatusType">
+        select
+        <include refid="StatusType_columns" />
+        from status_type
+        WHERE
+            <if test="@Ognl@isEmpty(statusTypeId)">
+                1 = 0 AND
+            </if>
+            status_type_id = #{statusTypeId} 
+    </select>
+
+    <!-- 查询用户,演示: 1.输入用map传入多个参数 2.<where>语句, 智能添加where和and关键字 3.输出直接映射对象 -->
+    <select id="search" parameterType="map" resultMap="RM_StatusType">
+        select
+        <include refid="StatusType_columns" />
+        from status_type
+        <where>
+                    <if test="@Ognl@isNotEmpty(statusTypeId)">
+            AND status_type_id = #{statusTypeId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(parentTypeId)">
+            AND parent_type_id = #{parentTypeId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(description)">
+            AND description = #{description}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(forbiddenModeEnumId)">
+            AND forbidden_mode_enum_id = #{forbiddenModeEnumId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(lastUpdatedStampBegin)">
+            AND last_updated_stamp >= #{lastUpdatedStampBegin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(lastUpdatedStampEnd)">
+            AND last_updated_stamp &lt;= #{lastUpdatedStampEnd}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(createdStampBegin)">
+            AND created_stamp >= #{createdStampBegin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(createdStampEnd)">
+            AND created_stamp &lt;= #{createdStampEnd}
+                    </if>
+        </where>
+    </select>
+
+    <!-- 插入 -->
+    <insert id="save" parameterType="com.billing.product.orm.model.StatusType" useGeneratedKeys="true" keyProperty="statusTypeId">
+        INSERT INTO status_type (
+             parent_type_id, description, forbidden_mode_enum_id, last_updated_stamp, created_stamp
+        ) VALUES (
+             #{parentTypeId}, #{description}, #{forbiddenModeEnumId}, #{lastUpdatedStamp}, #{createdStamp}
+        )
+    </insert>
+
+    <delete id="delete">
+        DELETE FROM status_type WHERE
+        status_type_id = #{statusTypeId} 
+    </delete>
+
+    <update id="update" >
+        <![CDATA[
+        UPDATE status_type SET
+    parent_type_id = #{parentTypeId} , description = #{description} , forbidden_mode_enum_id = #{forbiddenModeEnumId} , last_updated_stamp = #{lastUpdatedStamp} , created_stamp = #{createdStamp}  
+        WHERE
+    status_type_id = #{statusTypeId}  
+        ]]>
+    </update>
+
+</mapper>

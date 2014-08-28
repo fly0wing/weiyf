@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.billing.product.orm.dao.GoodsDiscountDao">
+
+
+    <!-- 字段名转换 -->
+    <resultMap id="RM_GoodsDiscount" type="com.billing.product.orm.model.GoodsDiscount">
+        <result property="id" column="id"/>
+        <result property="goodsDiscountActivityId" column="goods_discount_activity_id"/>
+        <result property="partyId" column="party_id"/>
+        <result property="domainId" column="domain_id"/>
+        <result property="appId" column="app_id"/>
+        <result property="entryId" column="entry_id"/>
+        <result property="productId" column="product_id"/>
+        <result property="goodsId" column="goods_id"/>
+        <result property="discountPercent" column="discount_percent"/>
+        <result property="discountAmount" column="discount_amount"/>
+        <result property="discountName" column="discount_name"/>
+        <result property="statustId" column="statust_id"/>
+        <result property="geoId" column="geo_id"/>
+        <result property="fromDate" column="from_date"/>
+        <result property="thruDate" column="thru_date"/>
+        <result property="description" column="description"/>
+        <result property="lastModifiedDate" column="last_modified_date"/>
+        <result property="lastModifiedByUserLogin" column="last_modified_by_user_login"/>
+        <result property="createdDate" column="created_date"/>
+        <result property="createdByUserLogin" column="created_by_user_login"/>
+    </resultMap>
+
+    <!-- 查询字段 -->
+    <sql id="GoodsDiscount_columns">
+        <![CDATA[
+    id,goods_discount_activity_id,party_id,domain_id,app_id,entry_id,product_id,goods_id,discount_percent,discount_amount,discount_name,statust_id,geo_id,from_date,thru_date,description,last_modified_date,last_modified_by_user_login,created_date,created_by_user_login
+        ]]>
+    </sql>
+
+
+    <select id="get" parameterType="map" resultMap="RM_GoodsDiscount">
+        select
+        <include refid="GoodsDiscount_columns" />
+        from goods_discount
+        WHERE
+            <if test="@Ognl@isEmpty(id)">
+                1 = 0 AND
+            </if>
+            id = #{id} 
+    </select>
+
+    <!-- 查询用户,演示: 1.输入用map传入多个参数 2.<where>语句, 智能添加where和and关键字 3.输出直接映射对象 -->
+    <select id="search" parameterType="map" resultMap="RM_GoodsDiscount">
+        select
+        <include refid="GoodsDiscount_columns" />
+        from goods_discount
+        <where>
+                    <if test="@Ognl@isNotEmpty(id)">
+            AND id = #{id}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(goodsDiscountActivityId)">
+            AND goods_discount_activity_id = #{goodsDiscountActivityId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(partyId)">
+            AND party_id = #{partyId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(domainId)">
+            AND domain_id = #{domainId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(appId)">
+            AND app_id = #{appId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(entryId)">
+            AND entry_id = #{entryId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(productId)">
+            AND product_id = #{productId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(goodsId)">
+            AND goods_id = #{goodsId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(discountPercent)">
+            AND discount_percent = #{discountPercent}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(discountAmount)">
+            AND discount_amount = #{discountAmount}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(discountName)">
+            AND discount_name = #{discountName}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(statustId)">
+            AND statust_id = #{statustId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(geoId)">
+            AND geo_id = #{geoId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(fromDateBegin)">
+            AND from_date >= #{fromDateBegin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(fromDateEnd)">
+            AND from_date &lt;= #{fromDateEnd}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(thruDateBegin)">
+            AND thru_date >= #{thruDateBegin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(thruDateEnd)">
+            AND thru_date &lt;= #{thruDateEnd}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(description)">
+            AND description = #{description}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(lastModifiedDateBegin)">
+            AND last_modified_date >= #{lastModifiedDateBegin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(lastModifiedDateEnd)">
+            AND last_modified_date &lt;= #{lastModifiedDateEnd}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(lastModifiedByUserLogin)">
+            AND last_modified_by_user_login = #{lastModifiedByUserLogin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(createdDateBegin)">
+            AND created_date >= #{createdDateBegin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(createdDateEnd)">
+            AND created_date &lt;= #{createdDateEnd}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(createdByUserLogin)">
+            AND created_by_user_login = #{createdByUserLogin}
+                    </if>
+        </where>
+    </select>
+
+    <!-- 插入 -->
+    <insert id="save" parameterType="com.billing.product.orm.model.GoodsDiscount" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO goods_discount (
+             goods_discount_activity_id, party_id, domain_id, app_id, entry_id, product_id, goods_id, discount_percent, discount_amount, discount_name, statust_id, geo_id, from_date, thru_date, description, last_modified_date, last_modified_by_user_login, created_date, created_by_user_login
+        ) VALUES (
+             #{goodsDiscountActivityId}, #{partyId}, #{domainId}, #{appId}, #{entryId}, #{productId}, #{goodsId}, #{discountPercent}, #{discountAmount}, #{discountName}, #{statustId}, #{geoId}, #{fromDate}, #{thruDate}, #{description}, #{lastModifiedDate}, #{lastModifiedByUserLogin}, #{createdDate}, #{createdByUserLogin}
+        )
+    </insert>
+
+    <delete id="delete">
+        DELETE FROM goods_discount WHERE
+        id = #{id} 
+    </delete>
+
+    <update id="update" >
+        <![CDATA[
+        UPDATE goods_discount SET
+    goods_discount_activity_id = #{goodsDiscountActivityId} , party_id = #{partyId} , domain_id = #{domainId} , app_id = #{appId} , entry_id = #{entryId} , product_id = #{productId} , goods_id = #{goodsId} , discount_percent = #{discountPercent} , discount_amount = #{discountAmount} , discount_name = #{discountName} , statust_id = #{statustId} , geo_id = #{geoId} , from_date = #{fromDate} , thru_date = #{thruDate} , description = #{description} , last_modified_date = #{lastModifiedDate} , last_modified_by_user_login = #{lastModifiedByUserLogin} , created_date = #{createdDate} , created_by_user_login = #{createdByUserLogin}  
+        WHERE
+    id = #{id}  
+        ]]>
+    </update>
+
+</mapper>

@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.billing.product.orm.dao.AppDao">
+
+
+    <!-- 字段名转换 -->
+    <resultMap id="RM_App" type="com.billing.product.orm.model.App">
+        <result property="id" column="id"/>
+        <result property="appName" column="app_name"/>
+        <result property="appIconChecksum" column="app_icon_checksum"/>
+        <result property="appCategoryTypeId" column="app_category_type_id"/>
+        <result property="appCategoryId" column="app_category_id"/>
+        <result property="partyId" column="party_id"/>
+        <result property="domainId" column="domain_id"/>
+        <result property="statustId" column="statust_id"/>
+        <result property="description" column="description"/>
+        <result property="createdDate" column="created_date"/>
+        <result property="createdByUserLogin" column="created_by_user_login"/>
+        <result property="lastModifiedDate" column="last_modified_date"/>
+        <result property="lastModifiedByUserLogin" column="last_modified_by_user_login"/>
+    </resultMap>
+
+    <!-- 查询字段 -->
+    <sql id="App_columns">
+        <![CDATA[
+    id,app_name,app_icon_checksum,app_category_type_id,app_category_id,party_id,domain_id,statust_id,description,created_date,created_by_user_login,last_modified_date,last_modified_by_user_login
+        ]]>
+    </sql>
+
+
+    <select id="get" parameterType="map" resultMap="RM_App">
+        select
+        <include refid="App_columns" />
+        from app
+        WHERE
+            <if test="@Ognl@isEmpty(id)">
+                1 = 0 AND
+            </if>
+            id = #{id} 
+    </select>
+
+    <!-- 查询用户,演示: 1.输入用map传入多个参数 2.<where>语句, 智能添加where和and关键字 3.输出直接映射对象 -->
+    <select id="search" parameterType="map" resultMap="RM_App">
+        select
+        <include refid="App_columns" />
+        from app
+        <where>
+                    <if test="@Ognl@isNotEmpty(id)">
+            AND id = #{id}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(appName)">
+            AND app_name = #{appName}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(appIconChecksum)">
+            AND app_icon_checksum = #{appIconChecksum}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(appCategoryTypeId)">
+            AND app_category_type_id = #{appCategoryTypeId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(appCategoryId)">
+            AND app_category_id = #{appCategoryId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(partyId)">
+            AND party_id = #{partyId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(domainId)">
+            AND domain_id = #{domainId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(statustId)">
+            AND statust_id = #{statustId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(description)">
+            AND description = #{description}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(createdDateBegin)">
+            AND created_date >= #{createdDateBegin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(createdDateEnd)">
+            AND created_date &lt;= #{createdDateEnd}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(createdByUserLogin)">
+            AND created_by_user_login = #{createdByUserLogin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(lastModifiedDateBegin)">
+            AND last_modified_date >= #{lastModifiedDateBegin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(lastModifiedDateEnd)">
+            AND last_modified_date &lt;= #{lastModifiedDateEnd}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(lastModifiedByUserLogin)">
+            AND last_modified_by_user_login = #{lastModifiedByUserLogin}
+                    </if>
+        </where>
+    </select>
+
+    <!-- 插入 -->
+    <insert id="save" parameterType="com.billing.product.orm.model.App" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO app (
+             app_name, app_icon_checksum, app_category_type_id, app_category_id, party_id, domain_id, statust_id, description, created_date, created_by_user_login, last_modified_date, last_modified_by_user_login
+        ) VALUES (
+             #{appName}, #{appIconChecksum}, #{appCategoryTypeId}, #{appCategoryId}, #{partyId}, #{domainId}, #{statustId}, #{description}, #{createdDate}, #{createdByUserLogin}, #{lastModifiedDate}, #{lastModifiedByUserLogin}
+        )
+    </insert>
+
+    <delete id="delete">
+        DELETE FROM app WHERE
+        id = #{id} 
+    </delete>
+
+    <update id="update" >
+        <![CDATA[
+        UPDATE app SET
+    app_name = #{appName} , app_icon_checksum = #{appIconChecksum} , app_category_type_id = #{appCategoryTypeId} , app_category_id = #{appCategoryId} , party_id = #{partyId} , domain_id = #{domainId} , statust_id = #{statustId} , description = #{description} , created_date = #{createdDate} , created_by_user_login = #{createdByUserLogin} , last_modified_date = #{lastModifiedDate} , last_modified_by_user_login = #{lastModifiedByUserLogin}  
+        WHERE
+    id = #{id}  
+        ]]>
+    </update>
+
+</mapper>

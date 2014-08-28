@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.billing.product.orm.dao.PayChannelDiscountDao">
+
+
+    <!-- 字段名转换 -->
+    <resultMap id="RM_PayChannelDiscount" type="com.billing.product.orm.model.PayChannelDiscount">
+        <result property="id" column="id"/>
+        <result property="discountActivityId" column="discount_activity_id"/>
+        <result property="payChannelId" column="pay_channel_id"/>
+        <result property="partyId" column="party_id"/>
+        <result property="appId" column="app_id"/>
+        <result property="entryId" column="entry_id"/>
+        <result property="statustId" column="statust_id"/>
+        <result property="discountPercent" column="discount_percent"/>
+        <result property="discountAmount" column="discount_amount"/>
+        <result property="geoId" column="geo_id"/>
+        <result property="fromDate" column="from_date"/>
+        <result property="thruDate" column="thru_date"/>
+        <result property="description" column="description"/>
+        <result property="lastModifiedDate" column="last_modified_date"/>
+        <result property="lastModifiedByUserLogin" column="last_modified_by_user_login"/>
+        <result property="createdDate" column="created_date"/>
+        <result property="createdByUserLogin" column="created_by_user_login"/>
+    </resultMap>
+
+    <!-- 查询字段 -->
+    <sql id="PayChannelDiscount_columns">
+        <![CDATA[
+    id,discount_activity_id,pay_channel_id,party_id,app_id,entry_id,statust_id,discount_percent,discount_amount,geo_id,from_date,thru_date,description,last_modified_date,last_modified_by_user_login,created_date,created_by_user_login
+        ]]>
+    </sql>
+
+
+    <select id="get" parameterType="map" resultMap="RM_PayChannelDiscount">
+        select
+        <include refid="PayChannelDiscount_columns" />
+        from pay_channel_discount
+        WHERE
+            <if test="@Ognl@isEmpty(id)">
+                1 = 0 AND
+            </if>
+            id = #{id} 
+    </select>
+
+    <!-- 查询用户,演示: 1.输入用map传入多个参数 2.<where>语句, 智能添加where和and关键字 3.输出直接映射对象 -->
+    <select id="search" parameterType="map" resultMap="RM_PayChannelDiscount">
+        select
+        <include refid="PayChannelDiscount_columns" />
+        from pay_channel_discount
+        <where>
+                    <if test="@Ognl@isNotEmpty(id)">
+            AND id = #{id}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(discountActivityId)">
+            AND discount_activity_id = #{discountActivityId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(payChannelId)">
+            AND pay_channel_id = #{payChannelId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(partyId)">
+            AND party_id = #{partyId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(appId)">
+            AND app_id = #{appId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(entryId)">
+            AND entry_id = #{entryId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(statustId)">
+            AND statust_id = #{statustId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(discountPercent)">
+            AND discount_percent = #{discountPercent}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(discountAmount)">
+            AND discount_amount = #{discountAmount}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(geoId)">
+            AND geo_id = #{geoId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(fromDateBegin)">
+            AND from_date >= #{fromDateBegin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(fromDateEnd)">
+            AND from_date &lt;= #{fromDateEnd}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(thruDateBegin)">
+            AND thru_date >= #{thruDateBegin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(thruDateEnd)">
+            AND thru_date &lt;= #{thruDateEnd}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(description)">
+            AND description = #{description}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(lastModifiedDateBegin)">
+            AND last_modified_date >= #{lastModifiedDateBegin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(lastModifiedDateEnd)">
+            AND last_modified_date &lt;= #{lastModifiedDateEnd}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(lastModifiedByUserLogin)">
+            AND last_modified_by_user_login = #{lastModifiedByUserLogin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(createdDateBegin)">
+            AND created_date >= #{createdDateBegin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(createdDateEnd)">
+            AND created_date &lt;= #{createdDateEnd}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(createdByUserLogin)">
+            AND created_by_user_login = #{createdByUserLogin}
+                    </if>
+        </where>
+    </select>
+
+    <!-- 插入 -->
+    <insert id="save" parameterType="com.billing.product.orm.model.PayChannelDiscount" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO pay_channel_discount (
+             discount_activity_id, pay_channel_id, party_id, app_id, entry_id, statust_id, discount_percent, discount_amount, geo_id, from_date, thru_date, description, last_modified_date, last_modified_by_user_login, created_date, created_by_user_login
+        ) VALUES (
+             #{discountActivityId}, #{payChannelId}, #{partyId}, #{appId}, #{entryId}, #{statustId}, #{discountPercent}, #{discountAmount}, #{geoId}, #{fromDate}, #{thruDate}, #{description}, #{lastModifiedDate}, #{lastModifiedByUserLogin}, #{createdDate}, #{createdByUserLogin}
+        )
+    </insert>
+
+    <delete id="delete">
+        DELETE FROM pay_channel_discount WHERE
+        id = #{id} 
+    </delete>
+
+    <update id="update" >
+        <![CDATA[
+        UPDATE pay_channel_discount SET
+    discount_activity_id = #{discountActivityId} , pay_channel_id = #{payChannelId} , party_id = #{partyId} , app_id = #{appId} , entry_id = #{entryId} , statust_id = #{statustId} , discount_percent = #{discountPercent} , discount_amount = #{discountAmount} , geo_id = #{geoId} , from_date = #{fromDate} , thru_date = #{thruDate} , description = #{description} , last_modified_date = #{lastModifiedDate} , last_modified_by_user_login = #{lastModifiedByUserLogin} , created_date = #{createdDate} , created_by_user_login = #{createdByUserLogin}  
+        WHERE
+    id = #{id}  
+        ]]>
+    </update>
+
+</mapper>

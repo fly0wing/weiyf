@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.billing.product.orm.dao.PartyContentDao">
+
+
+    <!-- 字段名转换 -->
+    <resultMap id="RM_PartyContent" type="com.billing.product.orm.model.PartyContent">
+        <result property="id" column="id"/>
+        <result property="partyId" column="party_id"/>
+        <result property="contentId" column="content_id"/>
+        <result property="dataResourceId" column="data_resource_id"/>
+        <result property="partyContentTypeId" column="party_content_type_id"/>
+        <result property="fromDate" column="from_date"/>
+        <result property="thruDate" column="thru_date"/>
+        <result property="lastUpdatedStamp" column="last_updated_stamp"/>
+        <result property="createdStamp" column="created_stamp"/>
+    </resultMap>
+
+    <!-- 查询字段 -->
+    <sql id="PartyContent_columns">
+        <![CDATA[
+    id,party_id,content_id,data_resource_id,party_content_type_id,from_date,thru_date,last_updated_stamp,created_stamp
+        ]]>
+    </sql>
+
+
+    <select id="get" parameterType="map" resultMap="RM_PartyContent">
+        select
+        <include refid="PartyContent_columns" />
+        from party_content
+        WHERE
+            <if test="@Ognl@isEmpty(id)">
+                1 = 0 AND
+            </if>
+            id = #{id} 
+    </select>
+
+    <!-- 查询用户,演示: 1.输入用map传入多个参数 2.<where>语句, 智能添加where和and关键字 3.输出直接映射对象 -->
+    <select id="search" parameterType="map" resultMap="RM_PartyContent">
+        select
+        <include refid="PartyContent_columns" />
+        from party_content
+        <where>
+                    <if test="@Ognl@isNotEmpty(id)">
+            AND id = #{id}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(partyId)">
+            AND party_id = #{partyId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(contentId)">
+            AND content_id = #{contentId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(dataResourceId)">
+            AND data_resource_id = #{dataResourceId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(partyContentTypeId)">
+            AND party_content_type_id = #{partyContentTypeId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(fromDateBegin)">
+            AND from_date >= #{fromDateBegin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(fromDateEnd)">
+            AND from_date &lt;= #{fromDateEnd}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(thruDateBegin)">
+            AND thru_date >= #{thruDateBegin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(thruDateEnd)">
+            AND thru_date &lt;= #{thruDateEnd}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(lastUpdatedStampBegin)">
+            AND last_updated_stamp >= #{lastUpdatedStampBegin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(lastUpdatedStampEnd)">
+            AND last_updated_stamp &lt;= #{lastUpdatedStampEnd}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(createdStampBegin)">
+            AND created_stamp >= #{createdStampBegin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(createdStampEnd)">
+            AND created_stamp &lt;= #{createdStampEnd}
+                    </if>
+        </where>
+    </select>
+
+    <!-- 插入 -->
+    <insert id="save" parameterType="com.billing.product.orm.model.PartyContent" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO party_content (
+             party_id, content_id, data_resource_id, party_content_type_id, from_date, thru_date, last_updated_stamp, created_stamp
+        ) VALUES (
+             #{partyId}, #{contentId}, #{dataResourceId}, #{partyContentTypeId}, #{fromDate}, #{thruDate}, #{lastUpdatedStamp}, #{createdStamp}
+        )
+    </insert>
+
+    <delete id="delete">
+        DELETE FROM party_content WHERE
+        id = #{id} 
+    </delete>
+
+    <update id="update" >
+        <![CDATA[
+        UPDATE party_content SET
+    party_id = #{partyId} , content_id = #{contentId} , data_resource_id = #{dataResourceId} , party_content_type_id = #{partyContentTypeId} , from_date = #{fromDate} , thru_date = #{thruDate} , last_updated_stamp = #{lastUpdatedStamp} , created_stamp = #{createdStamp}  
+        WHERE
+    id = #{id}  
+        ]]>
+    </update>
+
+</mapper>

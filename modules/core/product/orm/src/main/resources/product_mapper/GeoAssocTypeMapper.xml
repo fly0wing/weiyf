@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.billing.product.orm.dao.GeoAssocTypeDao">
+
+
+    <!-- 字段名转换 -->
+    <resultMap id="RM_GeoAssocType" type="com.billing.product.orm.model.GeoAssocType">
+        <result property="geoAssocTypeId" column="geo_assoc_type_id"/>
+        <result property="parentTypeId" column="parent_type_id"/>
+        <result property="description" column="description"/>
+    </resultMap>
+
+    <!-- 查询字段 -->
+    <sql id="GeoAssocType_columns">
+        <![CDATA[
+    geo_assoc_type_id,parent_type_id,description
+        ]]>
+    </sql>
+
+
+    <select id="get" parameterType="map" resultMap="RM_GeoAssocType">
+        select
+        <include refid="GeoAssocType_columns" />
+        from geo_assoc_type
+        WHERE
+            <if test="@Ognl@isEmpty(geoAssocTypeId)">
+                1 = 0 AND
+            </if>
+            geo_assoc_type_id = #{geoAssocTypeId} 
+    </select>
+
+    <!-- 查询用户,演示: 1.输入用map传入多个参数 2.<where>语句, 智能添加where和and关键字 3.输出直接映射对象 -->
+    <select id="search" parameterType="map" resultMap="RM_GeoAssocType">
+        select
+        <include refid="GeoAssocType_columns" />
+        from geo_assoc_type
+        <where>
+                    <if test="@Ognl@isNotEmpty(geoAssocTypeId)">
+            AND geo_assoc_type_id = #{geoAssocTypeId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(parentTypeId)">
+            AND parent_type_id = #{parentTypeId}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(description)">
+            AND description = #{description}
+                    </if>
+        </where>
+    </select>
+
+    <!-- 插入 -->
+    <insert id="save" parameterType="com.billing.product.orm.model.GeoAssocType" useGeneratedKeys="true" keyProperty="geoAssocTypeId">
+        INSERT INTO geo_assoc_type (
+             parent_type_id, description
+        ) VALUES (
+             #{parentTypeId}, #{description}
+        )
+    </insert>
+
+    <delete id="delete">
+        DELETE FROM geo_assoc_type WHERE
+        geo_assoc_type_id = #{geoAssocTypeId} 
+    </delete>
+
+    <update id="update" >
+        <![CDATA[
+        UPDATE geo_assoc_type SET
+    parent_type_id = #{parentTypeId} , description = #{description}  
+        WHERE
+    geo_assoc_type_id = #{geoAssocTypeId}  
+        ]]>
+    </update>
+
+</mapper>

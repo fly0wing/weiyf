@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.billing.product.orm.dao.ContactMechFinanceDao">
+
+
+    <!-- 字段名转换 -->
+    <resultMap id="RM_ContactMechFinance" type="com.billing.product.orm.model.ContactMechFinance">
+        <result property="id" column="id"/>
+        <result property="bankOfDeposit" column="bank_of_deposit"/>
+        <result property="payeeAccountName" column="payee_account_name"/>
+        <result property="payeeAccount" column="payee_account"/>
+        <result property="lastUpdatedStamp" column="last_updated_stamp"/>
+        <result property="createdStamp" column="created_stamp"/>
+    </resultMap>
+
+    <!-- 查询字段 -->
+    <sql id="ContactMechFinance_columns">
+        <![CDATA[
+    id,bank_of_deposit,payee_account_name,payee_account,last_updated_stamp,created_stamp
+        ]]>
+    </sql>
+
+
+    <select id="get" parameterType="map" resultMap="RM_ContactMechFinance">
+        select
+        <include refid="ContactMechFinance_columns" />
+        from contact_mech_finance
+        WHERE
+            <if test="@Ognl@isEmpty(id)">
+                1 = 0 AND
+            </if>
+            id = #{id} 
+    </select>
+
+    <!-- 查询用户,演示: 1.输入用map传入多个参数 2.<where>语句, 智能添加where和and关键字 3.输出直接映射对象 -->
+    <select id="search" parameterType="map" resultMap="RM_ContactMechFinance">
+        select
+        <include refid="ContactMechFinance_columns" />
+        from contact_mech_finance
+        <where>
+                    <if test="@Ognl@isNotEmpty(id)">
+            AND id = #{id}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(bankOfDeposit)">
+            AND bank_of_deposit = #{bankOfDeposit}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(payeeAccountName)">
+            AND payee_account_name = #{payeeAccountName}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(payeeAccount)">
+            AND payee_account = #{payeeAccount}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(lastUpdatedStampBegin)">
+            AND last_updated_stamp >= #{lastUpdatedStampBegin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(lastUpdatedStampEnd)">
+            AND last_updated_stamp &lt;= #{lastUpdatedStampEnd}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(createdStampBegin)">
+            AND created_stamp >= #{createdStampBegin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(createdStampEnd)">
+            AND created_stamp &lt;= #{createdStampEnd}
+                    </if>
+        </where>
+    </select>
+
+    <!-- 插入 -->
+    <insert id="save" parameterType="com.billing.product.orm.model.ContactMechFinance" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO contact_mech_finance (
+             bank_of_deposit, payee_account_name, payee_account, last_updated_stamp, created_stamp
+        ) VALUES (
+             #{bankOfDeposit}, #{payeeAccountName}, #{payeeAccount}, #{lastUpdatedStamp}, #{createdStamp}
+        )
+    </insert>
+
+    <delete id="delete">
+        DELETE FROM contact_mech_finance WHERE
+        id = #{id} 
+    </delete>
+
+    <update id="update" >
+        <![CDATA[
+        UPDATE contact_mech_finance SET
+    bank_of_deposit = #{bankOfDeposit} , payee_account_name = #{payeeAccountName} , payee_account = #{payeeAccount} , last_updated_stamp = #{lastUpdatedStamp} , created_stamp = #{createdStamp}  
+        WHERE
+    id = #{id}  
+        ]]>
+    </update>
+
+</mapper>
