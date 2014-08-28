@@ -1,6 +1,7 @@
 package com.billing.internalcontract;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * 方法调用返回结果的一般定义
@@ -14,26 +15,27 @@ public class BaseResp implements Serializable {
      */
     private String requestGuid;
     /**
+
+     * 应答时间
+     */
+    private Date respTime;
+    /**
      * 当前的会话
      */
     private UserSession session;
-
 	private boolean isNormal;
 	private long code;
 	private String desc;
 	private Exception exception;
-
 	private long longResult;
 	private String stringResult;
 	private long longResult2;
     private String stringResult2;
     private long longResult3;
     private String stringResult3;
-
     public BaseResp(){
 
     }
-
 	public BaseResp(boolean isNormal, long resultCode, String resultDesc,
                     Exception exception) {
 		this.isNormal = isNormal;
@@ -64,6 +66,14 @@ public class BaseResp implements Serializable {
 	public static BaseResp fail(String resultDesc) {
 		return new BaseResp(false, 0, resultDesc);
 	}
+
+    public Date getRespTime() {
+        return respTime;
+    }
+
+    public void setRespTime(Date respTime) {
+        this.respTime = respTime;
+    }
 
     public String getRequestGuid() {
         return requestGuid;

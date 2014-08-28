@@ -3,17 +3,17 @@ package com.billing.internalcontract.product;
 import com.billing.internalcontract.BaseResp;
 
 /**
- * 产品接口
+ * 产品管理接口
  * Created by xiaoyouyi on 2014-8-23.
  */
-public interface IProductFacade {
+public interface IProductMgrFacade {
 
     /**
-     * 获取产品对应的商品
+     * 创建产品
      * @param req
      * @return
      */
-    BaseResp getProductGoods(ProductGoodsReq req);
+    BaseResp createProduct(CreateProductReq req);
 
 
 

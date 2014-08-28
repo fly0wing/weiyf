@@ -1,6 +1,7 @@
 package com.billing.internalcontract;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * Created by xiaoyouyi on 2014-6-21.
@@ -10,6 +11,10 @@ public class BaseReq implements Serializable {
      * 请求的唯一标识
      */
     private String requestGuid;
+    /**
+     * 请求时间
+     */
+    private Date requestTime;
     /**
      * 当前的会话
      */
@@ -35,6 +40,14 @@ public class BaseReq implements Serializable {
      * 用户输入的令牌
      */
     private String actionToken;
+
+    public Date getRequestTime() {
+        return requestTime;
+    }
+
+    public void setRequestTime(Date requestTime) {
+        this.requestTime = requestTime;
+    }
 
     public UserSession getSession() {
         return session;

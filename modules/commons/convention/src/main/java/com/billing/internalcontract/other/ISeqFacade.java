@@ -1,5 +1,7 @@
 package com.billing.internalcontract.other;
 
+import com.billing.internalcontract.BaseResp;
+
 /**
  * 序号服务，设计思路：
  * 在billing_product库中建立表sequence_value_item，存储各个序号的当前值，
@@ -15,7 +17,7 @@ public interface ISeqFacade {
      * @param seqName
      * @return
      */
-    long nextSeq(String seqName);
+    BaseResp nextSeq(String seqName);
 
     /**
      * 根据序号名称，初始化序号当前值
@@ -23,5 +25,5 @@ public interface ISeqFacade {
      * @param maxSeq
      * @return
      */
-    boolean initSeq(String seqName,long maxSeq);
+    BaseResp initSeq(String seqName,long maxSeq);
 }
