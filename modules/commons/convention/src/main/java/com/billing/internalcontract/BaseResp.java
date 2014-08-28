@@ -8,7 +8,7 @@ import java.util.Date;
  * @author Youyi Xiao
  *
  */
-public class BaseResp implements Serializable {
+public class BaseResp<T> implements Serializable {
     public final static int SUCCESS=0;
     /**
      * 请求的唯一标识
@@ -33,6 +33,11 @@ public class BaseResp implements Serializable {
     private String stringResult2;
     private long longResult3;
     private String stringResult3;
+    /**
+     * 结果集
+     */
+    private T objResult;
+
     public BaseResp(){
 
     }
@@ -105,6 +110,14 @@ public class BaseResp implements Serializable {
 
     public void setLongResult(long longResult) {
         this.longResult = longResult;
+    }
+
+    public T getObjResult() {
+        return objResult;
+    }
+
+    public void setObjResult(T objResult) {
+        this.objResult = objResult;
     }
 
     public String getStringResult() {
