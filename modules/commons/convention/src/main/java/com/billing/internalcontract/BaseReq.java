@@ -15,11 +15,7 @@ public class BaseReq implements Serializable {
      * 请求时间
      */
     private Date requestTime;
-    /**
-     * 当前的会话
-     */
 
-    private UserSession session;
     /**
      * 数字参数1
      */
@@ -47,14 +43,6 @@ public class BaseReq implements Serializable {
 
     public void setRequestTime(Date requestTime) {
         this.requestTime = requestTime;
-    }
-
-    public UserSession getSession() {
-        return session;
-    }
-
-    public void setSession(UserSession session) {
-        this.session = session;
     }
 
     public String getRequestGuid() {
