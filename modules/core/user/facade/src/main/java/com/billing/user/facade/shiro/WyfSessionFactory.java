@@ -21,13 +21,10 @@ public class WyfSessionFactory implements SessionFactory {
      */
     @Override
     public Session createSession(SessionContext initData) {
-        WyfSession wyfSession= new WyfSession( );
-        UserSession userSession= (UserSession)initData.get(SessionFacade.USER_SESSION);
-        if(userSession!=null){
-            userSession.setFingerprint(initData.getHost());
-            //todo  userSession.setSessionId(Long.parseLong(initData.getSessionId());
-        }
-        wyfSession.setUserSession(userSession);
-        return wyfSession;
+        UserSession userSession = new UserSession();
+        userSession.setFingerprint(initData.getHost());
+        //todo  userSession.setSessionId(Long.parseLong(initData.getSessionId());
+
+        return userSession;
     }
 }

@@ -2,9 +2,9 @@ package com.billing.user.facade;
 
 import com.billing.internalcontract.BaseReq;
 import com.billing.internalcontract.BaseResp;
+import com.billing.internalcontract.UserSession;
 import com.billing.internalcontract.session.ISessionFacade;
 import com.billing.user.facade.shiro.WyfBillingSecurityManager;
-import com.billing.user.facade.shiro.WyfSession;
 import com.billing.user.orm.dao.UserSessionDao;
 import com.billing.user.orm.dao.UserSessionDurableDao;
 import org.apache.shiro.SecurityUtils;
@@ -34,37 +34,9 @@ public class SessionFacade implements ISessionFacade {
      * @param req
      * @return 直接更新当前会话的会话标识？
      */
-    @Override
-    public BaseResp createSession(BaseReq req) {
-        WyfSession wyfSession= (WyfSession)SecurityUtils.getSubject().getSession(true);
-
-        SessionContext sessionContext = new DefaultSessionContext( );
-        sessionContext.put( USER_SESSION,req.getSession() );
-        Session session = WyfBillingSecurityManager.getInstance().start(sessionContext);
-
-        return null;
-    }
-
-    /**
-     * 标记当前会话需要持久化
-     *
-     * @param req
-     * @return
-     */
-    @Override
-    public BaseResp annotateSessionDurable(BaseReq req) {
-        return null;
-    }
-
-    /**
-     * 结束当前会话：如用户主动登出时。
-     *
-     * @param req
-     * @return
-     */
-    @Override
-    public BaseResp stopSession(BaseReq req) {
-        return null;
+    public UserSession createSession(BaseReq req) {
+        UserSession userSession= (UserSession)SecurityUtils.getSubject().getSession(true);
+        return userSession;
     }
 
     /**

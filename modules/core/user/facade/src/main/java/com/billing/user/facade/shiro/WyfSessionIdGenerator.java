@@ -14,7 +14,7 @@ import java.io.Serializable;
 @Component
 public class WyfSessionIdGenerator implements SessionIdGenerator {
 
-    //@Autowired
+    @Autowired
     ISeqFacade seqFacade;
     /**
      * Generates a new ID to be applied to the specified {@code Session} instance.
