@@ -532,7 +532,7 @@
     <!--
     资源库
     -->
-    <repositories>
+    <!--<repositories>
         <repository>
             <id>central</id>
             <name>Maven Repository Switchboard</name>
@@ -625,5 +625,5 @@
                 <enabled>false</enabled>
             </snapshots>
         </pluginRepository>
-    </pluginRepositories>
+    </pluginRepositories>-->
 </project>
