@@ -161,7 +161,9 @@ public class BaseResp<T> implements Serializable {
     }
 
 	/**
-	 * 
+	 * 表示内部程序执行是否正常。
+     * 一般在内部因为数据库、远程服务等异常原因导致暂时不能正常完成请求操作时，返回false，调用者可以稍后再次尝试。
+     * 因为外部输入参数，或者业务本身的错误，调用者再次尝试没有任何意义时，就要返回true。
 	 * @return true表示无需再次尝试？
 	 */
 	public boolean isNormal() {
