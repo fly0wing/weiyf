@@ -1,18 +1,18 @@
 weiyf
 =====
-#本文档
+# 本文档
 目录结构说明。
-#modules
+# modules
 核心及公共通用模块
-#projects
+# projects
 外围集成包装模块
-#support
+# support
 支持项目
-##database
+## database
 数据库定义
-##gencode
+## gencode
 代码生成
-#weiyifu-parent
+# weiyifu-parent
 公共maven依赖定义
-#weiyifu-web
+# weiyifu-web
 web相关项目
