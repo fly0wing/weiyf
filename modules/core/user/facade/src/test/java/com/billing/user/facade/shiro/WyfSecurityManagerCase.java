@@ -75,7 +75,8 @@ public class WyfSecurityManagerCase {
         session.setAttribute("someKey", "aValue");
         String value = (String) session.getAttribute("someKey");
         if (!value.equals("aValue")) {
-            log.error("Retrieved the correct value! [" + value + "]");
+            log.error("Retrieved " +
+                    "反反复复反复 the correct value! [" + value + "]");
         }
 
         // let's login the current user so we can check against roles and permissions:
