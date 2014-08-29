@@ -9,9 +9,11 @@ import com.billing.internalcontract.user.TerminalUnbindReq;
 import com.billing.user.facade.shiro.WyfSecurityUtils;
 import com.billing.user.orm.business_model.TerminalInfo;
 import com.billing.user.orm.dao.CustomerTerminalDao;
+import com.billing.user.orm.dao.TerminalActivateDao;
 import com.billing.user.orm.dao.TerminalDao;
 import com.billing.user.orm.model.CustomerTerminal;
 import com.billing.user.orm.model.Terminal;
+import com.billing.user.orm.model.TerminalActivate;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.Timestamp;
@@ -30,10 +32,28 @@ public class UserTerminalFacade implements IUserTerminalFacade {
     @Autowired
     private TerminalDao terminalDao;
 
+    @Autowired
+    private TerminalActivateDao terminalActivateDao;
+
     UserSession userSession = null;
 
+    /**
+     * 绑定当前用户终端，无需传入待绑定的终端，从当前会话中获取。
+     * @param baseReq
+     * @return
+     */
     @Override
-    public BaseResp activeTerminal(BaseReq req) {
+    public BaseResp activeTerminal(BaseReq baseReq) {
+        BaseResp baseResp;
+        userSession = (UserSession) WyfSecurityUtils.getSubject().getSession();
+        /** Session检查 */
+        if(null ==  userSession){
+            return new BaseResp(true, UserConst.SESSION_ERROR, "SESSION失效");
+        }
+        TerminalActivate termActive = new TerminalActivate();
+        termActive.setTerminalId(userSession.getTerminalId());
+        termActive.setSessionId(userSession.getSessionId());
+        termActive.setActivateTime(new Timestamp(System.currentTimeMillis()));
         return null;
     }
 
@@ -46,11 +66,13 @@ public class UserTerminalFacade implements IUserTerminalFacade {
     @Override
     public BaseResp bindTerminal(TerminalBindReq terminalBindReq) {
         userSession = (UserSession) WyfSecurityUtils.getSubject().getSession();
+        /** Session检查 */
         if(null ==  userSession){
             return new BaseResp(true, UserConst.SESSION_ERROR, "SESSION失效");
         }
         /** 获取绑定终端列表 */
-        List<CustomerTerminal> lstCustomerTerms = (List<CustomerTerminal>) getBoundTerminals(terminalBindReq).getObjResult();
+        List<CustomerTerminal> lstCustomerTerms =
+                (List<CustomerTerminal>) getBoundTerminals(terminalBindReq).getObjResult();
         boolean bFlg = false;
         for (CustomerTerminal customerTerminal : lstCustomerTerms) {
             if (userSession.getTerminalId() == customerTerminal.getTerminalId()) {
@@ -97,6 +119,7 @@ public class UserTerminalFacade implements IUserTerminalFacade {
                 customerTermDao.update(updCustomerTerm);
             }
         }else{
+            /** 已绑定终端，直接返回*/
             return new BaseResp(true,UserConst.SUCCESS,"该终端已绑定");
         }
         return new BaseResp(true,UserConst.SUCCESS,"终端绑定成功");
@@ -117,9 +140,34 @@ public class UserTerminalFacade implements IUserTerminalFacade {
         return baseResp;
     }
 
+    /**
+     * 解绑用户终端，输入需要待解除绑定的终端标识和指纹
+     * @param terminalUnbindReq
+     * @return
+     */
     @Override
     public BaseResp unbindTerminal(TerminalUnbindReq terminalUnbindReq) {
-        return null;
+        BaseResp baseResp;
+        userSession = (UserSession) WyfSecurityUtils.getSubject().getSession();
+        /** Session检查*/
+        if(null ==  userSession){
+            return new BaseResp(true, UserConst.SESSION_ERROR, "SESSION失效");
+        }
+        /**检查该终端是否为绑定状态 */
+        Map<String,Object> params = new HashMap<String, Object>();
+        params.put(CustomerTerminal.FN_customerId, userSession.getCustomerId());
+        params.put(CustomerTerminal.FN_terminalId, terminalUnbindReq.getTerminalId());
+        params.put(CustomerTerminal.FN_bindStatus, true);
+        List<CustomerTerminal> lstTerms = customerTermDao.search(params);
+        if(0 > lstTerms.size()){
+            /** 已解绑的终端，直接返回*/
+            return new BaseResp(true, UserConst.SUCCESS, "该终端已解绑");
+        }else{
+            /** 绑定状态的终端，更新终端绑定状态*/
+            lstTerms.get(0).setBindStatus(false);
+            customerTermDao.update(lstTerms.get(0));
+            return new BaseResp(true, UserConst.SUCCESS, "终端解绑成功");
+        }
     }
 
     /**
