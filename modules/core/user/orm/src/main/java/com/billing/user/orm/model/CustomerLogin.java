@@ -14,7 +14,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import com.billing.utils.date.DateConvertUtils;
 
 /**
- * Created by gencode on 2014-8-28 15:17:29.
+ * Created by gencode on 2014-8-29 10:07:17.
  */
 public class CustomerLogin implements Serializable {
     private static final long serialVersionUID = 5454155825314635342L;

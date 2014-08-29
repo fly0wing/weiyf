@@ -11,11 +11,11 @@ import org.springframework.stereotype.Service;
 /**
  * Created by xiaoyouyi on 2014-8-27.
  */
-@Component
+@Service
 public class SeqFacade implements ISeqFacade {
     private static Object monitor = new Object();
 
-    static final String  USER_SESSION_ID="user_session_id";
+    public static final String  USER_SESSION_ID="user_session_id";
 
     @Autowired
     private SequenceValueItemDao sequenceValueItemDao;

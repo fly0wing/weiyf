@@ -1,22 +1,42 @@
 package com.billing.user.facade.shiro;
 
+import com.billing.internalcontract.UserSession;
 import com.billing.user.orm.dao.UserSessionDao;
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.session.mgt.eis.CachingSessionDAO;
+import org.apache.shiro.session.mgt.eis.SessionIdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 /**
  * Created by xiaoyouyi on 2014-8-28.
  */
+@Service
 public class WyfSessionDAO extends CachingSessionDAO {
 
     @Autowired
-    UserSessionDao userSessionDao;
+    private UserSessionDao userSessionDao;
+
+    //@Autowired
+   // private WyfSessionIdGenerator wyfSessionIdGenerator;
+
+    public WyfSessionDAO(){
+        super();
+    }
 
     @Autowired
-    private WyfSessionIdGenerator wyfSessionIdGenerator;
+    @Qualifier("wyfSessionIdGenerator")
+    @Override
+    public void setSessionIdGenerator(SessionIdGenerator sessionIdGenerator) {
+        super.setSessionIdGenerator(sessionIdGenerator);
+    }
+
     /**
      * Subclass implementation hook to actually persist the {@code Session}'s state to the underlying EIS.
      *
@@ -46,7 +66,9 @@ public class WyfSessionDAO extends CachingSessionDAO {
      */
     @Override
     protected Serializable doCreate(Session session) {
-        return wyfSessionIdGenerator.generateId(session);
+        Serializable sessionId = generateSessionId(session);
+        assignSessionId(session, sessionId);
+        return sessionId;
     }
 
     /**
@@ -60,5 +82,20 @@ public class WyfSessionDAO extends CachingSessionDAO {
     @Override
     protected Session doReadSession(Serializable sessionId) {
         return null;
+    }
+
+    public void saveToDB(UserSession userSession){
+        com.billing.user.orm.model.UserSession item = new com.billing.user.orm.model.UserSession();
+        try {
+            BeanUtils.copyProperties(item, userSession);
+
+            item.setId(userSession.getSessionId());
+            item.setStartTime( new Timestamp( userSession.getStartTimestamp().getTime()));
+            item.setStopTime( new Timestamp( userSession.getStopTimestamp().getTime()));
+
+            userSessionDao.save(item);
+        }catch (Exception e){
+
+        }
     }
 }

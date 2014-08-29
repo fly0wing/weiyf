@@ -14,7 +14,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import com.billing.utils.date.DateConvertUtils;
 
 /**
- * Created by gencode on 2014-8-28 15:17:31.
+ * Created by gencode on 2014-8-29 10:07:20.
  */
 public class UserSession implements Serializable {
     private static final long serialVersionUID = 5454155825314635342L;
@@ -85,10 +85,15 @@ public class UserSession implements Serializable {
      */
     private Boolean isAnonymous;
     /**
-     * db_column: create_time
-     * remarks from db:最后登录时间
+     * db_column: start_time
+     * remarks from db:开始时间
      */
-    private Timestamp createTime;
+    private Timestamp startTime;
+    /**
+     * db_column: stop_time
+     * remarks from db:结束时间
+     */
+    private Timestamp stopTime;
 
 	public UserSession() {
 	}
@@ -203,20 +208,36 @@ public class UserSession implements Serializable {
 		return this.isAnonymous;
 	}
 
-	public String getCreateTimeString() {
-		return DateConvertUtils.format(getCreateTime(), DateConvertUtils.DATE_FORMAT);
+	public String getStartTimeString() {
+		return DateConvertUtils.format(getStartTime(), DateConvertUtils.DATE_FORMAT);
 	}
 
-	public void setCreateTimeString(String value) {
-		setCreateTime(DateConvertUtils.parse(value, DateConvertUtils.DATE_FORMAT,Timestamp.class));
+	public void setStartTimeString(String value) {
+		setStartTime(DateConvertUtils.parse(value, DateConvertUtils.DATE_FORMAT,Timestamp.class));
 	}
 
-	public void setCreateTime(Timestamp value) {
-		this.createTime = value;
+	public void setStartTime(Timestamp value) {
+		this.startTime = value;
 	}
 
-	public Timestamp getCreateTime() {
-		return this.createTime;
+	public Timestamp getStartTime() {
+		return this.startTime;
+	}
+
+	public String getStopTimeString() {
+		return DateConvertUtils.format(getStopTime(), DateConvertUtils.DATE_FORMAT);
+	}
+
+	public void setStopTimeString(String value) {
+		setStopTime(DateConvertUtils.parse(value, DateConvertUtils.DATE_FORMAT,Timestamp.class));
+	}
+
+	public void setStopTime(Timestamp value) {
+		this.stopTime = value;
+	}
+
+	public Timestamp getStopTime() {
+		return this.stopTime;
 	}
 
 
@@ -252,6 +273,7 @@ public class UserSession implements Serializable {
     public static final String FN_loginOken = "loginOken";
     public static final String FN_isBound = "isBound";
     public static final String FN_isAnonymous = "isAnonymous";
-    public static final String FN_createTime = "createTime";
+    public static final String FN_startTime = "startTime";
+    public static final String FN_stopTime = "stopTime";
 
 }

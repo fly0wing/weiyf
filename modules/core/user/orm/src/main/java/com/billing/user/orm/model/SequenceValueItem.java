@@ -14,31 +14,26 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import com.billing.utils.date.DateConvertUtils;
 
 /**
- * Created by gencode on 2014-8-29 10:07:19.
+ * Created by gencode on 2014-8-29 10:07:18.
  */
-public class TerminalType implements Serializable {
+public class SequenceValueItem implements Serializable {
     private static final long serialVersionUID = 5454155825314635342L;
 
     /**
-     * db_column: terminal_type_id
-     * remarks from db:终端类型标识
+     * db_column: seq_name
+     * remarks from db:序号名称
      */
-    private Long terminalTypeId;
+    private String seqName;
     /**
-     * db_column: parent_type_id
-     * remarks from db:父类型标识
+     * db_column: seq_id
+     * remarks from db:序号
      */
-    private Long parentTypeId;
+    private Long seqId;
     /**
-     * db_column: os_type
-     * remarks from db:操作系统类型
+     * db_column: crash_skip_number
+     * remarks from db:异常跳过数
      */
-    private String osType;
-    /**
-     * db_column: screen_size_enum_id
-     * remarks from db:屏幕尺寸枚举
-     */
-    private Long screenSizeEnumId;
+    private Integer crashSkipNumber;
     /**
      * db_column: description
      * remarks from db:描述
@@ -65,45 +60,37 @@ public class TerminalType implements Serializable {
      */
     private String createdByUserLogin;
 
-	public TerminalType() {
+	public SequenceValueItem() {
 	}
 
-	public TerminalType(
-		Long terminalTypeId
+	public SequenceValueItem(
+		String seqName
 	) {
-		this.terminalTypeId = terminalTypeId;
+		this.seqName = seqName;
 	}
 
-	public void setTerminalTypeId(Long value) {
-		this.terminalTypeId = value;
+	public void setSeqName(String value) {
+		this.seqName = value;
 	}
 
-	public Long getTerminalTypeId() {
-		return this.terminalTypeId;
+	public String getSeqName() {
+		return this.seqName;
 	}
 
-	public void setParentTypeId(Long value) {
-		this.parentTypeId = value;
+	public void setSeqId(Long value) {
+		this.seqId = value;
 	}
 
-	public Long getParentTypeId() {
-		return this.parentTypeId;
+	public Long getSeqId() {
+		return this.seqId;
 	}
 
-	public void setOsType(String value) {
-		this.osType = value;
+	public void setCrashSkipNumber(Integer value) {
+		this.crashSkipNumber = value;
 	}
 
-	public String getOsType() {
-		return this.osType;
-	}
-
-	public void setScreenSizeEnumId(Long value) {
-		this.screenSizeEnumId = value;
-	}
-
-	public Long getScreenSizeEnumId() {
-		return this.screenSizeEnumId;
+	public Integer getCrashSkipNumber() {
+		return this.crashSkipNumber;
 	}
 
 	public void setDescription(String value) {
@@ -163,48 +150,28 @@ public class TerminalType implements Serializable {
 	}
 
 
-	private Set terminalTypes = new HashSet(0);
-	public void setTerminalTypes(Set<TerminalType> terminalType){
-		this.terminalTypes = terminalType;
-	}
-
-	public Set<TerminalType> getTerminalTypes() {
-		return terminalTypes;
-	}
-
-	private TerminalType terminalType;
-
-	public void setTerminalType(TerminalType terminalType){
-		this.terminalType = terminalType;
-	}
-
-	public TerminalType getTerminalType() {
-		return terminalType;
-	}
-
     public String toString() {
         return ToStringBuilder.reflectionToString(this);
     }
 
     public int hashCode() {
         return new HashCodeBuilder()
-            .append(getTerminalTypeId())
+            .append(getSeqName())
             .toHashCode();
     }
 
     public boolean equals(Object obj) {
-        if(obj instanceof TerminalType == false) return false;
+        if(obj instanceof SequenceValueItem == false) return false;
         if(this == obj) return true;
-        TerminalType other = (TerminalType)obj;
+        SequenceValueItem other = (SequenceValueItem)obj;
         return new EqualsBuilder()
-            .append(getTerminalTypeId(),other.getTerminalTypeId())
+            .append(getSeqName(),other.getSeqName())
             .isEquals();
     }
 
-    public static final String FN_terminalTypeId = "terminalTypeId";
-    public static final String FN_parentTypeId = "parentTypeId";
-    public static final String FN_osType = "osType";
-    public static final String FN_screenSizeEnumId = "screenSizeEnumId";
+    public static final String FN_seqName = "seqName";
+    public static final String FN_seqId = "seqId";
+    public static final String FN_crashSkipNumber = "crashSkipNumber";
     public static final String FN_description = "description";
     public static final String FN_lastModifiedDate = "lastModifiedDate";
     public static final String FN_lastModifiedByUserLogin = "lastModifiedByUserLogin";

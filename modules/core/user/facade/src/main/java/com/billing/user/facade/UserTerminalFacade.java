@@ -13,6 +13,7 @@ import com.billing.user.orm.model.CustomerTerminal;
 import com.billing.user.orm.model.Terminal;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ import java.util.Map;
 /**
  * Created by zkai on 2014/8/26.
  */
+@Service
 public class UserTerminalFacade implements IUserTerminalFacade {
 
     @Autowired

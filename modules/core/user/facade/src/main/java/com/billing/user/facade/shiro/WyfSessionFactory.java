@@ -5,13 +5,18 @@ import com.billing.user.facade.SessionFacade;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.session.mgt.SessionContext;
 import org.apache.shiro.session.mgt.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 /**
  * Created by xiaoyouyi on 2014-8-28.
  */
-@Component
+@Service
 public class WyfSessionFactory implements SessionFactory {
+
+
     /**
      * Creates a new {@code Session} instance based on the specified contextual initialization data.
      *
@@ -22,8 +27,7 @@ public class WyfSessionFactory implements SessionFactory {
     @Override
     public Session createSession(SessionContext initData) {
         UserSession userSession = new UserSession();
-        userSession.setFingerprint(initData.getHost());
-        //todo  userSession.setSessionId(Long.parseLong(initData.getSessionId());
+        //userSession.setFingerprint(initData.getHost());
 
         return userSession;
     }
