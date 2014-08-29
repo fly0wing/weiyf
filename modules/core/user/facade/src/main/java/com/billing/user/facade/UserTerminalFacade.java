@@ -50,11 +50,19 @@ public class UserTerminalFacade implements IUserTerminalFacade {
         if(null ==  userSession){
             return new BaseResp(true, UserConst.SESSION_ERROR, "SESSION失效");
         }
+
+        Map<String,Object> params = new HashMap();
+        params.put(TerminalActivate.FN_terminalId,userSession.getTerminalId());
+        List<TerminalActivate> lstTermAct = terminalActivateDao.search(params);
+        if(0 < lstTermAct.size()){
+            return new BaseResp(true, UserConst.SUCCESS, "终端已激活");
+        }
         TerminalActivate termActive = new TerminalActivate();
         termActive.setTerminalId(userSession.getTerminalId());
         termActive.setSessionId(userSession.getSessionId());
         termActive.setActivateTime(new Timestamp(System.currentTimeMillis()));
-        return null;
+        terminalActivateDao.save(termActive);
+        return new BaseResp(true, UserConst.SUCCESS, "终端激活成功");
     }
 
 
