@@ -21,13 +21,14 @@
         <result property="loginOken" column="login_oken"/>
         <result property="isBound" column="is_bound"/>
         <result property="isAnonymous" column="is_anonymous"/>
-        <result property="createTime" column="create_time"/>
+        <result property="startTime" column="start_time"/>
+        <result property="stopTime" column="stop_time"/>
     </resultMap>
 
     <!-- 查询字段 -->
     <sql id="UserSession_columns">
         <![CDATA[
-    id,customer_id,party_id,product_id,domain_id,app_id,entry_id,geo_id,terminal_id,app_area,login_oken,is_bound,is_anonymous,create_time
+    id,customer_id,party_id,product_id,domain_id,app_id,entry_id,geo_id,terminal_id,app_area,login_oken,is_bound,is_anonymous,start_time,stop_time
         ]]>
     </sql>
 
@@ -88,11 +89,17 @@
                     <if test="@Ognl@isNotEmpty(isAnonymous)">
             AND is_anonymous = #{isAnonymous}
                     </if>
-                    <if test="@Ognl@isNotEmpty(createTimeBegin)">
-            AND create_time >= #{createTimeBegin}
+                    <if test="@Ognl@isNotEmpty(startTimeBegin)">
+            AND start_time >= #{startTimeBegin}
                     </if>
-                    <if test="@Ognl@isNotEmpty(createTimeEnd)">
-            AND create_time &lt;= #{createTimeEnd}
+                    <if test="@Ognl@isNotEmpty(startTimeEnd)">
+            AND start_time &lt;= #{startTimeEnd}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(stopTimeBegin)">
+            AND stop_time >= #{stopTimeBegin}
+                    </if>
+                    <if test="@Ognl@isNotEmpty(stopTimeEnd)">
+            AND stop_time &lt;= #{stopTimeEnd}
                     </if>
         </where>
     </select>
@@ -100,9 +107,9 @@
     <!-- 插入 -->
     <insert id="save" parameterType="com.billing.user.orm.model.UserSession" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO user_session (
-             customer_id, party_id, product_id, domain_id, app_id, entry_id, geo_id, terminal_id, app_area, login_oken, is_bound, is_anonymous, create_time
+             customer_id, party_id, product_id, domain_id, app_id, entry_id, geo_id, terminal_id, app_area, login_oken, is_bound, is_anonymous, start_time, stop_time
         ) VALUES (
-             #{customerId}, #{partyId}, #{productId}, #{domainId}, #{appId}, #{entryId}, #{geoId}, #{terminalId}, #{appArea}, #{loginOken}, #{isBound}, #{isAnonymous}, #{createTime}
+             #{customerId}, #{partyId}, #{productId}, #{domainId}, #{appId}, #{entryId}, #{geoId}, #{terminalId}, #{appArea}, #{loginOken}, #{isBound}, #{isAnonymous}, #{startTime}, #{stopTime}
         )
     </insert>
 
@@ -114,7 +121,7 @@
     <update id="update" >
         <![CDATA[
         UPDATE user_session SET
-    customer_id = #{customerId} , party_id = #{partyId} , product_id = #{productId} , domain_id = #{domainId} , app_id = #{appId} , entry_id = #{entryId} , geo_id = #{geoId} , terminal_id = #{terminalId} , app_area = #{appArea} , login_oken = #{loginOken} , is_bound = #{isBound} , is_anonymous = #{isAnonymous} , create_time = #{createTime}  
+    customer_id = #{customerId} , party_id = #{partyId} , product_id = #{productId} , domain_id = #{domainId} , app_id = #{appId} , entry_id = #{entryId} , geo_id = #{geoId} , terminal_id = #{terminalId} , app_area = #{appArea} , login_oken = #{loginOken} , is_bound = #{isBound} , is_anonymous = #{isAnonymous} , start_time = #{startTime} , stop_time = #{stopTime}  
         WHERE
     id = #{id}  
         ]]>

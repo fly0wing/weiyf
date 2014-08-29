@@ -1,10 +1,11 @@
-package com.billing.product;
+package com.billing.user.facade;
 
 import com.billing.internalcontract.BaseResp;
 import com.billing.internalcontract.other.ISeqFacade;
-import com.billing.product.orm.dao.SequenceValueItemDao;
-import com.billing.product.orm.model.SequenceValueItem;
+import com.billing.user.orm.dao.SequenceValueItemDao;
+import com.billing.user.orm.model.SequenceValueItem;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 /**
@@ -14,7 +15,8 @@ import org.springframework.stereotype.Service;
 public class SeqFacade implements ISeqFacade {
     private static Object monitor = new Object();
 
-    
+    public static final String  USER_SESSION_ID="user_session_id";
+
     @Autowired
     private SequenceValueItemDao sequenceValueItemDao;
 
