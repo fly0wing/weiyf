@@ -4,4 +4,32 @@
  
 <mapper namespace="com.billing.user.orm.dao.CustomerTerminalDao">
 
+    <!-- 字段名转换 -->
+    <resultMap id="RM_BindTerminal" type="com.billing.user.orm.business_model.TerminalInfo">
+        <result property="customerId" column="customer_id"/>
+        <result property="terminalId" column="terminal_id"/>
+        <result property="terminalName" column="terminal_name"/>
+        <result property="fingerprint" column="fingerprint"/>
+    </resultMap>
+
+    <select id="getBindTerms" parameterType="map" resultMap="BindTerminal">
+        select
+        ct.customer_id as customer_id,
+        ct.terminal_id as terminal_id,
+        ct.terminal_name as terminal_name,
+        t.fingerprint as fingerprint
+        from customer_terminal ct left outer join terminal t on ct.terminal_id = t.id
+        where ct.customer_id = #{customer_id}
+        and ct.bind_status = true
+    </select>
+
+    <select id="getTermsByFingerPrint" parameterType="map" resultMap="BindTerminal">
+        select
+        ct.customer_id as customer_id,
+        ct.terminal_id as terminal_id,
+        ct.terminal_name as terminal_name,
+        t.fingerprint as fingerprint
+        from terminal t left outer join customer_terminal ct on t.id= ct.terminal_id
+        where t.fingerprint = #{fingerprint}
+    </select>
 </mapper>
