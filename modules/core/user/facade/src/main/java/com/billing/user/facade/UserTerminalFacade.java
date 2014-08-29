@@ -40,7 +40,7 @@ public class UserTerminalFacade implements IUserTerminalFacade {
     @Override
     public BaseResp bindTerminal(TerminalBindReq terminalBindReq) {
         if(null ==  terminalBindReq.getSession()){
-            return new BaseResp(true, UserFacade.SESSION_ERROR, "SESSION失效");
+            return new BaseResp(true, UserConst.SESSION_ERROR, "SESSION失效");
         }
         /** 获取绑定终端列表 */
         List<Long> lstTermsId = (List<Long>) getBoundTerminals(terminalBindReq).getObjResult();
@@ -89,9 +89,9 @@ public class UserTerminalFacade implements IUserTerminalFacade {
                 customerTermDao.update(updCustomerTerm);
             }
         }else{
-            return new BaseResp(true,UserFacade.SUCCESS,"该终端已绑定");
+            return new BaseResp(true,UserConst.SUCCESS,"该终端已绑定");
         }
-        return new BaseResp(true,UserFacade.SUCCESS,"终端绑定成功");
+        return new BaseResp(true,UserConst.SUCCESS,"终端绑定成功");
     }
 
     @Override
