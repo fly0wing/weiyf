@@ -6,6 +6,7 @@ import com.billing.internalcontract.BaseResp;
 import com.billing.internalcontract.UserSession;
 import com.billing.internalcontract.session.ISessionFacade;
 import com.billing.internalcontract.user.*;
+import com.billing.user.facade.shiro.WyfSecurityUtils;
 import com.billing.user.orm.dao.CustomerLoginDao;
 import com.billing.user.orm.dao.CustomerTerminalDao;
 import com.billing.user.orm.dao.TerminalDao;
@@ -14,6 +15,7 @@ import com.billing.user.orm.model.CustomerTerminal;
 import com.billing.user.orm.model.Terminal;
 import com.mchange.lang.LongUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -42,10 +44,10 @@ public class UserFacade implements IUserFacade {
 
     //TODO: Dummy token服务
     Map<String,Object[]> mToken = new HashMap<String, Object[]>();
-    //TODO: Dummy sessionFacade
-//    ISessionFacade sessionFacade = new SessionFacade();
+    // Session服务
+    ISessionFacade sessionFacade = new SessionFacade();
 
-
+    UserSession userSession = null;
     /**
      * 用户注册，如果该终端上已经存在匿名注册的用户，直接绑定到该匿名用户上。
      *
@@ -54,11 +56,12 @@ public class UserFacade implements IUserFacade {
      */
     @Override
     public BaseResp register(RegisterReq registerReq) {
+        userSession = (UserSession) WyfSecurityUtils.getSubject().getSession();
         BaseResp baseResp = new BaseResp(false);
         CustomerLogin customerLogin = new CustomerLogin();
         boolean bAnonymousFlg = false;
         // SESSION检查
-        if (null == registerReq.getSession()) {
+        if (null == userSession) {
             return new BaseResp(true, UserConst.SESSION_ERROR, "SESSION失效");
         }
         // 输入参数检查(匿名模式除外）
@@ -85,7 +88,7 @@ public class UserFacade implements IUserFacade {
                 if (null != customerLogin) {
                     return new BaseResp(true, UserConst.USER_ALREADY_EXISTS, "用户名已注册");
                 }
-                if (UserConst.SUCCESS == chkToken(customerLogin.getId(), registerReq.getSession().getTerminalId(), registerReq.getSession())) {
+                if (UserConst.SUCCESS == chkToken(customerLogin.getId(), userSession.getTerminalId(), userSession)) {
                     bAnonymousFlg = true;
                     customerLogin.setLoginName(registerReq.getLoginAccount());
                     customerLogin.setSecurityLevel(customerLogin.getSecurityLevel() + UserConst.REG_LOGIN_NAME);
@@ -104,7 +107,7 @@ public class UserFacade implements IUserFacade {
                 if (null != customerLogin) {
                     return new BaseResp(true, UserConst.EMAIL_ALREADY_EXISTS, "Email已注册");
                 }
-                if (UserConst.SUCCESS == chkToken(customerLogin.getId(), registerReq.getSession().getTerminalId(), registerReq.getSession())) {
+                if (UserConst.SUCCESS == chkToken(customerLogin.getId(), userSession.getTerminalId(), userSession)) {
                     bAnonymousFlg = true;
                     customerLogin.setLoginEmail(registerReq.getLoginAccount());
                     customerLogin.setSecurityLevel(customerLogin.getSecurityLevel() + UserConst.REG_EMAIL);
@@ -123,7 +126,7 @@ public class UserFacade implements IUserFacade {
                 if (null != customerLogin) {
                     return new BaseResp(true, UserConst.PHONE_ALREADY_EXISTS, "电话号码已注册");
                 }
-                if (UserConst.SUCCESS == chkToken(customerLogin.getId(), registerReq.getSession().getTerminalId(), registerReq.getSession())) {
+                if (UserConst.SUCCESS == chkToken(customerLogin.getId(), userSession.getTerminalId(), userSession)) {
                     bAnonymousFlg = true;
                     customerLogin.setLoginPhone(registerReq.getLoginAccount());
                     customerLogin.setSecurityLevel(customerLogin.getSecurityLevel() + UserConst.REG_PHONE);
@@ -169,13 +172,11 @@ public class UserFacade implements IUserFacade {
             /** 登录成功，检查更新终端绑定状态 */
             if(LoginAccountEnum.Anonymous != registerReq.getLoginAccountType()) {
                 TerminalBindReq terminalBindReq = new TerminalBindReq();
-                terminalBindReq.setSession(registerReq.getSession());
                 terminalBindReq.setAuto(true);
                 terminalBindReq.setTerminalName("");
                 baseResp = userTermFacade.bindTerminal(terminalBindReq);
             }else{
                 TerminalBindReq terminalBindReq = new TerminalBindReq();
-                terminalBindReq.setSession(registerReq.getSession());
                 terminalBindReq.setAuto(false);
                 terminalBindReq.setTerminalName("");
                 baseResp = userTermFacade.bindTerminal(terminalBindReq);
@@ -192,11 +193,11 @@ public class UserFacade implements IUserFacade {
      */
     @Override
     public BaseResp login(LoginReq loginReq) {
+        userSession = (UserSession) WyfSecurityUtils.getSubject().getSession();
         BaseResp baseResp = chkLoginUser(loginReq);
         if (baseResp.isOK()) {
             /** 登录成功，检查更新终端绑定状态 */
             TerminalBindReq terminalBindReq = new TerminalBindReq();
-            terminalBindReq.setSession(loginReq.getSession());
             terminalBindReq.setAuto(loginReq.isAuto());
             terminalBindReq.setTerminalName("");
             baseResp = userTermFacade.bindTerminal(terminalBindReq);
@@ -212,12 +213,13 @@ public class UserFacade implements IUserFacade {
      * @return
      */
     public BaseResp chkLoginUser(LoginReq loginReq){
+        userSession = (UserSession) WyfSecurityUtils.getSubject().getSession();
         BaseResp baseResp = new BaseResp(false);
         CustomerLogin customerLogin = null;
         String sCurrentPass = "";
         Map<String, Object> params = new HashMap<>();
         /** SESSION检查 */
-        if (null == loginReq.getSession()) {
+        if (null == userSession) {
             return new BaseResp(true, UserConst.SESSION_ERROR, "SESSION失效");
         }
         /** 输入参数检查(匿名模式除外） */
@@ -263,7 +265,7 @@ public class UserFacade implements IUserFacade {
         }
         /** 自动登录模式，检查令牌*/
         if (loginReq.isAuto()) {
-            int iRet = chkToken(customerLogin.getId(), loginReq.getSession().getTerminalId(), loginReq.getSession());
+            int iRet = chkToken(customerLogin.getId(), userSession.getTerminalId(), userSession);
             if (UserConst.SUCCESS == iRet) {
                 baseResp = new BaseResp(true, UserConst.SUCCESS);
             } else if (UserConst.TOKEN_WRONG == iRet) {
@@ -290,6 +292,7 @@ public class UserFacade implements IUserFacade {
      * @return
      */
     private int chkToken(Long lCustomerId, Long lTermId, UserSession session) {
+        userSession = (UserSession) WyfSecurityUtils.getSubject().getSession();
         Map<String, Object> params = new HashMap<>();
         params.put("customerId", lCustomerId);
         params.put("terminalId", lTermId);
@@ -314,7 +317,7 @@ public class UserFacade implements IUserFacade {
     @Override
     public void loginout(BaseReq baseReq) {
         //TODO:
-        //sessionFacade.stopSession(baseReq);
+        WyfSecurityUtils.getSubject().logout();
     }
 
     /**
@@ -327,15 +330,16 @@ public class UserFacade implements IUserFacade {
      */
     @Override
     public BaseResp bindPhone(BaseReq baseReq) {
+        userSession = (UserSession) WyfSecurityUtils.getSubject().getSession();
         BaseResp baseResp = new BaseResp(false);
         /** SESSION检查 */
-        if (null == baseReq.getSession()) {
+        if (null == userSession) {
             return new BaseResp(true, UserConst.SESSION_ERROR, "SESSION失效");
         }
         if(StringUtils.isBlank(baseReq.getStringReq())){
             return new BaseResp(true, UserConst.PARAM_ERROR, "输入参数错误");
         }
-        CustomerLogin customerLogin = customerLoginDao.get(baseReq.getSession().getCustomerId());
+        CustomerLogin customerLogin = customerLoginDao.get(userSession.getCustomerId());
 
         customerLogin.setLoginPhone(baseReq.getStringReq());
         if(0 < customerLogin.getLoginPhone().length()){
@@ -357,10 +361,11 @@ public class UserFacade implements IUserFacade {
      */
     @Override
     public BaseResp changePassword(BaseReq baseReq) {
+        userSession = (UserSession) WyfSecurityUtils.getSubject().getSession();
         BaseResp baseResp = new BaseResp(false);
-        CustomerLogin customerLogin = customerLoginDao.get(baseReq.getSession().getCustomerId());
+        CustomerLogin customerLogin = customerLoginDao.get(userSession.getCustomerId());
         //SESSION检查
-        if (null == baseReq.getSession()) {
+        if (null == userSession) {
             return new BaseResp(false, UserConst.SESSION_ERROR, "SESSION失效");
         }
         //输入参数检查(匿名模式除外）
@@ -443,8 +448,9 @@ public class UserFacade implements IUserFacade {
      */
     @Override
     public BaseResp authActionToken(BaseReq baseReq) {
+        userSession = (UserSession) WyfSecurityUtils.getSubject().getSession();
         //SESSION检查
-        if (null == baseReq.getSession()) {
+        if (null == userSession) {
             return new BaseResp(false, UserConst.SESSION_ERROR, "SESSION失效");
         }
         //输入参数检查(匿名模式除外）
