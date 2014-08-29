@@ -42,4 +42,11 @@ public class UserConst {
     public final static int REG_EMAIL = 2;
     //安全级别：电话号码绑定
     public final static int REG_PHONE = 4;
+
+    // 0
+    public final static char ZERO = '0';
+    // a
+    public final static char A_LOWER = 'a';
+    // A
+    public final static char A_UPPER = 'A';
 }

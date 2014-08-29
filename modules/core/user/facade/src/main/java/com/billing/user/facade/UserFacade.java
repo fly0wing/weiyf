@@ -294,8 +294,8 @@ public class UserFacade implements IUserFacade {
     private int chkToken(Long lCustomerId, Long lTermId, UserSession session) {
         userSession = (UserSession) WyfSecurityUtils.getSubject().getSession();
         Map<String, Object> params = new HashMap<>();
-        params.put("customerId", lCustomerId);
-        params.put("terminalId", lTermId);
+        params.put(CustomerTerminal.FN_customerId, lCustomerId);
+        params.put(CustomerTerminal.FN_terminalId, lTermId);
         List<CustomerTerminal> lstTerm = customerTermDao.search(params);
         if (lstTerm.size() > 0) {
             if (lstTerm.get(0).getLastLoginToken().equals(session.getSessionToken())) {
@@ -480,13 +480,13 @@ public class UserFacade implements IUserFacade {
             int iAscii = r.nextInt(62);
             if (iAscii < 10) {
                 /** 随机数为0-9时，生成数字 */
-                cRandomChar = (char) ('0' + iAscii);
+                cRandomChar = (char) (UserConst.ZERO + iAscii);
             } else if (iAscii < 36) {
                 /** 随机数为10-35时，生成小写字母 */
-                cRandomChar = (char) ('a' + (iAscii - 10));
+                cRandomChar = (char) (UserConst.A_LOWER + (iAscii - 10));
             } else {
                 /** 随机数为36-61时，生成大写字母 */
-                cRandomChar = (char) ('A' + (iAscii - 36));
+                cRandomChar = (char) (UserConst.A_UPPER + (iAscii - 36));
             }
             sRtn += String.valueOf(cRandomChar);
         }

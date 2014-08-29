@@ -7,15 +7,14 @@ import com.billing.internalcontract.user.IUserTerminalFacade;
 import com.billing.internalcontract.user.TerminalBindReq;
 import com.billing.internalcontract.user.TerminalUnbindReq;
 import com.billing.user.facade.shiro.WyfSecurityUtils;
+import com.billing.user.orm.business_model.TerminalInfo;
 import com.billing.user.orm.dao.CustomerTerminalDao;
 import com.billing.user.orm.dao.TerminalDao;
 import com.billing.user.orm.model.CustomerTerminal;
 import com.billing.user.orm.model.Terminal;
-import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,12 +30,13 @@ public class UserTerminalFacade implements IUserTerminalFacade {
     @Autowired
     private TerminalDao terminalDao;
 
+    UserSession userSession = null;
+
     @Override
     public BaseResp activeTerminal(BaseReq req) {
         return null;
     }
 
-    UserSession userSession = null;
 
     /**
      * 绑定当前用户终端，无需传入待绑定的终端，从当前会话中获取。
@@ -62,15 +62,15 @@ public class UserTerminalFacade implements IUserTerminalFacade {
         if (!bFlg) {
             lstCustomerTerms.clear();
             Map<String, Object> params = new HashMap<>();
-            params.put("customerId", userSession.getCustomerId());
-            params.put("terminalId", userSession.getTerminalId());
+            params.put(CustomerTerminal.FN_customerId, userSession.getCustomerId());
+            params.put(CustomerTerminal.FN_terminalId, userSession.getTerminalId());
             lstCustomerTerms = customerTermDao.search(params);
             /** 该终端从未绑定过*/
             if (0 == lstCustomerTerms.size()) {
                 /** 获取默认终端名*/
                 CustomerTerminal customerTerm = new CustomerTerminal();
                 params.clear();
-                params.put("fingerprint", userSession.getFingerprint());
+                params.put(Terminal.FN_fingerprint, userSession.getFingerprint());
                 List<Terminal> lstTerms = terminalDao.search(params);
                 params.clear();
                 if (0 == lstTerms.size()) {
@@ -109,12 +109,10 @@ public class UserTerminalFacade implements IUserTerminalFacade {
      * @return
      */
     public BaseResp getBoundTerminals(BaseReq baseReq) {
-        userSession = (UserSession) WyfSecurityUtils.getSubject().getSession();
         BaseResp baseResp = new BaseResp(true);
         Map<String,Object> params = new HashMap<String, Object>();
-        //TODO:
-        params.put("customerId",baseReq.getLongReq());
-        List<CustomerTerminal> lstCustomerTerms = customerTermDao.search(params);
+        params.put(CustomerTerminal.FN_customerId,baseReq.getLongReq());
+        List<TerminalInfo> lstCustomerTerms = customerTermDao.getBindTerms(params);
         baseResp.setObjResult(lstCustomerTerms);
         return baseResp;
     }
@@ -124,8 +122,19 @@ public class UserTerminalFacade implements IUserTerminalFacade {
         return null;
     }
 
+    /**
+     * 根据终端指纹获取终端
+     * longReq传入终端指纹
+     * @param baseReq
+     * @return
+     */
     @Override
     public BaseResp getTerminalByFingerprint(BaseReq baseReq) {
-        return null;
+        BaseResp baseResp = new BaseResp(true);
+        Map<String,Object> params = new HashMap<String, Object>();
+        params.put(Terminal.FN_fingerprint,baseReq.getLongReq());
+        List<TerminalInfo> lstCustomerTerms = customerTermDao.getTermsByFingerPrint(params);
+        baseResp.setObjResult(lstCustomerTerms);
+        return baseResp;
     }
 }
