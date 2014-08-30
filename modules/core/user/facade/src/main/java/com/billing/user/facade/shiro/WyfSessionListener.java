@@ -1,10 +1,14 @@
 package com.billing.user.facade.shiro;
 
 import com.billing.internalcontract.UserSession;
+import com.billing.user.orm.dao.UserSessionDao;
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.session.SessionListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * Created by xiaoyouyi on 2014-8-28.
@@ -13,7 +17,8 @@ import org.springframework.stereotype.Component;
 public class WyfSessionListener implements SessionListener {
 
     @Autowired
-    WyfSessionDAO wyfSessionDAO;
+    UserSessionDao userSessionDao;
+    //WyfSessionDAO wyfSessionDAO;
     /**
      * Notification callback that occurs when the corresponding Session has started.
      *
@@ -54,13 +59,20 @@ public class WyfSessionListener implements SessionListener {
         saveToDB(session);
     }
 
-    private void saveToDB(Session session) {
-        UserSession   userSession=(UserSession)session;
+    private void saveToDB(Session session)  {
+        UserSession   userSession=(UserSession)session.getAttribute(WyfSecurityManager.SESSION_SESSION_KEY);
         if(userSession==null) return;
 
         if(userSession.isNeedDurable() && !userSession.isHasDurable()){
-            wyfSessionDAO.update(session);
-            //todo save to db
+            com.billing.user.orm.model.UserSession item = new com.billing.user.orm.model.UserSession();
+            try {
+                BeanUtils.copyProperties(item,userSession);
+                userSessionDao.save(item);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

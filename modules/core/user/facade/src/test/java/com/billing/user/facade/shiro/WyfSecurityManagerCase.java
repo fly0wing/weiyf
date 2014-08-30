@@ -58,11 +58,11 @@ public class WyfSecurityManagerCase {
     @Test
     public void basicUsageCase() throws Exception {
         // get the currently executing user:
-        SecurityUtils.setSecurityManager( wyfSecurityManager );
-        currentUser = SecurityUtils.getSubject();
+        WyfSecurityUtils.setSecurityManager( wyfSecurityManager );
+        currentUser = WyfSecurityUtils.getSubject();
 
         // Do some stuff with a Session (no need for a web or EJB container!!!)
-        session = (UserSession) currentUser.getSession();
+        session = WyfSecurityUtils.getSession();
         simulateContext();
         if (session.getTerminalId() == 0) {
             activateTerminal(2);

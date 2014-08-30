@@ -2,7 +2,9 @@ package com.billing.user.facade.shiro;
 
 import org.apache.shiro.mgt.DefaultSecurityManager;
 import org.apache.shiro.session.mgt.DefaultSessionManager;
+import org.apache.shiro.session.mgt.SessionManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -12,6 +14,7 @@ import javax.annotation.PostConstruct;
  */
 @Service
 public class WyfSecurityManager extends DefaultSecurityManager {
+    public final static  String SESSION_SESSION_KEY="session_session_key";
     private static WyfSecurityManager singleton=null;
     public static WyfSecurityManager getInstance( ){
         if(singleton==null){
@@ -19,14 +22,21 @@ public class WyfSecurityManager extends DefaultSecurityManager {
         }
         return singleton;
     }
-    @Autowired
-    private WyfSessionDAO wyfSessionDAO;
+    //@Autowired
+    //private WyfSessionDAO wyfSessionDAO;
     @Autowired
     private WyfSessionFactory wyfSessionFactory;
     @Autowired
     private WyfCacheManager wyfCacheManager;
 
-    public WyfSecurityManager(){
+    @Autowired
+    @Qualifier("wyfSessionManager")
+    @Override
+    public void setSessionManager(SessionManager sessionManager) {
+        super.setSessionManager(sessionManager);
+    }
+
+    private WyfSecurityManager(){
         super();
         if(singleton ==null) {
             singleton=this;
@@ -36,10 +46,10 @@ public class WyfSecurityManager extends DefaultSecurityManager {
     @PostConstruct
     private void init( ){
         setRealm(WyfJdbcRealm.getInstance() );
-        DefaultSessionManager defaultSessionManager= ((DefaultSessionManager)getSessionManager());
-        defaultSessionManager.setSessionDAO(wyfSessionDAO);
-        defaultSessionManager.setSessionFactory(wyfSessionFactory);
-        defaultSessionManager.setCacheManager(wyfCacheManager);
+        WyfSessionManager wyfSessionManager= ((WyfSessionManager)getSessionManager());
+        //defaultSessionManager.setSessionDAO(wyfSessionDAO);
+        wyfSessionManager.setSessionFactory(wyfSessionFactory);
+        wyfSessionManager.setCacheManager(wyfCacheManager);
     }
 
 
