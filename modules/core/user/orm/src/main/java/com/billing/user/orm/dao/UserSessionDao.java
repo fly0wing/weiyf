@@ -8,12 +8,13 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by gencode on 2014-8-28 13:51:32.
+ * Created by gencode on 2014-8-30 18:18:54.
  */
 @MyBatisRepository
 public interface UserSessionDao {
+    public static final String SEQ_NAME = "user_session";
 
-    UserSession get(@Param("id") Long id);
+    UserSession get(@Param(UserSession.FN_id) Long id);
 
     List<UserSession> search(Map<String, Object> params);
 
@@ -21,5 +22,5 @@ public interface UserSessionDao {
 
     boolean update(UserSession obj);
 
-    boolean delete(@Param("id") Long id);
+    boolean delete(@Param(UserSession.FN_id) Long id);
 }

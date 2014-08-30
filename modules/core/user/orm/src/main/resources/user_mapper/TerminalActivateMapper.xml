@@ -58,11 +58,11 @@
     </select>
 
     <!-- 插入 -->
-    <insert id="save" parameterType="com.billing.user.orm.model.TerminalActivate" useGeneratedKeys="true" keyProperty="id">
+    <insert id="save" parameterType="com.billing.user.orm.model.TerminalActivate" useGeneratedKeys="false">
         INSERT INTO terminal_activate (
-             terminal_id, session_id, activate_time
+             id, terminal_id, session_id, activate_time
         ) VALUES (
-             #{terminalId}, #{sessionId}, #{activateTime}
+             #{id}, #{terminalId}, #{sessionId}, #{activateTime}
         )
     </insert>
 

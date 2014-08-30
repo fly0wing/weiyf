@@ -8,12 +8,13 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by gencode on 2014-8-26 16:12:41.
+ * Created by gencode on 2014-8-30 18:18:53.
  */
 @MyBatisRepository
 public interface TerminalActivateDao {
+    public static final String SEQ_NAME = "terminal_activate";
 
-    TerminalActivate get(@Param("id") Long id);
+    TerminalActivate get(@Param(TerminalActivate.FN_id) Long id);
 
     List<TerminalActivate> search(Map<String, Object> params);
 
@@ -21,5 +22,5 @@ public interface TerminalActivateDao {
 
     boolean update(TerminalActivate obj);
 
-    boolean delete(@Param("id") Long id);
+    boolean delete(@Param(TerminalActivate.FN_id) Long id);
 }

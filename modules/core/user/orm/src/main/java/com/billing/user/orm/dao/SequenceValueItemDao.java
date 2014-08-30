@@ -8,12 +8,13 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by gencode on 2014-8-29 10:07:18.
+ * Created by gencode on 2014-8-30 18:18:53.
  */
 @MyBatisRepository
 public interface SequenceValueItemDao {
+    public static final String SEQ_NAME = "sequence_value_item";
 
-    SequenceValueItem get(@Param(SequenceValueItem.FN_seqName ) String seqName);
+    SequenceValueItem get(@Param(SequenceValueItem.FN_seqName) String seqName);
 
     List<SequenceValueItem> search(Map<String, Object> params);
 
@@ -21,5 +22,5 @@ public interface SequenceValueItemDao {
 
     boolean update(SequenceValueItem obj);
 
-    boolean delete(@Param(SequenceValueItem.FN_seqName ) String seqName);
+    boolean delete(@Param(SequenceValueItem.FN_seqName) String seqName);
 }
