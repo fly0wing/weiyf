@@ -5,6 +5,7 @@ import com.billing.internalcontract.BaseResp;
 import com.billing.internalcontract.user.TerminalBindEnum;
 import com.billing.internalcontract.user.TerminalBindReq;
 import com.billing.internalcontract.user.TerminalUnbindReq;
+import com.billing.user.facade.shiro.WyfSecurityUtils;
 import com.billing.user.orm.business_model.TerminalInfo;
 import org.junit.Test;
 import org.junit.runner.RunWith;
