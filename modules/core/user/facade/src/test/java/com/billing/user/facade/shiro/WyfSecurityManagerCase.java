@@ -134,7 +134,7 @@ public class WyfSecurityManagerCase {
 
     private void activateTerminal(int count) {
         for (int i = 0; i < count; i++) {
-            RegisterReq req = new RegisterReq();
+            TerminalActiveReq req = new TerminalActiveReq();
             BaseResp resq = userTerminalFacade.activeTerminal(req);
         }
     }
