@@ -1,6 +1,7 @@
 package com.billing.internalcontract.other;
 
 import com.billing.internalcontract.BaseResp;
+import org.springframework.stereotype.Component;
 
 /**
  * 序号服务，设计思路：
@@ -11,6 +12,7 @@ import com.billing.internalcontract.BaseResp;
  * 在系统异常崩溃时，允许各个序号跳过一定量的的序号，以避免冲突。
  * Created by xiaoyouyi on 2014-8-27.
  */
+@Component
 public interface ISeqFacade {
     /**
      * 根据序号名称，取得下一个序号

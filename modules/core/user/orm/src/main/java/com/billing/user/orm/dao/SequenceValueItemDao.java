@@ -13,7 +13,7 @@ import java.util.Map;
 @MyBatisRepository
 public interface SequenceValueItemDao {
 
-    SequenceValueItem get(@Param("seq_name") String seqName);
+    SequenceValueItem get(@Param(SequenceValueItem.FN_seqName ) String seqName);
 
     List<SequenceValueItem> search(Map<String, Object> params);
 
@@ -21,5 +21,5 @@ public interface SequenceValueItemDao {
 
     boolean update(SequenceValueItem obj);
 
-    boolean delete(@Param("id") Long id);
+    boolean delete(@Param(SequenceValueItem.FN_seqName ) String seqName);
 }

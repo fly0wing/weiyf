@@ -51,7 +51,7 @@ public class WyfSecurityManager extends DefaultSecurityManager {
         wyfSessionManager.setSessionFactory(wyfSessionFactory);
         wyfSessionManager.setCacheManager(wyfCacheManager);
 
-        WyfSecurityUtils.setSecurityManager( this );
+
     }
 
 
