@@ -6,10 +6,11 @@ package com.billing.user.facade;
  */
 public class UserConst {
 
+    //成功
+    public static final int SUCCESS = 0;
+
     //用户模块基数
     public static final int UNIT_USER_FACADE = 1000;
-    //成功
-    public static final int SUCCESS = UNIT_USER_FACADE;
     //用户不存在
     public static final int USER_NOT_EXISTS = UNIT_USER_FACADE + 1;
     //客户端不存在
@@ -39,7 +40,7 @@ public class UserConst {
     //终端绑定失败
     public static final int TERM_BIND_ERROR = UNIT_USER_FACADE + 14;
     //终端解绑失败
-    public static final long TERM_UNBIND_ERROR = UNIT_USER_FACADE + 15;
+    public static final int TERM_UNBIND_ERROR = UNIT_USER_FACADE + 15;
 
     //安全级别：匿名
     public static final int REG_ANONYMOUS = 0;
@@ -56,6 +57,7 @@ public class UserConst {
     public static final char A_LOWER = 'a';
     // A
     public static final char A_UPPER = 'A';
+
 
     public static final String MSG_SESSION_ERROR = "SESSION失效";
 
