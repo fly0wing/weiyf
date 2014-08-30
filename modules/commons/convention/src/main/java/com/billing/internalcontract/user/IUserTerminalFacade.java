@@ -2,7 +2,6 @@ package com.billing.internalcontract.user;
 
 import com.billing.internalcontract.BaseReq;
 import com.billing.internalcontract.BaseResp;
-import com.billing.user.orm.business_model.TerminalInfo;
 
 import java.util.List;
 
@@ -10,7 +9,7 @@ import java.util.List;
  * 用户终端接口
  * Created by xiaoyouyi on 2014-8-23.
  */
-public interface IUserTerminalFacade {
+public interface IUserTerminalFacade<T> {
 
     /**
      * 绑定当前用户终端，无需传入待绑定的终端，从当前会话中获取。
@@ -45,7 +44,7 @@ public interface IUserTerminalFacade {
      * @param req
      * @return
      */
-    BaseResp<List<TerminalInfo>> getTerminalByFingerprint(BaseReq req);
+    BaseResp<T> getTerminalByFingerprint(BaseReq req);
 
 
 

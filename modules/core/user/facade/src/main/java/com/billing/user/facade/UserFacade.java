@@ -33,10 +33,9 @@ public class UserFacade implements IUserFacade {
     private CustomerTerminalDao customerTermDao;
     @Autowired
     private CustomerLoginDao customerLoginDao;
-    @Autowired
-    private
 
-    IUserTerminalFacade userTermFacade = new UserTerminalFacade();
+    @Autowired
+    private IUserTerminalFacade<List<TerminalInfo>> userTermFacade;
 
     // Session
     UserSession userSession = null;
