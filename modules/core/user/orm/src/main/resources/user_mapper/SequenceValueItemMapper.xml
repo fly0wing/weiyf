@@ -77,11 +77,11 @@
     </select>
 
     <!-- 插入 -->
-    <insert id="save" parameterType="com.billing.user.orm.model.SequenceValueItem" useGeneratedKeys="true" keyProperty="seqName">
+    <insert id="save" parameterType="com.billing.user.orm.model.SequenceValueItem" useGeneratedKeys="false">
         INSERT INTO sequence_value_item (
-             seq_id, crash_skip_number, description, last_modified_date, last_modified_by_user_login, created_date, created_by_user_login
+             seq_name, seq_id, crash_skip_number, description, last_modified_date, last_modified_by_user_login, created_date, created_by_user_login
         ) VALUES (
-             #{seqId}, #{crashSkipNumber}, #{description}, #{lastModifiedDate}, #{lastModifiedByUserLogin}, #{createdDate}, #{createdByUserLogin}
+             #{seqName}, #{seqId}, #{crashSkipNumber}, #{description}, #{lastModifiedDate}, #{lastModifiedByUserLogin}, #{createdDate}, #{createdByUserLogin}
         )
     </insert>
 

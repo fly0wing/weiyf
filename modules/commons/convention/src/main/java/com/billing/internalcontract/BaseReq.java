@@ -1,5 +1,7 @@
 package com.billing.internalcontract;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -117,5 +119,8 @@ public class BaseReq implements Serializable {
         this.actionToken = actionToken;
     }
 
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
+    }
 
 }

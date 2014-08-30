@@ -88,4 +88,6 @@ public class UserConst {
     public static final String MSG_TERM_NOT_EXISTS = "客户端不存在";
 
     public static final String MSG_EMAIL_ALREADY_EXISTS = "Email已注册";
+
+    public static final Long TIME_INTERVAL = 10 * 60 * 1000L;
 }

@@ -88,11 +88,11 @@
     </select>
 
     <!-- 插入 -->
-    <insert id="save" parameterType="com.billing.user.orm.model.CustomerTerminal" useGeneratedKeys="true" keyProperty="id">
+    <insert id="save" parameterType="com.billing.user.orm.model.CustomerTerminal" useGeneratedKeys="false">
         INSERT INTO customer_terminal (
-             customer_id, terminal_id, terminal_name, bind_status, current_op_time, last_op_time, first_bind_time, is_auto_login, last_login_token
+             id, customer_id, terminal_id, terminal_name, bind_status, current_op_time, last_op_time, first_bind_time, is_auto_login, last_login_token
         ) VALUES (
-             #{customerId}, #{terminalId}, #{terminalName}, #{bindStatus}, #{currentOpTime}, #{lastOpTime}, #{firstBindTime}, #{isAutoLogin}, #{lastLoginToken}
+             #{id}, #{customerId}, #{terminalId}, #{terminalName}, #{bindStatus}, #{currentOpTime}, #{lastOpTime}, #{firstBindTime}, #{isAutoLogin}, #{lastLoginToken}
         )
     </insert>
 
