@@ -529,10 +529,23 @@
             </plugins>
         </pluginManagement>
     </build>
+
+    <distributionManagement>
+        <repository>
+            <id>wyf-releases</id>
+            <name>Local Nexus Repository</name>
+            <url>http://192.168.2.100:8081/nexus/content/repositories/releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>wyf-snapshots</id>
+            <name>Local Nexus Repository</name>
+            <url>http://192.168.2.100:8081/nexus/content/repositories/snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
     <!--
     资源库
     -->
-    <repositories>
+    <!--<repositories>
         <repository>
             <id>central</id>
             <name>Maven Repository Switchboard</name>
@@ -625,5 +638,5 @@
                 <enabled>false</enabled>
             </snapshots>
         </pluginRepository>
-    </pluginRepositories>
+    </pluginRepositories>-->
 </project>

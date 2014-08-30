@@ -1,5 +1,6 @@
 package com.billing.user.orm.dao;
 
+import com.billing.user.orm.business_model.TerminalInfo;
 import com.billing.user.orm.model.CustomerTerminal;
 import com.billing.utils.mybatis.MyBatisRepository;
 import org.apache.ibatis.annotations.Param;
@@ -22,4 +23,8 @@ public interface CustomerTerminalDao {
     boolean update(CustomerTerminal obj);
 
     boolean delete(@Param("id") Long id);
+
+    List<TerminalInfo> getBindTerms(Map<String, Object> params);
+
+    List<TerminalInfo> getTermsByFingerPrint(Map<String, Object> params);
 }
