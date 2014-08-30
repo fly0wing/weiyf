@@ -49,14 +49,13 @@ public class UserTerminalFacade implements IUserTerminalFacade {
     @Override
     public BaseResp activeTerminal(TerminalActiveReq taReq) {
         userSession = (UserSession) WyfSecurityUtils.getSubject().getSession();
-        Long lTermId;
         /** Session检查 */
         if(null ==  userSession){
             return new BaseResp(true, UserConst.SESSION_ERROR, "SESSION失效");
         }
         /** 通过Session终端指纹获取TermnialId */
         taReq.setStringReq(userSession.getFingerprint());
-        List<TerminalInfo> lstTermsInfo = (List<TerminalInfo>) getTerminalByFingerprint(taReq).getObjResult();
+        List<TerminalInfo> lstTermsInfo = getTerminalByFingerprint(taReq).getObjResult();
         Timestamp tsNow = new Timestamp(System.currentTimeMillis());
         if(0 == lstTermsInfo.size()){
             /** 该终端指纹未注册 */
@@ -68,14 +67,12 @@ public class UserTerminalFacade implements IUserTerminalFacade {
             term.setDefaultName(taReq.getDefaultName());
             term.setTerminalTypeId(taReq.getTerminalTypeId());
             terminalDao.save(term);
-            lTermId = ((List<TerminalInfo>) getTerminalByFingerprint(taReq).getObjResult()).get(0).getTerminalId();
-        }
-        else{
-            lTermId = lstTermsInfo.get(0).getTerminalId();
+            lstTermsInfo.clear();
+            lstTermsInfo = getTerminalByFingerprint(taReq).getObjResult();
         }
         /** 插入终端激活信息*/
         TerminalActivate termActive = new TerminalActivate();
-        termActive.setTerminalId(lTermId);
+        termActive.setTerminalId(lstTermsInfo.get(0).getTerminalId());
         termActive.setSessionId(userSession.getSessionId());
         termActive.setActivateTime(tsNow);
         terminalActivateDao.save(termActive);
@@ -96,22 +93,20 @@ public class UserTerminalFacade implements IUserTerminalFacade {
             return new BaseResp(true, UserConst.SESSION_ERROR, "SESSION失效");
         }
         /** 获取绑定终端列表 */
-        List<CustomerTerminal> lstCustomerTerms =
-                (List<CustomerTerminal>) getBoundTerminals(terminalBindReq).getObjResult();
+        List<TerminalInfo> lstTermsInfo = getBoundTerminals(terminalBindReq).getObjResult();
         boolean bFlg = false;
-        for (CustomerTerminal customerTerminal : lstCustomerTerms) {
-            if (userSession.getTerminalId() == customerTerminal.getTerminalId()) {
+        for (TerminalInfo termnialInfo : lstTermsInfo) {
+            if (userSession.getTerminalId() == termnialInfo.getTerminalId()) {
                 bFlg = true;
                 break;
             }
         }
         /** 未绑定终端*/
         if (!bFlg) {
-            lstCustomerTerms.clear();
             Map<String, Object> params = new HashMap<>();
             params.put(CustomerTerminal.FN_customerId, userSession.getCustomerId());
             params.put(CustomerTerminal.FN_terminalId, userSession.getTerminalId());
-            lstCustomerTerms = customerTermDao.search(params);
+            List<CustomerTerminal> lstCustomerTerms = customerTermDao.search(params);
             /** 该终端从未绑定过*/
             if (0 == lstCustomerTerms.size()) {
                 /** 获取默认终端名*/
@@ -158,8 +153,8 @@ public class UserTerminalFacade implements IUserTerminalFacade {
      * @param baseReq 基本请求
      * @return 基本应答
      */
-    public BaseResp getBoundTerminals(BaseReq baseReq) {
-        BaseResp baseResp = new BaseResp<List<TerminalInfo>>(true);
+    public BaseResp<List<TerminalInfo>> getBoundTerminals(BaseReq baseReq) {
+        BaseResp<List<TerminalInfo>> baseResp = new BaseResp<>(true);
         Map<String,Object> params = new HashMap<>();
         params.put(CustomerTerminal.FN_customerId,baseReq.getLongReq());
         List<TerminalInfo> lstCustomerTerms = customerTermDao.getBindTerms(params);
@@ -205,7 +200,7 @@ public class UserTerminalFacade implements IUserTerminalFacade {
      * @return 基本应答
      */
     @Override
-    public BaseResp getTerminalByFingerprint(BaseReq baseReq) {
+    public BaseResp<List<TerminalInfo>> getTerminalByFingerprint(BaseReq baseReq) {
         BaseResp<List<TerminalInfo>> baseResp = new BaseResp<>(true);
         Map<String,Object> params = new HashMap<>();
         params.put(Terminal.FN_fingerprint,baseReq.getStringReq());

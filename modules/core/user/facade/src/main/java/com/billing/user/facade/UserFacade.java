@@ -66,7 +66,7 @@ public class UserFacade implements IUserFacade {
         }
         /** 通过Session终端指纹获取TermnialId */
         registerReq.setStringReq(userSession.getFingerprint());
-        List<TerminalInfo> lstTermsInfo = (List<TerminalInfo>) userTermFacade.getTerminalByFingerprint(registerReq);
+        List<TerminalInfo> lstTermsInfo = userTermFacade.getTerminalByFingerprint(registerReq).getObjResult();
         Long lTermId  = lstTermsInfo.get(0).getTerminalId();
         switch (registerReq.getLoginAccountType()) {
             /** 匿名注册模式 */
@@ -231,7 +231,7 @@ public class UserFacade implements IUserFacade {
         }
         /** 通过Session终端指纹获取TermnialId */
         loginReq.setStringReq(userSession.getFingerprint());
-        List<TerminalInfo> lstTermsInfo = (List<TerminalInfo>) userTermFacade.getTerminalByFingerprint(loginReq);
+        List<TerminalInfo> lstTermsInfo = userTermFacade.getTerminalByFingerprint(loginReq).getObjResult();
         Long lTermId  = lstTermsInfo.get(0).getTerminalId();
         switch (loginReq.getLoginAccountType()) {
             case Anonymous:

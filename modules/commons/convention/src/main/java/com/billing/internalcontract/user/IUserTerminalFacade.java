@@ -2,6 +2,9 @@ package com.billing.internalcontract.user;
 
 import com.billing.internalcontract.BaseReq;
 import com.billing.internalcontract.BaseResp;
+import com.billing.user.orm.business_model.TerminalInfo;
+
+import java.util.List;
 
 /**
  * 用户终端接口
@@ -42,7 +45,7 @@ public interface IUserTerminalFacade {
      * @param req
      * @return
      */
-    BaseResp getTerminalByFingerprint(BaseReq req);
+    BaseResp<List<TerminalInfo>> getTerminalByFingerprint(BaseReq req);
 
 
 
