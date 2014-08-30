@@ -66,11 +66,11 @@
     </select>
 
     <!-- 插入 -->
-    <insert id="save" parameterType="com.billing.user.orm.model.Terminal" useGeneratedKeys="true" keyProperty="id">
+    <insert id="save" parameterType="com.billing.user.orm.model.Terminal" useGeneratedKeys="false">
         INSERT INTO terminal (
-             fingerprint, default_name, terminal_type_id, first_session_id, first_activate_time
+             id, fingerprint, default_name, terminal_type_id, first_session_id, first_activate_time
         ) VALUES (
-             #{fingerprint}, #{defaultName}, #{terminalTypeId}, #{firstSessionId}, #{firstActivateTime}
+             #{id}, #{fingerprint}, #{defaultName}, #{terminalTypeId}, #{firstSessionId}, #{firstActivateTime}
         )
     </insert>
 

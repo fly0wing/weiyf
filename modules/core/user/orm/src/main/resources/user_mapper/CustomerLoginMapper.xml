@@ -97,11 +97,11 @@
     </select>
 
     <!-- 插入 -->
-    <insert id="save" parameterType="com.billing.user.orm.model.CustomerLogin" useGeneratedKeys="true" keyProperty="id">
+    <insert id="save" parameterType="com.billing.user.orm.model.CustomerLogin" useGeneratedKeys="false">
         INSERT INTO customer_login (
-             login_name, login_email, login_phone, nickname, is_anonymous, current_password, enabled, first_session_id, require_password_change, security_level, register_time, last_login_time
+             id, login_name, login_email, login_phone, nickname, is_anonymous, current_password, enabled, first_session_id, require_password_change, security_level, register_time, last_login_time
         ) VALUES (
-             #{loginName}, #{loginEmail}, #{loginPhone}, #{nickname}, #{isAnonymous}, #{currentPassword}, #{enabled}, #{firstSessionId}, #{requirePasswordChange}, #{securityLevel}, #{registerTime}, #{lastLoginTime}
+             #{id}, #{loginName}, #{loginEmail}, #{loginPhone}, #{nickname}, #{isAnonymous}, #{currentPassword}, #{enabled}, #{firstSessionId}, #{requirePasswordChange}, #{securityLevel}, #{registerTime}, #{lastLoginTime}
         )
     </insert>
 

@@ -105,11 +105,11 @@
     </select>
 
     <!-- 插入 -->
-    <insert id="save" parameterType="com.billing.user.orm.model.UserSession" useGeneratedKeys="true" keyProperty="id">
+    <insert id="save" parameterType="com.billing.user.orm.model.UserSession" useGeneratedKeys="false">
         INSERT INTO user_session (
-             customer_id, party_id, product_id, domain_id, app_id, entry_id, geo_id, terminal_id, app_area, login_oken, is_bound, is_anonymous, start_time, stop_time
+             id, customer_id, party_id, product_id, domain_id, app_id, entry_id, geo_id, terminal_id, app_area, login_oken, is_bound, is_anonymous, start_time, stop_time
         ) VALUES (
-             #{customerId}, #{partyId}, #{productId}, #{domainId}, #{appId}, #{entryId}, #{geoId}, #{terminalId}, #{appArea}, #{loginOken}, #{isBound}, #{isAnonymous}, #{startTime}, #{stopTime}
+             #{id}, #{customerId}, #{partyId}, #{productId}, #{domainId}, #{appId}, #{entryId}, #{geoId}, #{terminalId}, #{appArea}, #{loginOken}, #{isBound}, #{isAnonymous}, #{startTime}, #{stopTime}
         )
     </insert>
 

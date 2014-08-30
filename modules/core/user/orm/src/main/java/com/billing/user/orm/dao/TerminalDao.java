@@ -8,12 +8,13 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by gencode on 2014-8-26 16:12:41.
+ * Created by gencode on 2014-8-30 18:18:53.
  */
 @MyBatisRepository
 public interface TerminalDao {
+    public static final String SEQ_NAME = "terminal";
 
-    Terminal get(@Param("id") Long id);
+    Terminal get(@Param(Terminal.FN_id) Long id);
 
     List<Terminal> search(Map<String, Object> params);
 
@@ -21,7 +22,7 @@ public interface TerminalDao {
 
     boolean update(Terminal obj);
 
-    boolean delete(@Param("id") Long id);
+    boolean delete(@Param(Terminal.FN_id) Long id);
 
-    Terminal getByFingerprint(@Param("fingerprint")String fingerprint);
+    Terminal getByFingerprint(@Param(Terminal.FN_fingerprint) String fingerprint);
 }

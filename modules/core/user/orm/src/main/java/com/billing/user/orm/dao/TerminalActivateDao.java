@@ -12,8 +12,9 @@ import java.util.Map;
  */
 @MyBatisRepository
 public interface TerminalActivateDao {
+    public static final String SEQ_NAME = "terminal_activate";
 
-    TerminalActivate get(@Param("id") Long id);
+    TerminalActivate get(@Param(TerminalActivate.FN_id) Long id);
 
     List<TerminalActivate> search(Map<String, Object> params);
 
@@ -21,7 +22,7 @@ public interface TerminalActivateDao {
 
     boolean update(TerminalActivate obj);
 
-    boolean delete(@Param("id") Long id);
-
-    TerminalActivate getMaxActiveTime(@Param("terminalId") Long id);
+    boolean delete(@Param(TerminalActivate.FN_id) Long id);
+    
+    TerminalActivate getMaxActiveTime(@Param(TerminalActivate.FN_terminalId) Long id);
 }

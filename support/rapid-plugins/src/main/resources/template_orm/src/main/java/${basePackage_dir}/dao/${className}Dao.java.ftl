@@ -14,6 +14,7 @@ ${gg.setOverride(false)}
  */
 @MyBatisRepository
 public interface ${className}Dao {
+    public static final String SEQ_NAME = "${table.sqlName}";
 
     ${className} get(<#list table.pkColumns as column>@Param(${className}.FN_${column.columnNameLower}) ${column.simpleJavaType} ${column.columnNameFirstLower}<#if column_has_next>, </#if></#list>);
 
@@ -23,9 +24,9 @@ public interface ${className}Dao {
 
     boolean update(${className} obj);
 
-    boolean delete(@Param("id") Long id);
+    boolean delete(<#list table.pkColumns as column>@Param(${className}.FN_${column.columnNameLower}) ${column.simpleJavaType} ${column.columnNameFirstLower}<#if column_has_next>, </#if></#list>);
 <#list table.columns as column><#if column.unique && !column.pk>
 
-    ${className} getBy${column.columnName}(@Param(${className}.FN_${column.columnNameLower})${column.simpleJavaType} ${column.columnNameLower});
+    ${className} getBy${column.columnName}(@Param(${className}.FN_${column.columnNameLower}) ${column.simpleJavaType} ${column.columnNameLower});
 </#if></#list>
 }

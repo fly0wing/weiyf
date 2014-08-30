@@ -9,12 +9,13 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by gencode on 2014-8-26 16:12:41.
+ * Created by gencode on 2014-8-30 18:18:52.
  */
 @MyBatisRepository
 public interface CustomerTerminalDao {
+    public static final String SEQ_NAME = "customer_terminal";
 
-    CustomerTerminal get(@Param("id") Long id);
+    CustomerTerminal get(@Param(CustomerTerminal.FN_id) Long id);
 
     List<CustomerTerminal> search(Map<String, Object> params);
 
@@ -22,7 +23,7 @@ public interface CustomerTerminalDao {
 
     boolean update(CustomerTerminal obj);
 
-    boolean delete(@Param("id") Long id);
+    boolean delete(@Param(CustomerTerminal.FN_id) Long id);
 
     List<TerminalInfo> getBindTerms(Map<String, Object> params);
 
