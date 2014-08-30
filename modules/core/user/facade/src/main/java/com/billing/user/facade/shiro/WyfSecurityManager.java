@@ -50,6 +50,8 @@ public class WyfSecurityManager extends DefaultSecurityManager {
         //defaultSessionManager.setSessionDAO(wyfSessionDAO);
         wyfSessionManager.setSessionFactory(wyfSessionFactory);
         wyfSessionManager.setCacheManager(wyfCacheManager);
+
+        WyfSecurityUtils.setSecurityManager( this );
     }
 
 
