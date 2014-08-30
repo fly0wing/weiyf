@@ -1,6 +1,7 @@
 package com.billing.user.facade;
 
 /**
+ * 用户模块常量定义
  * Created by Xenox on 2014/8/29.
  */
 public class UserConst {
@@ -8,7 +9,7 @@ public class UserConst {
     //用户模块基数
     public static final int UNIT_USER_FACADE = 1000;
     //成功
-    public static final int SUCCESS = UNIT_USER_FACADE + 0;
+    public static final int SUCCESS = UNIT_USER_FACADE;
     //用户不存在
     public static final int USER_NOT_EXISTS = UNIT_USER_FACADE + 1;
     //客户端不存在
@@ -72,17 +73,17 @@ public class UserConst {
 
     public static final String MSG_PASS_WRONG = "密码错误";
 
-    public static final java.lang.String MSG_PASS_UPD_FAILED = "密码更新失败";
+    public static final String MSG_PASS_UPD_FAILED = "密码更新失败";
 
-    public static final java.lang.String MSG_TERM_ACTIVE_ERROR = "终端激活失败";
+    public static final String MSG_TERM_ACTIVE_ERROR = "终端激活失败";
 
-    public static final java.lang.String MSG_TERM_BIND_ERROR = "终端绑定失败";
+    public static final String MSG_TERM_BIND_ERROR = "终端绑定失败";
 
-    public static final java.lang.String MSG_TERM_UNBIND_ERROR = "终端解绑失败";
+    public static final String MSG_TERM_UNBIND_ERROR = "终端解绑失败";
 
-    public static final java.lang.String MSG_SUCCESS = "成功";
+    public static final String MSG_SUCCESS = "成功";
 
-    public static final java.lang.String MSG_TERM_NOT_EXISTS = "客户端不存在";
+    public static final String MSG_TERM_NOT_EXISTS = "客户端不存在";
 
-    public static final java.lang.String MSG_EMAIL_ALREADY_EXISTS = "Email已注册";
+    public static final String MSG_EMAIL_ALREADY_EXISTS = "Email已注册";
 }
