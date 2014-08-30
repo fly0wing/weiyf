@@ -4,6 +4,7 @@ import com.billing.internalcontract.BaseReq;
 import com.billing.internalcontract.BaseResp;
 import com.billing.internalcontract.user.TerminalBindEnum;
 import com.billing.internalcontract.user.TerminalBindReq;
+import com.billing.internalcontract.user.TerminalUnbindReq;
 import com.billing.user.orm.business_model.TerminalInfo;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,6 +39,8 @@ public class UserTerminalFacadeTest {
     @Autowired
     private UserTerminalFacade userFacade;
 
+    private final static String fingerprint = "abcabcabcabcabcabcabcabca";
+
     @Test
     public void testActiveTerminal() throws Exception {
 
@@ -58,7 +61,7 @@ public class UserTerminalFacadeTest {
     public void testGetBoundTerminals() throws Exception {
         // 没有绑定的状态.
         BaseReq baseReq = new BaseReq();
-        baseReq.setLongReq(1111);
+        baseReq.setLongReq(1111);// 客户id.
 
         BaseResp<List<TerminalInfo>> boundTerminals = userFacade.getBoundTerminals(baseReq);
         List<TerminalInfo> objResult = boundTerminals.getObjResult();
@@ -72,11 +75,25 @@ public class UserTerminalFacadeTest {
 
     @Test
     public void testUnbindTerminal() throws Exception {
+        TerminalUnbindReq terminalUnbindReq = new TerminalUnbindReq();
+        terminalUnbindReq.setTerminalBindType(TerminalBindEnum.Anonymous);
+        terminalUnbindReq.setFingerprint(fingerprint);
+        terminalUnbindReq.setTerminalId(1);
 
+
+        BaseResp baseResp = userFacade.unbindTerminal(terminalUnbindReq);
+
+        assertTrue(baseResp.isNormal());
+        assertTrue(baseResp.isOK());
     }
 
     @Test
     public void testGetTerminalByFingerprint() throws Exception {
+        BaseReq baseReq = new BaseReq();
+        baseReq.setStringReq(fingerprint);
+        BaseResp<List<TerminalInfo>> baseResp = userFacade.getTerminalByFingerprint(baseReq);
 
+        assertTrue(baseResp.isNormal());
+        assertTrue(baseResp.isOK());
     }
 }
