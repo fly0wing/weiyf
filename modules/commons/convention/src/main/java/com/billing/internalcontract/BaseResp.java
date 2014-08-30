@@ -1,5 +1,7 @@
 package com.billing.internalcontract;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -205,5 +207,7 @@ public class BaseResp<T> implements Serializable {
     public void setException(Exception exception) {
         this.exception = exception;
     }
-
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
+    }
 }
