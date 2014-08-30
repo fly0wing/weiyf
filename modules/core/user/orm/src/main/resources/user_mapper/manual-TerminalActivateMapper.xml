@@ -4,4 +4,18 @@
  
 <mapper namespace="com.billing.user.orm.dao.TerminalActivateDao">
 
+    <!-- 字段名转换 -->
+    <resultMap id="RM_TerminalActivate" type="com.billing.user.orm.model.TerminalActivate">
+        <result property="id" column="id"/>
+        <result property="terminalId" column="terminal_id"/>
+        <result property="sessionId" column="session_id"/>
+        <result property="activateTime" column="activate_time"/>
+    </resultMap>
+
+    <select id="getMaxActiveTime" parameterType="map" resultMap="RM_TerminalActivate">
+        select
+        MAX(activate_time) as activateTime
+        from terminal_active
+        where terminal_id = #{terminalId}
+    </select>
 </mapper>

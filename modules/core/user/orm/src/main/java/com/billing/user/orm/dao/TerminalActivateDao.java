@@ -22,4 +22,6 @@ public interface TerminalActivateDao {
     boolean update(TerminalActivate obj);
 
     boolean delete(@Param("id") Long id);
+
+    TerminalActivate getMaxActiveTime(@Param("terminalId") Long id);
 }
