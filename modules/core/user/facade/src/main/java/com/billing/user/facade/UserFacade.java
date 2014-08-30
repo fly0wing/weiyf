@@ -158,9 +158,7 @@ public class UserFacade implements IUserFacade {
             }
         } else {
             /** 客户端无匿名用户 */
-            //TODO:SessionId
-            customerLogin.setFirstSessionId(1L);
-//                customerLogin.setId(Session.getId());
+            customerLogin.setFirstSessionId(userSession.getSessionId());
             customerLogin.setNickname("");
             customerLogin.setLastLoginTime(new Timestamp(System.currentTimeMillis()));
             customerLogin.setRegisterTime(new Timestamp(System.currentTimeMillis()));
@@ -172,6 +170,7 @@ public class UserFacade implements IUserFacade {
         }
         if (baseResp.isOK()) {
             // TODO:Token Generator
+
             /** 登录成功，检查更新终端绑定状态 */
             if(LoginAccountEnum.Anonymous != registerReq.getLoginAccountType()) {
                 TerminalBindReq terminalBindReq = new TerminalBindReq();
@@ -300,7 +299,6 @@ public class UserFacade implements IUserFacade {
         params.put(CustomerTerminal.FN_terminalId, lTermId);
         List<CustomerTerminal> lstTerm = customerTermDao.search(params);
         if (lstTerm.size() > 0) {
-            // TODO;终端TOKEN
             if (lstTerm.get(0).getLastLoginToken().equals(sToken)) {
                 return UserConst.SUCCESS;
             } else {

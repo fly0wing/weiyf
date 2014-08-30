@@ -127,8 +127,7 @@ public class UserTerminalFacade implements IUserTerminalFacade {
                 customerTerm.setLastOpTime( new Timestamp(System.currentTimeMillis()));
                 customerTerm.setFirstBindTime(new Timestamp(System.currentTimeMillis()));
                 customerTerm.setIsAutoLogin(terminalBindReq.isAuto());
-                //TODO:lastLoginToken
-//                customerTerm.setLastLoginToken(terminalBindReq.getActionToken());
+                customerTerm.setLastLoginToken(userSession.getLoginToken());
                 /** 插入用户终端信息*/
                 customerTermDao.save(customerTerm);
             } else {
