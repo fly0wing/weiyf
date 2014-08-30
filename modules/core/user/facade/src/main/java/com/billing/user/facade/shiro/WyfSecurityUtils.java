@@ -16,22 +16,26 @@ public abstract   class WyfSecurityUtils extends SecurityUtils {
     private static Object monitor;
 
     public static UserSession getSession(){
+        ensureInited();
         Session session= getSubject().getSession();
         UserSession userSession= (UserSession)session.getAttribute(WyfSecurityManager.SESSION_SESSION_KEY);
         return userSession;
     }
 
     public static Subject getSubject() {
-        if(monitor==null){
-            monitor=new Object();
-            WyfSecurityUtils.setSecurityManager( WyfSecurityManager.getInstance() );
-        }
+        ensureInited();
         Subject subject = ThreadContext.getSubject();
         if (subject == null) {
             subject = (new Subject.Builder()).buildSubject();
             ThreadContext.bind(subject);
         }
         return subject;
+    }
+    private static void ensureInited(){
+        if(monitor==null){
+            monitor=new Object();
+            WyfSecurityUtils.setSecurityManager( WyfSecurityManager.getInstance() );
+        }
     }
 
 
