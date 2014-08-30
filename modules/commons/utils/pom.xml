@@ -62,6 +62,27 @@
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-lang3</artifactId>
     </dependency>
+    <dependency>
+        <groupId>commons-codec</groupId>
+        <artifactId>commons-codec</artifactId>
+        <optional>true</optional>
+    </dependency>
+    <dependency>
+        <groupId>commons-io</groupId>
+        <artifactId>commons-io</artifactId>
+        <optional>true</optional>
+    </dependency>
+    <dependency>
+        <groupId>commons-beanutils</groupId>
+        <artifactId>commons-beanutils</artifactId>
+        <optional>true</optional>
+    </dependency>
+
+    <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>17.0</version>
+    </dependency>
 
 </dependencies>
 
@@ -70,6 +91,10 @@
     -->
 <dependencyManagement>
     <dependencies>
+        <!-- Security begin -->
+
+        <!-- Security end -->
+
         <!-- spring start -->
         <dependency>
             <groupId>org.springframework</groupId>

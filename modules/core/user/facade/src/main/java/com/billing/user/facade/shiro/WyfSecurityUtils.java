@@ -9,6 +9,9 @@ import org.apache.shiro.session.Session;
  */
 public abstract class WyfSecurityUtils extends SecurityUtils {
 
+    static {
+        WyfSecurityUtils.setSecurityManager( WyfSecurityManager.getInstance() );
+    }
     public static UserSession getSession(){
         Session session= getSubject().getSession();
         UserSession userSession= (UserSession)session.getAttribute(WyfSecurityManager.SESSION_SESSION_KEY);
