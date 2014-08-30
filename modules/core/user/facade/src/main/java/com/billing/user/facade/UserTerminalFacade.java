@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * 用户终端服务
  * Created by zkai on 2014/8/26.
  */
 @Service
@@ -41,19 +42,18 @@ public class UserTerminalFacade implements IUserTerminalFacade {
 
     /**
      * 绑定当前用户终端，无需传入待绑定的终端，从当前会话中获取。
-     * @param baseReq
-     * @return
+     * @param baseReq 基本请求
+     * @return 基本应答
      */
     @Override
     public BaseResp activeTerminal(BaseReq baseReq) {
-        BaseResp baseResp;
         userSession = (UserSession) WyfSecurityUtils.getSubject().getSession();
         /** Session检查 */
         if(null ==  userSession){
             return new BaseResp(true, UserConst.SESSION_ERROR, "SESSION失效");
         }
 
-        Map<String,Object> params = new HashMap();
+        Map<String,Object> params = new HashMap<>();
         params.put(TerminalActivate.FN_terminalId,userSession.getTerminalId());
         List<TerminalActivate> lstTermAct = terminalActivateDao.search(params);
         if(0 < lstTermAct.size()){
@@ -70,8 +70,8 @@ public class UserTerminalFacade implements IUserTerminalFacade {
 
     /**
      * 绑定当前用户终端，无需传入待绑定的终端，从当前会话中获取。
-     * @param terminalBindReq
-     * @return
+     * @param terminalBindReq 终端绑定请求
+     * @return 基本应答
      */
     @Override
     public BaseResp bindTerminal(TerminalBindReq terminalBindReq) {
@@ -138,12 +138,12 @@ public class UserTerminalFacade implements IUserTerminalFacade {
     /**
      * 获取用户当前绑定的终端列表，主要是终端标识、指纹和名称信息
      * longReq传入CustomerId
-     * @param baseReq
-     * @return
+     * @param baseReq 基本请求
+     * @return 基本应答
      */
     public BaseResp getBoundTerminals(BaseReq baseReq) {
-        BaseResp baseResp = new BaseResp(true);
-        Map<String,Object> params = new HashMap<String, Object>();
+        BaseResp baseResp = new BaseResp<List<TerminalInfo>>(true);
+        Map<String,Object> params = new HashMap<>();
         params.put(CustomerTerminal.FN_customerId,baseReq.getLongReq());
         List<TerminalInfo> lstCustomerTerms = customerTermDao.getBindTerms(params);
         baseResp.setObjResult(lstCustomerTerms);
@@ -152,19 +152,18 @@ public class UserTerminalFacade implements IUserTerminalFacade {
 
     /**
      * 解绑用户终端，输入需要待解除绑定的终端标识和指纹
-     * @param terminalUnbindReq
-     * @return
+     * @param terminalUnbindReq 终端解绑请求
+     * @return 基本应答
      */
     @Override
     public BaseResp unbindTerminal(TerminalUnbindReq terminalUnbindReq) {
-        BaseResp baseResp;
         userSession = (UserSession) WyfSecurityUtils.getSubject().getSession();
         /** Session检查*/
         if(null ==  userSession){
             return new BaseResp(true, UserConst.SESSION_ERROR, "SESSION失效");
         }
         /**检查该终端是否为绑定状态 */
-        Map<String,Object> params = new HashMap<String, Object>();
+        Map<String,Object> params = new HashMap<>();
         params.put(CustomerTerminal.FN_customerId, userSession.getCustomerId());
         params.put(CustomerTerminal.FN_terminalId, terminalUnbindReq.getTerminalId());
         params.put(CustomerTerminal.FN_bindStatus, true);
@@ -182,15 +181,15 @@ public class UserTerminalFacade implements IUserTerminalFacade {
 
     /**
      * 根据终端指纹获取终端
-     * longReq传入终端指纹
-     * @param baseReq
-     * @return
+     * stringReq传入终端指纹
+     * @param baseReq 基本请求
+     * @return 基本应答
      */
     @Override
     public BaseResp getTerminalByFingerprint(BaseReq baseReq) {
-        BaseResp baseResp = new BaseResp(true);
-        Map<String,Object> params = new HashMap<String, Object>();
-        params.put(Terminal.FN_fingerprint,baseReq.getLongReq());
+        BaseResp<List<TerminalInfo>> baseResp = new BaseResp<>(true);
+        Map<String,Object> params = new HashMap<>();
+        params.put(Terminal.FN_fingerprint,baseReq.getStringReq());
         List<TerminalInfo> lstCustomerTerms = customerTermDao.getTermsByFingerPrint(params);
         baseResp.setObjResult(lstCustomerTerms);
         return baseResp;

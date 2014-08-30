@@ -4,18 +4,14 @@ import com.billing.internalcontract.ActionTokenEnum;
 import com.billing.internalcontract.BaseReq;
 import com.billing.internalcontract.BaseResp;
 import com.billing.internalcontract.UserSession;
-import com.billing.internalcontract.session.ISessionFacade;
 import com.billing.internalcontract.user.*;
 import com.billing.user.facade.shiro.WyfSecurityUtils;
+import com.billing.user.orm.business_model.TerminalInfo;
 import com.billing.user.orm.dao.CustomerLoginDao;
 import com.billing.user.orm.dao.CustomerTerminalDao;
-import com.billing.user.orm.dao.TerminalDao;
 import com.billing.user.orm.model.CustomerLogin;
 import com.billing.user.orm.model.CustomerTerminal;
-import com.billing.user.orm.model.Terminal;
-import com.mchange.lang.LongUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -38,57 +34,62 @@ public class UserFacade implements IUserFacade {
     @Autowired
     private CustomerLoginDao customerLoginDao;
     @Autowired
-    private TerminalDao terminalDao;
+    private
 
     IUserTerminalFacade userTermFacade = new UserTerminalFacade();
 
-    //TODO: Dummy token服务
-    Map<String,Object[]> mToken = new HashMap<String, Object[]>();
-    // Session服务
-    ISessionFacade sessionFacade = new SessionFacade();
-
+    // Session
     UserSession userSession = null;
+
+    //TODO: Dummy token服务
+    Map<String,Object[]> mToken = new HashMap<>();
     /**
      * 用户注册，如果该终端上已经存在匿名注册的用户，直接绑定到该匿名用户上。
      *
      * @param registerReq 注册请求
-     * @return
+     * @return 基本应答
      */
     @Override
     public BaseResp register(RegisterReq registerReq) {
         userSession = (UserSession) WyfSecurityUtils.getSubject().getSession();
-        BaseResp baseResp = new BaseResp(false);
+        BaseResp baseResp;
         CustomerLogin customerLogin = new CustomerLogin();
         boolean bAnonymousFlg = false;
-        // SESSION检查
+        /** SESSION检查 */
         if (null == userSession) {
             return new BaseResp(true, UserConst.SESSION_ERROR, "SESSION失效");
         }
-        // 输入参数检查(匿名模式除外）
+        /** 输入参数检查(匿名模式除外） */
         if (LoginAccountEnum.Anonymous != registerReq.getLoginAccountType() &&
                 StringUtils.isBlank(registerReq.getLoginAccount())) {
             return new BaseResp(true, UserConst.PARAM_ERROR, "输入参数错误");
         }
+        /** 通过Session终端指纹获取TermnialId */
+        registerReq.setStringReq(userSession.getFingerprint());
+        List<TerminalInfo> lstTermsInfo = (List<TerminalInfo>) userTermFacade.getTerminalByFingerprint(registerReq);
+        Long lTermId  = lstTermsInfo.get(0).getTerminalId();
         switch (registerReq.getLoginAccountType()) {
-            //匿名注册模式
+            /** 匿名注册模式 */
             case Anonymous:
                 //TODO:Anonymous ID
                 customerLogin = loginDao.getByLoginName(registerReq.getLoginAccount());
                 if (null != customerLogin) {
                     return new BaseResp(true, UserConst.USER_ALREADY_EXISTS, "匿名用户已注册");
+                }else{
+                    customerLogin = new CustomerLogin();
                 }
                 customerLogin.setEnabled(true);
                 customerLogin.setIsAnonymous(true);
                 customerLogin.setLoginName(registerReq.getLoginAccount());
                 customerLogin.setRequirePasswordChange(true);
                 customerLogin.setSecurityLevel(UserConst.REG_ANONYMOUS);
-                //用户名注册模式
+                /** 用户名注册模式 */
             case LoginName:
                 customerLogin = loginDao.getByLoginName(registerReq.getLoginAccount());
                 if (null != customerLogin) {
                     return new BaseResp(true, UserConst.USER_ALREADY_EXISTS, "用户名已注册");
                 }
-                if (UserConst.SUCCESS == chkToken(customerLogin.getId(), userSession.getTerminalId(), userSession)) {
+                if (UserConst.SUCCESS == chkToken(lTermId, userSession.getLoginToken())) {
                     bAnonymousFlg = true;
                     customerLogin.setLoginName(registerReq.getLoginAccount());
                     customerLogin.setSecurityLevel(customerLogin.getSecurityLevel() + UserConst.REG_LOGIN_NAME);
@@ -101,13 +102,13 @@ public class UserFacade implements IUserFacade {
                     customerLogin.setSecurityLevel(UserConst.REG_LOGIN_NAME);
                 }
                 break;
-            // Email注册模式
+            /** Email注册模式 */
             case LoginEmail:
                 customerLogin = loginDao.getByLoginEmail(registerReq.getLoginAccount());
                 if (null != customerLogin) {
                     return new BaseResp(true, UserConst.EMAIL_ALREADY_EXISTS, "Email已注册");
                 }
-                if (UserConst.SUCCESS == chkToken(customerLogin.getId(), userSession.getTerminalId(), userSession)) {
+                if (UserConst.SUCCESS == chkToken(lTermId, userSession.getLoginToken())) {
                     bAnonymousFlg = true;
                     customerLogin.setLoginEmail(registerReq.getLoginAccount());
                     customerLogin.setSecurityLevel(customerLogin.getSecurityLevel() + UserConst.REG_EMAIL);
@@ -120,13 +121,13 @@ public class UserFacade implements IUserFacade {
                     customerLogin.setSecurityLevel(UserConst.REG_EMAIL);
                 }
                 break;
-            // 电话注册模式
+            /** 电话注册模式 */
             case LoginPhone:
                 customerLogin = loginDao.getByLoginPhone(registerReq.getLoginAccount());
                 if (null != customerLogin) {
                     return new BaseResp(true, UserConst.PHONE_ALREADY_EXISTS, "电话号码已注册");
                 }
-                if (UserConst.SUCCESS == chkToken(customerLogin.getId(), userSession.getTerminalId(), userSession)) {
+                if (UserConst.SUCCESS == chkToken(lTermId, userSession.getLoginToken())) {
                     bAnonymousFlg = true;
                     customerLogin.setLoginPhone(registerReq.getLoginAccount());
                     customerLogin.setSecurityLevel(customerLogin.getSecurityLevel() + UserConst.REG_PHONE);
@@ -140,7 +141,7 @@ public class UserFacade implements IUserFacade {
                 }
                 break;
         }
-        //客户端存在匿名用户，绑定匿名用户
+        /** 客户端存在匿名用户，绑定匿名用户 */
         if (bAnonymousFlg) {
             customerLogin.setIsAnonymous(false);
             customerLogin.setCurrentPassword(registerReq.getPassword());
@@ -154,7 +155,7 @@ public class UserFacade implements IUserFacade {
                 baseResp = new BaseResp(true, UserConst.REG_FAILED, "注册失败");
             }
         } else {
-            //客户端无匿名用户
+            /** 客户端无匿名用户 */
             //TODO:SessionId
             customerLogin.setFirstSessionId(1L);
 //                customerLogin.setId(Session.getId());
@@ -189,7 +190,7 @@ public class UserFacade implements IUserFacade {
      * 用户登录，确定会话中的用户标识
      *
      * @param loginReq 登录请求
-     * @return
+     * @return 基本应答
      */
     @Override
     public BaseResp login(LoginReq loginReq) {
@@ -210,14 +211,13 @@ public class UserFacade implements IUserFacade {
      * 登录用户情报检查
      *
      * @param loginReq 登录请求
-     * @return
+     * @return 基本应答
      */
     public BaseResp chkLoginUser(LoginReq loginReq){
         userSession = (UserSession) WyfSecurityUtils.getSubject().getSession();
         BaseResp baseResp = new BaseResp(false);
         CustomerLogin customerLogin = null;
         String sCurrentPass = "";
-        Map<String, Object> params = new HashMap<>();
         /** SESSION检查 */
         if (null == userSession) {
             return new BaseResp(true, UserConst.SESSION_ERROR, "SESSION失效");
@@ -227,11 +227,14 @@ public class UserFacade implements IUserFacade {
                 StringUtils.isBlank(loginReq.getLoginAccount())) {
             return new BaseResp(true, UserConst.PARAM_ERROR, "输入参数错误");
         }
+        /** 通过Session终端指纹获取TermnialId */
+        loginReq.setStringReq(userSession.getFingerprint());
+        List<TerminalInfo> lstTermsInfo = (List<TerminalInfo>) userTermFacade.getTerminalByFingerprint(loginReq);
+        Long lTermId  = lstTermsInfo.get(0).getTerminalId();
         switch (loginReq.getLoginAccountType()) {
             case Anonymous:
-                //TODO:Anonymous ID
-                customerLogin = loginDao.getByLoginName(loginReq.getLoginAccount());
-                if (null == customerLogin) {
+                //TODO:Anonymous Login
+                if (UserConst.SUCCESS != chkToken(lTermId, userSession.getLoginToken())) {
                     return new BaseResp(true, UserConst.USER_NOT_EXISTS, "用户不存在");
                 }
                 break;
@@ -257,7 +260,7 @@ public class UserFacade implements IUserFacade {
             case LoginPhone:
                 customerLogin = loginDao.getByLoginPhone(loginReq.getLoginAccount());
                 if (null == customerLogin) {
-                    baseResp = new BaseResp(true, UserConst.USER_NOT_EXISTS, "用户不存在");
+                    return new BaseResp(true, UserConst.USER_NOT_EXISTS, "用户不存在");
                 } else if (!loginReq.isAuto()) {
                     sCurrentPass = customerLogin.getCurrentPassword();
                 }
@@ -265,7 +268,7 @@ public class UserFacade implements IUserFacade {
         }
         /** 自动登录模式，检查令牌*/
         if (loginReq.isAuto()) {
-            int iRet = chkToken(customerLogin.getId(), userSession.getTerminalId(), userSession);
+            int iRet = chkToken(lTermId, userSession.getLoginToken());
             if (UserConst.SUCCESS == iRet) {
                 baseResp = new BaseResp(true, UserConst.SUCCESS);
             } else if (UserConst.TOKEN_WRONG == iRet) {
@@ -286,19 +289,17 @@ public class UserFacade implements IUserFacade {
     /**
      * 验证终端Token
      *
-     * @param lCustomerId 客户ID
      * @param lTermId 终端ID
-     * @param session Session
-     * @return
+     * @param sToken 终端Token
+     * @return Token验证结果
      */
-    private int chkToken(Long lCustomerId, Long lTermId, UserSession session) {
-        userSession = (UserSession) WyfSecurityUtils.getSubject().getSession();
+    private int chkToken(Long lTermId, String sToken) {
         Map<String, Object> params = new HashMap<>();
-        params.put(CustomerTerminal.FN_customerId, lCustomerId);
         params.put(CustomerTerminal.FN_terminalId, lTermId);
         List<CustomerTerminal> lstTerm = customerTermDao.search(params);
         if (lstTerm.size() > 0) {
-            if (lstTerm.get(0).getLastLoginToken().equals(session.getSessionToken())) {
+            // TODO;终端TOKEN
+            if (lstTerm.get(0).getLastLoginToken().equals(sToken)) {
                 return UserConst.SUCCESS;
             } else {
                 return UserConst.TOKEN_WRONG;
@@ -312,7 +313,6 @@ public class UserFacade implements IUserFacade {
      * 用户登出，主动结束会话，会话从内存及缓存中移除。
      *
      * @param baseReq 基本请求
-     * @return
      */
     @Override
     public void loginout(BaseReq baseReq) {
@@ -326,12 +326,12 @@ public class UserFacade implements IUserFacade {
      * stringReq传入电话号码
      *
      * @param baseReq 基本请求
-     * @return
+     * @return 基本应答
      */
     @Override
     public BaseResp bindPhone(BaseReq baseReq) {
         userSession = (UserSession) WyfSecurityUtils.getSubject().getSession();
-        BaseResp baseResp = new BaseResp(false);
+        BaseResp baseResp;
         /** SESSION检查 */
         if (null == userSession) {
             return new BaseResp(true, UserConst.SESSION_ERROR, "SESSION失效");
@@ -344,7 +344,7 @@ public class UserFacade implements IUserFacade {
         customerLogin.setLoginPhone(baseReq.getStringReq());
         if(0 < customerLogin.getLoginPhone().length()){
             customerLogin.setSecurityLevel(customerLogin.getSecurityLevel() + UserConst.REG_PHONE);
-        };
+        }
         if (customerLoginDao.update(customerLogin)) {
             baseResp = new BaseResp(true, UserConst.SUCCESS);
         } else {
@@ -357,18 +357,18 @@ public class UserFacade implements IUserFacade {
      * 修改密码:stringReq传入老的密码，stringReq2传入新的密码
      *
      * @param baseReq 基本请求
-     * @return
+     * @return 基本应答
      */
     @Override
     public BaseResp changePassword(BaseReq baseReq) {
         userSession = (UserSession) WyfSecurityUtils.getSubject().getSession();
-        BaseResp baseResp = new BaseResp(false);
+        BaseResp baseResp;
         CustomerLogin customerLogin = customerLoginDao.get(userSession.getCustomerId());
-        //SESSION检查
+        /** SESSION检查 */
         if (null == userSession) {
             return new BaseResp(false, UserConst.SESSION_ERROR, "SESSION失效");
         }
-        //输入参数检查(匿名模式除外）
+        /** 输入参数检查(匿名模式除外） */
         if (StringUtils.isBlank(baseReq.getStringReq()) || StringUtils.isBlank(baseReq.getStringReq2())) {
             return new BaseResp(true, UserConst.PARAM_ERROR, "输入参数错误");
         }
@@ -391,16 +391,15 @@ public class UserFacade implements IUserFacade {
      * 检查登录名(stringReq:用户LoginName)
      *
      * @param baseReq 基本请求
-     * @return
+     * @return 基本应答
      */
     @Override
     public BaseResp checkLoginName(BaseReq baseReq) {
-        CustomerLogin customerLogin = null;
-        //输入参数检查(匿名模式除外）
+        /** 输入参数检查(匿名模式除外） */
         if (StringUtils.isBlank(baseReq.getStringReq())) {
             return new BaseResp(true, UserConst.PARAM_ERROR, "输入参数错误");
         }
-        customerLogin = loginDao.getByLoginName(baseReq.getStringReq());
+        CustomerLogin customerLogin = loginDao.getByLoginName(baseReq.getStringReq());
         if (null == customerLogin) {
             return new BaseResp(true, UserConst.USER_NOT_EXISTS, "用户不存在");
         } else {
@@ -412,12 +411,11 @@ public class UserFacade implements IUserFacade {
      * 检查登录电话号码(longReq:电话号码)
      *
      * @param baseReq 基本请求
-     * @return
+     * @return 基本应答
      */
     @Override
     public BaseResp checkLoginPhone(BaseReq baseReq) {
-        CustomerLogin customerLogin = null;
-        customerLogin = loginDao.getByLoginPhone(String.valueOf(baseReq.getLongReq()));
+        CustomerLogin customerLogin = loginDao.getByLoginPhone(String.valueOf(baseReq.getLongReq()));
         if (null == customerLogin) {
             return new BaseResp(true, UserConst.USER_NOT_EXISTS, "用户不存在");
         } else {
@@ -429,7 +427,7 @@ public class UserFacade implements IUserFacade {
      * 请求操作口令，例如：绑定手机号时，需要请求发送验证短信。
      *
      * @param actionTokenReq 行动令牌请求
-     * @return
+     * @return 基本应答
      */
     @Override
     public BaseResp requestActionToken(ActionTokenReq actionTokenReq) {
@@ -444,16 +442,16 @@ public class UserFacade implements IUserFacade {
      * 验证操作口令。
      *
      * @param baseReq 基本请求
-     * @return
+     * @return 基本应答
      */
     @Override
     public BaseResp authActionToken(BaseReq baseReq) {
         userSession = (UserSession) WyfSecurityUtils.getSubject().getSession();
-        //SESSION检查
+        /** SESSION检查 */
         if (null == userSession) {
             return new BaseResp(false, UserConst.SESSION_ERROR, "SESSION失效");
         }
-        //输入参数检查(匿名模式除外）
+        /** 输入参数检查(匿名模式除外） */
         if (StringUtils.isBlank(baseReq.getAtRequestGuid())) {
             return new BaseResp(true, UserConst.PARAM_ERROR, "输入参数错误");
         }
@@ -469,7 +467,7 @@ public class UserFacade implements IUserFacade {
      * 验证码生成。
      *
      * @param iLen 验证码长度
-     * @return
+     * @return 验证码
      */
     private static String makeActionToken(int iLen) {
         Random r = new Random();
