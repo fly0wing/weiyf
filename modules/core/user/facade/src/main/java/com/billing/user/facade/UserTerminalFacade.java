@@ -3,6 +3,7 @@ package com.billing.user.facade;
 import com.billing.internalcontract.BaseReq;
 import com.billing.internalcontract.BaseResp;
 import com.billing.internalcontract.UserSession;
+import com.billing.internalcontract.other.ISeqFacade;
 import com.billing.internalcontract.user.IUserTerminalFacade;
 import com.billing.internalcontract.user.TerminalActiveReq;
 import com.billing.internalcontract.user.TerminalBindReq;
@@ -40,6 +41,9 @@ public class UserTerminalFacade implements IUserTerminalFacade {
     @Autowired
     private TerminalActivateDao terminalActivateDao;
 
+    @Autowired
+    private ISeqFacade seqFacade;
+
     UserSession userSession = null;
 
     /**
@@ -50,6 +54,7 @@ public class UserTerminalFacade implements IUserTerminalFacade {
     @Override
     public BaseResp activeTerminal(TerminalActiveReq taReq) {
         userSession = WyfSecurityUtils.getSession();
+        Long lTermId;
         /** Session检查 */
         if(null ==  userSession){
             return new BaseResp(true, UserConst.SESSION_ERROR, UserConst.MSG_SESSION_ERROR);
@@ -58,8 +63,8 @@ public class UserTerminalFacade implements IUserTerminalFacade {
         taReq.setStringReq(userSession.getFingerprint());
         List<TerminalInfo> lstTermsInfo = getTerminalByFingerprint(taReq).getObjResult();
         Timestamp tsNow = new Timestamp(System.currentTimeMillis());
-        if(0 == lstTermsInfo.size()){
-            /** 该终端指纹未注册 */
+        if(lstTermsInfo.isEmpty()){
+            /** 该终端指纹未注册(无终端ID) */
             /** 插入终端信息 */
             Terminal term = new Terminal();
             term.setFingerprint(userSession.getFingerprint());
@@ -70,12 +75,23 @@ public class UserTerminalFacade implements IUserTerminalFacade {
             if(!terminalDao.save(term)){
                 return new BaseResp(false, UserConst.TERM_ACTIVE_ERROR, UserConst.MSG_TERM_ACTIVE_ERROR);
             }
-            lstTermsInfo.clear();
-            lstTermsInfo = getTerminalByFingerprint(taReq).getObjResult();
+            //TODO: seqFacade
+            lTermId = seqFacade.nextSeq("Terminal_id").getLongResult();
+        }else{
+            /** 该终端注册过（有终端ID)*/
+            lTermId = lstTermsInfo.get(0).getTerminalId();
+            TerminalActivate terminalActivate = terminalActivateDao.getMaxActiveTime(lTermId);
+            if(null != terminalActivate){
+                /** 检查上次激活时间 */
+                /** 特定时间间隔内（默认：10分钟以内）不再次激活*/
+                if(UserConst.TIME_INTERVAL > tsNow.getTime() - terminalActivate.getActivateTime().getTime()){
+                    return new BaseResp(true, UserConst.SUCCESS, UserConst.MSG_SUCCESS);
+                }
+            }
         }
         /** 插入终端激活信息*/
         TerminalActivate termActive = new TerminalActivate();
-        termActive.setTerminalId(lstTermsInfo.get(0).getTerminalId());
+        termActive.setTerminalId(lTermId);
         termActive.setSessionId(userSession.getSessionId());
         termActive.setActivateTime(tsNow);
         if (!terminalActivateDao.save(termActive)) {
