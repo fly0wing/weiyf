@@ -19,7 +19,7 @@
         ct.terminal_name as terminal_name,
         t.fingerprint as fingerprint
         from customer_terminal ct left outer join terminal t on ct.terminal_id = t.id
-        where ct.customer_id = #{customer_id}
+        where ct.customer_id = #{customerId}
         and ct.bind_status = true
     </select>
 
