@@ -49,7 +49,7 @@ public class UserTerminalFacade implements IUserTerminalFacade {
      */
     @Override
     public BaseResp activeTerminal(TerminalActiveReq taReq) {
-        userSession = (UserSession) WyfSecurityUtils.getSubject().getSession();
+        userSession = WyfSecurityUtils.getSession();
         /** Session检查 */
         if(null ==  userSession){
             return new BaseResp(true, UserConst.SESSION_ERROR, UserConst.MSG_SESSION_ERROR);
@@ -92,7 +92,7 @@ public class UserTerminalFacade implements IUserTerminalFacade {
      */
     @Override
     public BaseResp bindTerminal(TerminalBindReq terminalBindReq) {
-        userSession = (UserSession) WyfSecurityUtils.getSubject().getSession();
+        userSession = WyfSecurityUtils.getSession();
         /** Session检查 */
         if(null ==  userSession){
             return new BaseResp(true, UserConst.SESSION_ERROR, UserConst.MSG_SESSION_ERROR);
@@ -177,7 +177,7 @@ public class UserTerminalFacade implements IUserTerminalFacade {
      */
     @Override
     public BaseResp unbindTerminal(TerminalUnbindReq terminalUnbindReq) {
-        userSession = (UserSession) WyfSecurityUtils.getSubject().getSession();
+        userSession = WyfSecurityUtils.getSession();
         /** Session检查*/
         if(null ==  userSession){
             return new BaseResp(true, UserConst.SESSION_ERROR, UserConst.MSG_SESSION_ERROR);

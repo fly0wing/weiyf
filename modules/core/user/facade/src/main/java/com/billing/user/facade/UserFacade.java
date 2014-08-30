@@ -50,7 +50,7 @@ public class UserFacade implements IUserFacade {
      */
     @Override
     public BaseResp register(RegisterReq registerReq) {
-        userSession = (UserSession) WyfSecurityUtils.getSubject().getSession();
+        userSession = WyfSecurityUtils.getSession();
         BaseResp baseResp;
         CustomerLogin customerLogin = new CustomerLogin();
         boolean bAnonymousFlg = false;
@@ -194,7 +194,7 @@ public class UserFacade implements IUserFacade {
      */
     @Override
     public BaseResp login(LoginReq loginReq) {
-        userSession = (UserSession) WyfSecurityUtils.getSubject().getSession();
+        userSession = WyfSecurityUtils.getSession();
         BaseResp baseResp = chkLoginUser(loginReq);
         if (baseResp.isOK()) {
             /** 登录成功，检查更新终端绑定状态 */
@@ -214,7 +214,7 @@ public class UserFacade implements IUserFacade {
      * @return 基本应答
      */
     public BaseResp chkLoginUser(LoginReq loginReq){
-        userSession = (UserSession) WyfSecurityUtils.getSubject().getSession();
+        userSession = WyfSecurityUtils.getSession();
         BaseResp baseResp = new BaseResp(false);
         CustomerLogin customerLogin;
         String sCurrentPass = "";
@@ -329,7 +329,7 @@ public class UserFacade implements IUserFacade {
      */
     @Override
     public BaseResp bindPhone(BaseReq baseReq) {
-        userSession = (UserSession) WyfSecurityUtils.getSubject().getSession();
+        userSession = WyfSecurityUtils.getSession();
         BaseResp baseResp;
         /** SESSION检查 */
         if (null == userSession) {
@@ -360,7 +360,7 @@ public class UserFacade implements IUserFacade {
      */
     @Override
     public BaseResp changePassword(BaseReq baseReq) {
-        userSession = (UserSession) WyfSecurityUtils.getSubject().getSession();
+        userSession = WyfSecurityUtils.getSession();
         BaseResp baseResp;
         CustomerLogin customerLogin = customerLoginDao.get(userSession.getCustomerId());
         /** SESSION检查 */
@@ -445,7 +445,7 @@ public class UserFacade implements IUserFacade {
      */
     @Override
     public BaseResp authActionToken(BaseReq baseReq) {
-        userSession = (UserSession) WyfSecurityUtils.getSubject().getSession();
+        userSession = WyfSecurityUtils.getSession();
         /** SESSION检查 */
         if (null == userSession) {
             return new BaseResp(false, UserConst.SESSION_ERROR, UserConst.MSG_SESSION_ERROR);
