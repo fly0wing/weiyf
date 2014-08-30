@@ -49,14 +49,14 @@ public class UserTerminalFacade implements IUserTerminalFacade {
     @Override
     public BaseResp activeTerminal(TerminalActiveReq taReq) {
         userSession = (UserSession) WyfSecurityUtils.getSubject().getSession();
-        Long lTermId = 0L;
+        Long lTermId;
         /** Session检查 */
         if(null ==  userSession){
             return new BaseResp(true, UserConst.SESSION_ERROR, "SESSION失效");
         }
         /** 通过Session终端指纹获取TermnialId */
         taReq.setStringReq(userSession.getFingerprint());
-        List<TerminalInfo> lstTermsInfo = (List<TerminalInfo>) getTerminalByFingerprint(taReq);
+        List<TerminalInfo> lstTermsInfo = (List<TerminalInfo>) getTerminalByFingerprint(taReq).getObjResult();
         Timestamp tsNow = new Timestamp(System.currentTimeMillis());
         if(0 == lstTermsInfo.size()){
             /** 该终端指纹未注册 */
@@ -68,7 +68,7 @@ public class UserTerminalFacade implements IUserTerminalFacade {
             term.setDefaultName(taReq.getDefaultName());
             term.setTerminalTypeId(taReq.getTerminalTypeId());
             terminalDao.save(term);
-            lTermId = ((List<TerminalInfo>) getTerminalByFingerprint(taReq)).get(0).getTerminalId();
+            lTermId = ((List<TerminalInfo>) getTerminalByFingerprint(taReq).getObjResult()).get(0).getTerminalId();
         }
         else{
             lTermId = lstTermsInfo.get(0).getTerminalId();
