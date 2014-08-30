@@ -15,6 +15,7 @@ import com.billing.user.orm.dao.TerminalDao;
 import com.billing.user.orm.model.CustomerTerminal;
 import com.billing.user.orm.model.Terminal;
 import com.billing.user.orm.model.TerminalActivate;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -51,7 +52,7 @@ public class UserTerminalFacade implements IUserTerminalFacade {
         userSession = (UserSession) WyfSecurityUtils.getSubject().getSession();
         /** Session检查 */
         if(null ==  userSession){
-            return new BaseResp(true, UserConst.SESSION_ERROR, "SESSION失效");
+            return new BaseResp(true, UserConst.SESSION_ERROR, UserConst.MSG_SESSION_ERROR);
         }
         /** 通过Session终端指纹获取TermnialId */
         taReq.setStringReq(userSession.getFingerprint());
@@ -66,7 +67,9 @@ public class UserTerminalFacade implements IUserTerminalFacade {
             term.setFirstSessionId(userSession.getSessionId());
             term.setDefaultName(taReq.getDefaultName());
             term.setTerminalTypeId(taReq.getTerminalTypeId());
-            terminalDao.save(term);
+            if(!terminalDao.save(term)){
+                return new BaseResp(false, UserConst.TERM_ACTIVE_ERROR, UserConst.MSG_TERM_ACTIVE_ERROR);
+            }
             lstTermsInfo.clear();
             lstTermsInfo = getTerminalByFingerprint(taReq).getObjResult();
         }
@@ -75,8 +78,10 @@ public class UserTerminalFacade implements IUserTerminalFacade {
         termActive.setTerminalId(lstTermsInfo.get(0).getTerminalId());
         termActive.setSessionId(userSession.getSessionId());
         termActive.setActivateTime(tsNow);
-        terminalActivateDao.save(termActive);
-        return new BaseResp(true, UserConst.SUCCESS, "终端激活成功");
+        if (!terminalActivateDao.save(termActive)) {
+            return new BaseResp(false, UserConst.TERM_ACTIVE_ERROR, UserConst.MSG_TERM_ACTIVE_ERROR);
+        }
+        return new BaseResp(true, UserConst.SUCCESS, UserConst.MSG_SUCCESS);
     }
 
 
@@ -90,7 +95,7 @@ public class UserTerminalFacade implements IUserTerminalFacade {
         userSession = (UserSession) WyfSecurityUtils.getSubject().getSession();
         /** Session检查 */
         if(null ==  userSession){
-            return new BaseResp(true, UserConst.SESSION_ERROR, "SESSION失效");
+            return new BaseResp(true, UserConst.SESSION_ERROR, UserConst.MSG_SESSION_ERROR);
         }
         /** 获取绑定终端列表 */
         List<TerminalInfo> lstTermsInfo = getBoundTerminals(terminalBindReq).getObjResult();
@@ -115,7 +120,7 @@ public class UserTerminalFacade implements IUserTerminalFacade {
                 params.put(Terminal.FN_fingerprint, userSession.getFingerprint());
                 List<Terminal> lstTerms = terminalDao.search(params);
                 params.clear();
-                if (0 == lstTerms.size()) {
+                if (0 == lstTerms.size() || !StringUtils.isBlank(terminalBindReq.getTerminalName())) {
                     customerTerm.setTerminalName(terminalBindReq.getTerminalName());
                 } else {
                     customerTerm.setTerminalName(lstTerms.get(0).getDefaultName());
@@ -129,21 +134,25 @@ public class UserTerminalFacade implements IUserTerminalFacade {
                 customerTerm.setIsAutoLogin(terminalBindReq.isAuto());
                 customerTerm.setLastLoginToken(userSession.getLoginToken());
                 /** 插入用户终端信息*/
-                customerTermDao.save(customerTerm);
+               if(!customerTermDao.save(customerTerm)){
+                   return new BaseResp(false,UserConst.TERM_BIND_ERROR, UserConst.MSG_TERM_BIND_ERROR);
+               }
             } else {
                 /** 该终端为解绑状态 */
                 CustomerTerminal updCustomerTerm = lstCustomerTerms.get(0);
                 updCustomerTerm.setBindStatus(true);
                 /** 更新用户终端绑定状态 */
-                customerTermDao.update(updCustomerTerm);
+                if(!customerTermDao.update(updCustomerTerm)){
+                    return new BaseResp(false,UserConst.TERM_BIND_ERROR, UserConst.MSG_TERM_BIND_ERROR);
+                }
             }
         }else{
             /** 已绑定终端，直接返回*/
             userSession.setBound(true);
-            return new BaseResp(true,UserConst.SUCCESS,"该终端已绑定");
+            return new BaseResp(true,UserConst.SUCCESS, UserConst.MSG_SUCCESS);
         }
         userSession.setBound(true);
-        return new BaseResp(true,UserConst.SUCCESS,"终端绑定成功");
+        return new BaseResp(true,UserConst.SUCCESS, UserConst.MSG_SUCCESS);
     }
 
     /**
@@ -171,7 +180,7 @@ public class UserTerminalFacade implements IUserTerminalFacade {
         userSession = (UserSession) WyfSecurityUtils.getSubject().getSession();
         /** Session检查*/
         if(null ==  userSession){
-            return new BaseResp(true, UserConst.SESSION_ERROR, "SESSION失效");
+            return new BaseResp(true, UserConst.SESSION_ERROR, UserConst.MSG_SESSION_ERROR);
         }
         /**检查该终端是否为绑定状态 */
         Map<String,Object> params = new HashMap<>();
@@ -182,13 +191,15 @@ public class UserTerminalFacade implements IUserTerminalFacade {
         if(0 > lstTerms.size()){
             /** 已解绑的终端，直接返回*/
             userSession.setBound(false);
-            return new BaseResp(true, UserConst.SUCCESS, "该终端已解绑");
+            return new BaseResp(true, UserConst.SUCCESS, UserConst.MSG_SUCCESS);
         }else{
             /** 绑定状态的终端，更新终端绑定状态*/
             lstTerms.get(0).setBindStatus(false);
-            customerTermDao.update(lstTerms.get(0));
+            if(!customerTermDao.update(lstTerms.get(0))){
+                return new BaseResp(false, UserConst.TERM_UNBIND_ERROR, UserConst.MSG_TERM_UNBIND_ERROR);
+            }
             userSession.setBound(false);
-            return new BaseResp(true, UserConst.SUCCESS, "终端解绑成功");
+            return new BaseResp(true, UserConst.SUCCESS, UserConst.MSG_SUCCESS);
         }
     }
 
