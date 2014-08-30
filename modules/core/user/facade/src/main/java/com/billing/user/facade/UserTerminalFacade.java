@@ -4,6 +4,7 @@ import com.billing.internalcontract.BaseReq;
 import com.billing.internalcontract.BaseResp;
 import com.billing.internalcontract.UserSession;
 import com.billing.internalcontract.user.IUserTerminalFacade;
+import com.billing.internalcontract.user.TerminalActiveReq;
 import com.billing.internalcontract.user.TerminalBindReq;
 import com.billing.internalcontract.user.TerminalUnbindReq;
 import com.billing.user.facade.shiro.WyfSecurityUtils;
@@ -42,27 +43,41 @@ public class UserTerminalFacade implements IUserTerminalFacade {
 
     /**
      * 绑定当前用户终端，无需传入待绑定的终端，从当前会话中获取。
-     * @param baseReq 基本请求
+     * @param taReq 终端激活请求
      * @return 基本应答
      */
     @Override
-    public BaseResp activeTerminal(BaseReq baseReq) {
+    public BaseResp activeTerminal(TerminalActiveReq taReq) {
         userSession = (UserSession) WyfSecurityUtils.getSubject().getSession();
+        Long lTermId = 0L;
         /** Session检查 */
         if(null ==  userSession){
             return new BaseResp(true, UserConst.SESSION_ERROR, "SESSION失效");
         }
-
-        Map<String,Object> params = new HashMap<>();
-        params.put(TerminalActivate.FN_terminalId,userSession.getTerminalId());
-        List<TerminalActivate> lstTermAct = terminalActivateDao.search(params);
-        if(0 < lstTermAct.size()){
-            return new BaseResp(true, UserConst.SUCCESS, "终端已激活");
+        /** 通过Session终端指纹获取TermnialId */
+        taReq.setStringReq(userSession.getFingerprint());
+        List<TerminalInfo> lstTermsInfo = (List<TerminalInfo>) getTerminalByFingerprint(taReq);
+        Timestamp tsNow = new Timestamp(System.currentTimeMillis());
+        if(0 == lstTermsInfo.size()){
+            /** 该终端指纹未注册 */
+            /** 插入终端信息 */
+            Terminal term = new Terminal();
+            term.setFingerprint(userSession.getFingerprint());
+            term.setFirstActivateTime(tsNow);
+            term.setFirstSessionId(userSession.getSessionId());
+            term.setDefaultName(taReq.getDefaultName());
+            term.setTerminalTypeId(taReq.getTerminalTypeId());
+            terminalDao.save(term);
+            lTermId = ((List<TerminalInfo>) getTerminalByFingerprint(taReq)).get(0).getTerminalId();
         }
+        else{
+            lTermId = lstTermsInfo.get(0).getTerminalId();
+        }
+        /** 插入终端激活信息*/
         TerminalActivate termActive = new TerminalActivate();
-        termActive.setTerminalId(userSession.getTerminalId());
+        termActive.setTerminalId(lTermId);
         termActive.setSessionId(userSession.getSessionId());
-        termActive.setActivateTime(new Timestamp(System.currentTimeMillis()));
+        termActive.setActivateTime(tsNow);
         terminalActivateDao.save(termActive);
         return new BaseResp(true, UserConst.SUCCESS, "终端激活成功");
     }
@@ -130,8 +145,10 @@ public class UserTerminalFacade implements IUserTerminalFacade {
             }
         }else{
             /** 已绑定终端，直接返回*/
+            userSession.setBound(true);
             return new BaseResp(true,UserConst.SUCCESS,"该终端已绑定");
         }
+        userSession.setBound(true);
         return new BaseResp(true,UserConst.SUCCESS,"终端绑定成功");
     }
 
@@ -170,11 +187,13 @@ public class UserTerminalFacade implements IUserTerminalFacade {
         List<CustomerTerminal> lstTerms = customerTermDao.search(params);
         if(0 > lstTerms.size()){
             /** 已解绑的终端，直接返回*/
+            userSession.setBound(false);
             return new BaseResp(true, UserConst.SUCCESS, "该终端已解绑");
         }else{
             /** 绑定状态的终端，更新终端绑定状态*/
             lstTerms.get(0).setBindStatus(false);
             customerTermDao.update(lstTerms.get(0));
+            userSession.setBound(false);
             return new BaseResp(true, UserConst.SUCCESS, "终端解绑成功");
         }
     }

@@ -14,7 +14,7 @@ public interface IUserTerminalFacade {
      * @param req
      * @return
      */
-    BaseResp activeTerminal(BaseReq req);
+    BaseResp activeTerminal(TerminalActiveReq req);
 
     /**
      * 绑定当前用户终端，无需传入待绑定的终端，从当前会话中获取。
