@@ -12,7 +12,7 @@
         <result property="fingerprint" column="fingerprint"/>
     </resultMap>
 
-    <select id="getBindTerms" parameterType="map" resultMap="BindTerminal">
+    <select id="getBindTerms" parameterType="map" resultMap="RM_BindTerminal">
         select
         ct.customer_id as customer_id,
         ct.terminal_id as terminal_id,
@@ -23,7 +23,7 @@
         and ct.bind_status = true
     </select>
 
-    <select id="getTermsByFingerPrint" parameterType="map" resultMap="BindTerminal">
+    <select id="getTermsByFingerPrint" parameterType="map" resultMap="RM_BindTerminal">
         select
         ct.customer_id as customer_id,
         ct.terminal_id as terminal_id,
