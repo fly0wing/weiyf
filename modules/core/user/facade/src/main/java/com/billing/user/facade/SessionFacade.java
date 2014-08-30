@@ -4,15 +4,15 @@ import com.billing.internalcontract.BaseReq;
 import com.billing.internalcontract.BaseResp;
 import com.billing.internalcontract.UserSession;
 import com.billing.internalcontract.session.ISessionFacade;
-import com.billing.user.facade.shiro.WyfBillingSecurityManager;
 import com.billing.user.orm.dao.UserSessionDao;
 import com.billing.user.orm.dao.UserSessionDurableDao;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.session.Session;
-import org.apache.shiro.session.mgt.DefaultSessionContext;
-import org.apache.shiro.session.mgt.SessionContext;
+import org.apache.shiro.session.mgt.SessionKey;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.io.Serializable;
 
 /**
  * Created by xiaoyouyi on 2014-8-28.
@@ -53,15 +53,22 @@ public class SessionFacade implements ISessionFacade {
     }
 
     /**
-     * 根据会话标识获取指定的会话。
+     * 根据会话令牌获取指定的会话。
      * stringReq，表示待查找的会话令牌
-     * longReq2,0表示仅限当前有效的会话，1表示以失效时需要从会话持久化库中获取
      *
      * @param req
      * @return 结果存放在objResult中
      */
     @Override
     public BaseResp getBySessionToken(BaseReq req) {
-        return null;
+        Session session=SecurityUtils.getSecurityManager().getSession(new SessionKey() {
+            @Override
+            public Serializable getSessionId() {
+                return req.getStringReq();
+            }
+        });
+        BaseResp resp = new BaseResp(true,0);
+        resp.setObjResult(session);
+        return resp;
     }
 }

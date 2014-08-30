@@ -1,7 +1,9 @@
 package com.billing.user.facade.shiro;
 
+import com.billing.internalcontract.UserSession;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.session.SessionListener;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -9,6 +11,9 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class WyfSessionListener implements SessionListener {
+
+    @Autowired
+    WyfSessionDAO wyfSessionDAO;
     /**
      * Notification callback that occurs when the corresponding Session has started.
      *
@@ -27,8 +32,7 @@ public class WyfSessionListener implements SessionListener {
      */
     @Override
     public void onStop(Session session) {
-        WyfSession wyfSession=(WyfSession)session;
-        saveToDB(wyfSession);
+        saveToDB(session);
     }
 
     /**
@@ -47,14 +51,15 @@ public class WyfSessionListener implements SessionListener {
      */
     @Override
     public void onExpiration(Session session) {
-        WyfSession wyfSession=(WyfSession)session;
-        saveToDB(wyfSession);
+        saveToDB(session);
     }
 
-    private void saveToDB(WyfSession wyfSession ){
-        if(wyfSession==null) return;
+    private void saveToDB(Session session) {
+        UserSession   userSession=(UserSession)session;
+        if(userSession==null) return;
 
-        if(wyfSession.getUserSession().isNeedDurable()){
+        if(userSession.isNeedDurable() && !userSession.isHasDurable()){
+            wyfSessionDAO.update(session);
             //todo save to db
         }
     }

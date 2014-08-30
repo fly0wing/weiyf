@@ -15,7 +15,7 @@ ${gg.setOverride(false)}
 @MyBatisRepository
 public interface ${className}Dao {
 
-    ${className} get(<#list table.pkColumns as column>@Param("${column.sqlName}") ${column.simpleJavaType} ${column.columnNameFirstLower}<#if column_has_next>, </#if></#list>);
+    ${className} get(<#list table.pkColumns as column>@Param(${className}.FN_${column.columnNameLower}) ${column.simpleJavaType} ${column.columnNameFirstLower}<#if column_has_next>, </#if></#list>);
 
     List<${className}> search(Map<String, Object> params);
 
@@ -26,6 +26,6 @@ public interface ${className}Dao {
     boolean delete(@Param("id") Long id);
 <#list table.columns as column><#if column.unique && !column.pk>
 
-    ${className} getBy${column.columnName}(@Param("${column.columnNameLower}")${column.simpleJavaType} ${column.columnNameLower});
+    ${className} getBy${column.columnName}(@Param(${className}.FN_${column.columnNameLower})${column.simpleJavaType} ${column.columnNameLower});
 </#if></#list>
 }

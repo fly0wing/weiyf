@@ -1,5 +1,6 @@
 package com.billing.user.facade.shiro;
 
+import com.billing.internalcontract.user.IUserFacade;
 import com.billing.user.orm.dao.CustomerLoginDao;
 import com.billing.user.orm.model.CustomerLogin;
 import org.apache.shiro.authc.*;
@@ -24,6 +25,9 @@ public class WyfJdbcRealm extends JdbcRealm {
 
     @Autowired
     private CustomerLoginDao customerLoginDao;
+
+    @Autowired
+    private IUserFacade userFacade;
 
     private static WyfJdbcRealm singleton = new WyfJdbcRealm();
     public static WyfJdbcRealm getInstance( ){
@@ -53,8 +57,20 @@ public class WyfJdbcRealm extends JdbcRealm {
         AuthenticationInfo info = null;
         CustomerLogin customerLogin=null;
         try {
-
-            customerLogin = customerLoginDao.getByLoginName( username);
+            switch (upToken.getLoginAccountEnum()) {
+                case Anonymous:
+                    customerLogin = customerLoginDao.getByLoginName( username);
+                    break;
+                case LoginName:
+                    customerLogin = customerLoginDao.getByLoginName( username);
+                    break;
+                case LoginEmail:
+                    customerLogin = customerLoginDao.getByLoginEmail( username);
+                    break;
+                case LoginPhone:
+                    customerLogin = customerLoginDao.getByLoginPhone( username);
+                    break;
+            }
 
             if (customerLogin == null) {
                 throw new UnknownAccountException("No account found for user [" + username + "]");
