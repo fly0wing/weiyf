@@ -75,9 +75,8 @@ public class UserFacade implements IUserFacade {
                 customerLogin = loginDao.getByLoginName(registerReq.getLoginAccount());
                 if (null != customerLogin) {
                     return new BaseResp(true, UserConst.USER_ALREADY_EXISTS, "匿名用户已注册");
-                }else{
-                    customerLogin = new CustomerLogin();
                 }
+                customerLogin = new CustomerLogin();
                 customerLogin.setEnabled(true);
                 customerLogin.setIsAnonymous(true);
                 customerLogin.setLoginName(registerReq.getLoginAccount());
@@ -89,6 +88,7 @@ public class UserFacade implements IUserFacade {
                 if (null != customerLogin) {
                     return new BaseResp(true, UserConst.USER_ALREADY_EXISTS, "用户名已注册");
                 }
+                customerLogin = new CustomerLogin();
                 if (UserConst.SUCCESS == chkToken(lTermId, userSession.getLoginToken())) {
                     bAnonymousFlg = true;
                     customerLogin.setLoginName(registerReq.getLoginAccount());
@@ -108,6 +108,7 @@ public class UserFacade implements IUserFacade {
                 if (null != customerLogin) {
                     return new BaseResp(true, UserConst.EMAIL_ALREADY_EXISTS, "Email已注册");
                 }
+                customerLogin = new CustomerLogin();
                 if (UserConst.SUCCESS == chkToken(lTermId, userSession.getLoginToken())) {
                     bAnonymousFlg = true;
                     customerLogin.setLoginEmail(registerReq.getLoginAccount());
@@ -127,6 +128,7 @@ public class UserFacade implements IUserFacade {
                 if (null != customerLogin) {
                     return new BaseResp(true, UserConst.PHONE_ALREADY_EXISTS, "电话号码已注册");
                 }
+                customerLogin = new CustomerLogin();
                 if (UserConst.SUCCESS == chkToken(lTermId, userSession.getLoginToken())) {
                     bAnonymousFlg = true;
                     customerLogin.setLoginPhone(registerReq.getLoginAccount());
@@ -216,7 +218,7 @@ public class UserFacade implements IUserFacade {
     public BaseResp chkLoginUser(LoginReq loginReq){
         userSession = (UserSession) WyfSecurityUtils.getSubject().getSession();
         BaseResp baseResp = new BaseResp(false);
-        CustomerLogin customerLogin = null;
+        CustomerLogin customerLogin;
         String sCurrentPass = "";
         /** SESSION检查 */
         if (null == userSession) {
